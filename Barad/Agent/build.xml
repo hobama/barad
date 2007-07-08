@@ -1,0 +1,49 @@
+<project name="BaradAgent" default="all">
+    <property name="srcDir" value="${basedir}\src"/>
+    <property name="classesDir" value="${basedir}\classes"/>
+    <property name="libDir" value="${basedir}\lib"/>
+    <property name="binDir" value="${basedir}\bin"/>
+    <property name="baradAgentDir" value="${basedir}\..\..\BaradAgent"/>
+
+    <fileset id="classpathFileSet" dir="${libDir}">
+        <include name="swt.jar"/>
+        <include name="log4j-1.2.14.jar"/>
+    </fileset>
+    <path id="classpathPath">
+        <fileset refid="classpathFileSet"/>
+    </path>
+
+    <fileset dir="${classesDir}">
+        <patternset id="remoteObjectsPatternSet">
+            <include name="edu/utexas/barad/agent/AgentMain.class"/>
+        </patternset>
+    </fileset>
+
+    <target name="clean" description="Deletes classes directory.">
+        <delete dir="${classesDir}"/>
+    </target>
+
+    <target name="compile" description="Compiles classes.">
+        <echo message="The compiler we are running is version ${java.version} by ${java.vendor} (${java.home})."/>
+
+        <mkdir dir="${classesDir}"/>
+
+        <javac srcdir="${srcDir}" destdir="${classesDir}" classpathref="classpathPath" debug="true" fork="true"/>
+
+        <rmic base="${classesDir}">
+            <patternset refid="remoteObjectsPatternSet"/>
+        </rmic>
+    </target>
+
+    <target name="buildJar" depends="compile">
+        <jar destfile="${libDir}\baradagent.jar">
+            <fileset dir="${classesDir}" includes="**\*.class"/>
+        </jar>
+    </target>
+
+    <target name="copyAgentLibrary">
+        <copy file="${baradAgentDir}/Debug/BaradAgent.dll" todir="${binDir}"/>
+    </target>
+
+    <target name="all" depends="clean, buildJar, copyAgentLibrary"/>
+</project>
