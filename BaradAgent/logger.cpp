@@ -7,10 +7,11 @@
 using namespace barad;
 using namespace std;
 
+string Logger::FILENAME = "barad-native.log";
 Logger* Logger::pInstance = NULL;
 
 Logger::Logger() {
-	pFile = new ofstream("barad.log");
+	pFile = new ofstream(FILENAME.c_str());
 }
 
 Logger::~Logger() {
@@ -54,21 +55,44 @@ void Logger::write(const string& message, const char* file, int line) const {
 }
 
 void Logger::debug(const string& message, const char* file, int line) const {
+#ifdef _DEBUG
 	write("DEBUG: ");
 	write(message, file, line);
+#endif // _DEBUG
+}
+
+void Logger::info(const string& message, const char* file, int line) const {
+	write("INFO: ");
+#ifdef _DEBUG
+	write(message, file, line);
+#else
+	write(message, NULL, -1);
+#endif // _DEBUG
 }
 
 void Logger::warn(const string& message, const char* file, int line) const {
 	write("WARN: ");
+#ifdef _DEBUG
 	write(message, file, line);
+#else
+	write(message, NULL, -1);
+#endif // _DEBUG
 }
 
 void Logger::error(const string& message, const char* file, int line) const {
 	write("ERROR: ");
+#ifdef _DEBUG
 	write(message, file, line);
+#else
+	write(message, NULL, -1);
+#endif // _DEBUG
 }
 
 void Logger::fatal(const string& message, const char* file, int line) const {
 	write("FATAL: ");
+#ifdef _DEBUG
 	write(message, file, line);
+#else
+	write(message, NULL, -1);
+#endif // _DEBUG
 }
