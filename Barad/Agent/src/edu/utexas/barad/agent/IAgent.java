@@ -1,6 +1,8 @@
 package edu.utexas.barad.agent;
 
-import edu.utexas.barad.common.swt.ObjectInfo;
+import edu.utexas.barad.common.swt.WidgetInfo;
+import edu.utexas.barad.common.swt.WidgetValues;
+import edu.utexas.barad.common.swt.GUID;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -10,5 +12,7 @@ import java.rmi.RemoteException;
  * Barad Project, Jul 1, 2007
  */
 public interface IAgent extends Remote {
-    public ObjectInfo[] getWidgetHierarchy() throws RemoteException;
+    public WidgetInfo[] getWidgetHierarchy(boolean rebuild) throws RemoteException;
+
+    public WidgetValues getWidgetValues(GUID guid) throws RemoteException;
 }

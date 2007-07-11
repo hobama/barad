@@ -4,18 +4,19 @@ import edu.utexas.barad.agent.exceptions.AgentRuntimeException;
 import edu.utexas.barad.common.ReflectionUtils;
 import org.apache.log4j.Logger;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 
 /**
  * University of Texas at Austin
- * Barad Project, Jul 4, 2007 
+ * Barad Project, Jul 4, 2007
  */
 public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
     private static final Logger logger = Logger.getLogger(DefaultProxyInvocationHandler.class);
 
     private IProxyFactory proxyFactory;
     private Class actualClass;
-    private Object actualInstance;
+    private WeakReference<Object> actualInstance;
 
     public DefaultProxyInvocationHandler(Class actualClass, IProxyFactory proxyFactory) {
         if (actualClass == null) {
@@ -43,7 +44,7 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
             throw new AgentRuntimeException("actualInstance must be a complex type.");
         }
 
-        this.actualInstance = actualInstance;
+        this.actualInstance = new WeakReference<Object>(actualInstance);
         this.actualClass = actualInstance.getClass();
         this.proxyFactory = proxyFactory;
     }
@@ -179,7 +180,10 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
     }
 
     public Object getActualInstance() {
-        return actualInstance;
+        if (actualInstance != null) {
+            return actualInstance.get();
+        }
+        return null;
     }
 
     public IProxyFactory getProxyFactory() {

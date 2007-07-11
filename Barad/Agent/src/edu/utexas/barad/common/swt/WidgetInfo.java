@@ -8,17 +8,21 @@ import java.util.List;
  * University of Texas at Austin
  * Barad Project, Jul 5, 2007
  */
-public class ObjectInfo implements Serializable {
+public class WidgetInfo implements Serializable {
+    private static final long serialVersionUID = 621832094938826603L;
+
     private String className;
+    private WidgetCategory category;
     private String text;
     private GUID guid;
-    private ObjectInfo parent;
-    private List<ObjectInfo> children = new ArrayList<ObjectInfo>();
+    private WidgetInfo parent;
+    private List<WidgetInfo> children = new ArrayList<WidgetInfo>();     
 
-    public ObjectInfo(String className, String text, GUID guid) {
+    public WidgetInfo(String className, String text, GUID guid, WidgetCategory category) {
         setClassName(className);
         setText(text);
         setGuid(guid);
+        setCategory(category);
     }
 
     public String getClassName() {
@@ -27,6 +31,14 @@ public class ObjectInfo implements Serializable {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public WidgetCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(WidgetCategory category) {
+        this.category = category;
     }
 
     public String getText() {
@@ -48,15 +60,15 @@ public class ObjectInfo implements Serializable {
         this.guid = guid;
     }
 
-    public ObjectInfo getParent() {
+    public WidgetInfo getParent() {
         return parent;
     }
 
-    public void setParent(ObjectInfo parent) {
+    public void setParent(WidgetInfo parent) {
         this.parent = parent;
     }
 
-    public boolean addChild(ObjectInfo child) {
+    public boolean addChild(WidgetInfo child) {
         if(!children.contains(child)) {
             children.add(child);
             return true;
@@ -64,7 +76,7 @@ public class ObjectInfo implements Serializable {
         return false;
     }
 
-    public boolean removeChild(ObjectInfo child) {
+    public boolean removeChild(WidgetInfo child) {
         return children.remove(child);
     }
 
@@ -72,7 +84,7 @@ public class ObjectInfo implements Serializable {
         return children.size();
     }
 
-    public ObjectInfo getChildAt(int index) {
+    public WidgetInfo getChildAt(int index) {
         return children.get(index);
     }
 
@@ -81,8 +93,8 @@ public class ObjectInfo implements Serializable {
         if (object == null) {
             return false;
         }
-        if (object instanceof ObjectInfo) {
-            ObjectInfo another = (ObjectInfo) object;
+        if (object instanceof WidgetInfo) {
+            WidgetInfo another = (WidgetInfo) object;
             return another.getGuid().equals(getGuid());
         }
         return false;

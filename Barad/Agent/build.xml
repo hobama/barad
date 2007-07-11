@@ -21,6 +21,7 @@
 
     <target name="clean" description="Deletes classes directory.">
         <delete dir="${classesDir}"/>
+        <delete file="${libDir}\baradagent.jar"/>
     </target>
 
     <target name="compile" description="Compiles classes.">
@@ -38,6 +39,7 @@
     <target name="buildJar" depends="compile">
         <jar destfile="${libDir}\baradagent.jar">
             <fileset dir="${classesDir}" includes="**\*.class"/>
+            <fileset file="${srcDir}/log4j.properties"/>            
         </jar>
     </target>
 
