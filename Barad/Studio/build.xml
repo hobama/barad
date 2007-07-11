@@ -1,0 +1,43 @@
+<project name="BaradStudio" default="all">
+    <property name="srcDir" value="${basedir}\src"/>
+    <property name="classesDir" value="${basedir}\classes"/>
+    <property name="libDir" value="${basedir}\lib"/>
+    <property name="binDir" value="${basedir}\bin"/>
+    <property name="baradAgentDir" value="${basedir}\..\Agent"/>
+
+    <fileset id="classpathFileSet" dir="${libDir}">
+        <include name="swt.jar"/>
+        <include name="log4j-1.2.14.jar"/>
+        <include name="jface.jar"/>
+        <include name="jface-text.jar"/>
+        <include name="jface-databinding.jar"/>
+        <include name="equinox-common.jar"/>
+        <include name="core-commands.jar"/>
+    </fileset>
+    <path id="classpathPath">
+        <fileset refid="classpathFileSet"/>
+        <fileset dir="${baradAgentDir}/lib" includes="baradagent.jar"/>
+    </path>
+
+    <target name="clean" description="Deletes classes directory.">
+        <delete dir="${classesDir}"/>
+        <delete file="${libDir}\baradstudio.jar"/>
+    </target>
+
+    <target name="compile" description="Compiles classes.">
+        <echo message="The compiler we are running is version ${java.version} by ${java.vendor} (${java.home})."/>
+
+        <mkdir dir="${classesDir}"/>
+
+        <javac srcdir="${srcDir}" destdir="${classesDir}" classpathref="classpathPath" debug="true" fork="true"/>
+    </target>
+
+    <target name="buildJar" depends="compile">
+        <jar destfile="${libDir}\baradstudio.jar">
+            <fileset dir="${classesDir}" includes="**\*.class"/>
+            <fileset file="${srcDir}/log4j.properties"/>
+        </jar>
+    </target>
+
+    <target name="all" depends="clean, buildJar"/>
+</project>
