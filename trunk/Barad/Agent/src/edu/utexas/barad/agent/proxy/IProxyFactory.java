@@ -11,7 +11,7 @@ public interface IProxyFactory {
 
     public Object newProxy(Object actualInstance);
 
-    public Class[] getProxyInterfaces(Class actualClass);
+    public Class getProxyInterface(Class actualClass);
 
     public boolean isProxyInterface(Class clazz);
 }

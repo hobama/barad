@@ -10,13 +10,13 @@ import java.util.Set;
 
 /**
  * University of Texas at Austin
- * Barad Project, Jul 4, 2007 
+ * Barad Project, Jul 4, 2007
  */
 public abstract class AbstractProxyFactory implements IProxyFactory {
     public Object newProxy(Class clazz) {
         try {
             InvocationHandler invocationHandler = new DefaultProxyInvocationHandler(clazz, this);
-            Class[] interfaces = getProxyInterfaces(clazz);
+            Class[] interfaces = new Class[]{getProxyInterface(clazz)};
             return Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, invocationHandler);
         } catch (Exception e) {
             throw new AgentRuntimeException("Couldn't create new proxy, class=" + clazz, e);
@@ -31,7 +31,7 @@ public abstract class AbstractProxyFactory implements IProxyFactory {
             Constructor constructor = clazz.getConstructor(constructorParameterTypes);
             Object actualInstance = constructor.newInstance(constructorArguments);
             InvocationHandler invocationHandler = new DefaultProxyInvocationHandler(actualInstance, this);
-            Class[] interfaces = getProxyInterfaces(clazz);
+            Class[] interfaces = new Class[]{getProxyInterface(clazz)};
             return Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, invocationHandler);
         } catch (Exception e) {
             throw new AgentRuntimeException("Couldn't create new proxy, class=" + clazz, e);
@@ -42,12 +42,12 @@ public abstract class AbstractProxyFactory implements IProxyFactory {
         if (actualInstance == null) {
             throw new NullPointerException("actualInstance");
         }
-        Class[] interfaces = getProxyInterfaces(actualInstance.getClass());
+        Class[] interfaces = new Class[]{getProxyInterface(actualInstance.getClass())};
         InvocationHandler invocationHandler = new DefaultProxyInvocationHandler(actualInstance, this);
         return Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, invocationHandler);
     }
 
-    public Class[] getProxyInterfaces(Class actualClass) {
+    public Class getProxyInterface(Class actualClass) {
         Map<Class, Class> actualClassToProxyClassMap = getActualClassToProxyClassMapInternal();
 
         // First check if the actual class is one of the SWT classes.
@@ -68,7 +68,7 @@ public abstract class AbstractProxyFactory implements IProxyFactory {
                 throw new AgentRuntimeException("No proxy class available, actualClass=" + actualClass);
             }
         }
-        return new Class[]{proxyClass};
+        return proxyClass;
     }
 
     public boolean isProxyInterface(Class clazz) {
