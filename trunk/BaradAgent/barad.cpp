@@ -15,18 +15,34 @@ static jobject swtClassLoaderGlobalRef = NULL;
 static void JNICALL callbackVMInit(jvmtiEnv* jvmti, JNIEnv* jni, jthread thread) {
 	LOG_DEBUG("Received VMInit event.\n");
 
-	// Set the classpath.
-	Utils::addFileToBootClasspath(jvmti, "baradagent.jar");	
-	Utils::addFileToBootClasspath(jvmti, "log4j-1.2.14.jar");
-
 	// Start the client, which will register the client in the RMI registry.
 	jclass clazz = jni->FindClass(baradAgentClass.c_str());
+	if (jni->ExceptionCheck()) {
+		jni->ExceptionClear(); // ClassNotFoundException?
+	}
 	if (clazz != NULL) {
-		jmethodID method = jni->GetStaticMethodID(clazz, "main", "([Ljava/lang/String;)V");
-		jni->CallStaticVoidMethod(clazz, method, NULL);	
+		jmethodID method = jni->GetStaticMethodID(clazz, "main", "([Ljava/lang/String;)V"); // MethodNotFoundException?
+		if (jni->ExceptionCheck()) {
+			jni->ExceptionClear();
+		}
+		if (method != NULL) {
+			jni->CallStaticVoidMethod(clazz, method, NULL);
+			if (jni->ExceptionCheck()) {
+				jni->ExceptionDescribe();
+				jni->ExceptionClear();
+				LOG_ERROR("Couldn't start Barad agent: exception occurred in AgentMain#main(String[]).\n");
+				return;
+			}
+		} else {
+			LOG_ERROR("Couldn't start Barad agent: AgentMain#main(String[]) method not found.\n");
+			return;
+		}
 	} else {
 		LOG_ERROR("Couldn't start Barad agent: AgentMain class not found.\n");
+		return;
 	}
+
+	LOG_INFO("Barad agent started.\n");
 }
 
 static void JNICALL callbackVMStart(jvmtiEnv* jvmti, JNIEnv* jni) {
@@ -65,6 +81,16 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM* jvm, char* options, void* reserved) 
 	error = jvmti->SetEventNotificationMode(JVMTI_ENABLE, JVMTI_EVENT_VM_START, (jthread) NULL);
     error = jvmti->SetEventNotificationMode(JVMTI_ENABLE, JVMTI_EVENT_VM_DEATH, (jthread) NULL);
 	Utils::checkJVMTIError(jvmti, error, "An error occurred setting event notification -- this will be ignored.");
+
+	// Set the classpath.
+	try {
+		Utils::addFileToBootClasspath(jvmti, "baradagent.jar");	
+		Utils::addFileToBootClasspath(jvmti, "log4j-1.2.14.jar");
+	} catch(BaradHomeNotFoundException) {
+		LOG_ERROR("BARAD_HOME environment variable not found.\n");
+	}
+
+	LOG_INFO("Barad agent loaded.\n");
 
 	return JNI_OK;
 }

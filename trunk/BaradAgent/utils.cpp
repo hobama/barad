@@ -73,13 +73,8 @@ namespace barad {
 	}
 
 	void Utils::addFileToBootClasspath(jvmtiEnv* jvmti, const string& fileName) {
-		string baradHome;
-		try {
-			baradHome = getBaradHome();
-		} catch(BaradHomeNotFoundException) {
-			fatalError("BARAD_HOME environment variable not found.");
-		}
-	   
+		string baradHome = getBaradHome();
+
 		string fileSeparator;
 	#ifdef WIN32
 		fileSeparator = "\\";
@@ -94,6 +89,6 @@ namespace barad {
 		
 		string jarPath = baradHome + fileSeparator + "lib" + fileSeparator + fileName;
 		jvmtiError error = jvmti->AddToBootstrapClassLoaderSearch(jarPath.c_str());
-		checkJVMTIError(jvmti, error, "Cannot add to boot classpath.");
+		checkJVMTIError(jvmti, error, "Cannot add to boot classpath, fileName=" + fileName);
 	}
 }

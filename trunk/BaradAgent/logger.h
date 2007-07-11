@@ -15,6 +15,7 @@ namespace barad {
 
 	class Logger {
 	private:
+		static string FILENAME;
 		static Logger* pInstance;
 		ofstream* pFile;
 
@@ -30,17 +31,22 @@ namespace barad {
 		static Logger* getInstance();
 
 		/**
-		 * \brief Log a message string using a debug level.
+		 * \brief Log a message string using the debug level.
 		 */
 		void debug(const string& message, const char* file = NULL, int line = -1) const;
 
 		/**
-		 * \brief Log a message string using a warning level.
+		 * \brief Log a message string using the info level.
+		 */
+		void info(const string& message, const char* file = NULL, int line = -1) const;
+
+		/**
+		 * \brief Log a message string using the warning level.
 		 */
 		void warn(const string& message, const char* file = NULL, int line = -1) const;
 
 		/**
-		 * \brief Log a message string using an error level.
+		 * \brief Log a message string using the error level.
 		 */
 		void error(const string& message, const char* file = NULL, int line = -1) const;
 
@@ -56,6 +62,9 @@ namespace barad {
 
 #define LOG_DEBUG(message) { \
 	barad::Logger::getInstance()->debug(message, __FILE__, __LINE__);}
+
+#define LOG_INFO(message) { \
+	barad::Logger::getInstance()->info(message, __FILE__, __LINE__);}
 
 #define LOG_WARN(message) { \
 	barad::Logger::getInstance()->warn(message, __FILE__, __LINE__);}
