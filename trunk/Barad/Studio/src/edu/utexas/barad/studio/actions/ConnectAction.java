@@ -4,6 +4,7 @@ import edu.utexas.barad.agent.AgentMain;
 import edu.utexas.barad.agent.IAgent;
 import edu.utexas.barad.studio.Images;
 import edu.utexas.barad.studio.StudioMain;
+import edu.utexas.barad.studio.exceptions.StudioRuntimeException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -46,11 +47,15 @@ public class ConnectAction extends Action {
                     monitor.worked(1);
                     try {
                         Registry registry = LocateRegistry.getRegistry(hostname, port);
-                        IAgent agent = (IAgent) registry.lookup(AgentMain.AGENT_RMI_NAME);
-                        applicationWindow.setAgent(agent);
+                        String[] list = registry.list();
+                        IAgent agent = null;
+                        if (list.length >= 1) {
+                            agent = (IAgent) registry.lookup(list[0]);
+                            applicationWindow.setAgent(agent);
+                        }
                     } catch (Exception e) {
                         logger.error("Couldn't connect to agent, hostname=" + hostname + ", port=" + port, e);
-                        throw new InvocationTargetException(e);
+                        throw new StudioRuntimeException(e);
                     } finally {
                         monitor.done();
                     }

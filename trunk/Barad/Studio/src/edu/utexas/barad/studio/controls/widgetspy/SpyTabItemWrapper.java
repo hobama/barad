@@ -16,11 +16,17 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +44,9 @@ public class
     private TreeViewer treeViewer;
     private TableViewer tableViewer;
     private CTabItem tabItem;
+    private Table table;
+    private TableColumn nameColumn;
+    private TableColumn valueColumn;
 
     public SpyTabItemWrapper(CTabFolder tabFolder) {
         this.tabFolder = tabFolder;
@@ -49,7 +58,7 @@ public class
         tabItem.setText("Widget Spy");
         tabItem.setImage(Images.SPY.createImage());
 
-        SashForm sashForm = new SashForm(tabFolder, SWT.VERTICAL);
+        final SashForm sashForm = new SashForm(tabFolder, SWT.VERTICAL);
 
         treeViewer = new TreeViewer(sashForm);
         treeViewer.setContentProvider(new SpyTreeContentProvider());
@@ -61,7 +70,7 @@ public class
         tableViewer.setContentProvider(new SpyTableContentProvider());
         tableViewer.setLabelProvider(new SpyTableLabelProvider());
 
-        TableColumn nameColumn = new TableColumn(tableViewer.getTable(), SWT.LEFT, 0);
+        nameColumn = new TableColumn(tableViewer.getTable(), SWT.LEFT, 0);
         nameColumn.setText("Name");
         nameColumn.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -73,13 +82,49 @@ public class
             }
         });
 
-        TableColumn valueColumn = new TableColumn(tableViewer.getTable(), SWT.LEFT, 1);
+        valueColumn = new TableColumn(tableViewer.getTable(), SWT.LEFT, 1);
         valueColumn.setText("Value");
 
-        tableViewer.getTable().setHeaderVisible(true);
-        tableViewer.getTable().setLinesVisible(true);
+        table = tableViewer.getTable();
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+
+        tabFolder.addControlListener(new ControlAdapter() {
+            public void controlResized(ControlEvent event) {
+                resizeTable();
+            }
+        });
 
         tabItem.setControl(sashForm);
+    }
+
+    private void resizeTable() {
+        Rectangle area = tabFolder.getClientArea();
+        Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        ScrollBar verticalBar = table.getVerticalBar();
+        int width = area.width - table.computeTrim(0, 0, 0, 0).width - verticalBar.getSize().x;
+        if (size.y > area.height + table.getHeaderHeight()) {
+            // Subtract the scrollbar width from the total column width
+            // if a vertical scrollbar will be required
+            Point barSize = verticalBar.getSize();
+            width -= barSize.x;
+        }
+        Point oldSize = table.getSize();
+        if (oldSize.x > area.width) {
+            // table is getting smaller so make the columns
+            // smaller first and then resize the table to
+            // match the client area width
+            nameColumn.setWidth(width / 3);
+            valueColumn.setWidth(width - nameColumn.getWidth());
+            table.setSize(area.width, area.height);
+        } else {
+            // table is getting bigger so make the table
+            // bigger first and then make the columns wider
+            // to match the client area width
+            table.setSize(area.width, area.height);
+            nameColumn.setWidth(width / 3);
+            valueColumn.setWidth(width - nameColumn.getWidth());
+        }
     }
 
     public CTabItem getTabItem() {
@@ -194,7 +239,6 @@ public class
         WidgetValues widgetValues = (WidgetValues) holder[0];
         if (widgetValues != null) {
             tableViewer.setInput(widgetValues);
-            tableViewer.getTable().pack();
             statusLineManager.setMessage(Images.STATUS_OK.createImage(), "Ready.");
         } else {
             statusLineManager.setMessage(Images.STATUS_ERROR.createImage(), "Couldn't get widget values.");
