@@ -15,4 +15,8 @@ public interface IAgent extends Remote {
     public WidgetInfo[] getWidgetHierarchy(boolean rebuild) throws RemoteException;
 
     public WidgetValues getWidgetValues(GUID guid) throws RemoteException;
+
+    public String getProcessCommandLine() throws RemoteException;
+
+    public int getProcessID() throws RemoteException;
 }

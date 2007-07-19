@@ -14,6 +14,7 @@ import edu.utexas.barad.common.swt.WidgetValues;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Proxy;
+import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,17 +30,44 @@ import java.util.Map;
  */
 public class AgentMain extends UnicastRemoteObject implements IAgent {
     public static final int AGENT_RMI_PORT = 9000;
-    public static final String AGENT_RMI_NAME = "BARAD-CLIENT";
+    public static final String AGENT_RMI_NAME = "BARAD-AGENT";
 
     private static final Logger logger = Logger.getLogger(AgentMain.class);
+
+    private String processCommandLine;
+    private int processID;
 
     private Registry registry;
     private Map<GUID, Object> proxyObjectCache = new HashMap<GUID, Object>();
     private WidgetInfo[] cachedHierarchy;
 
-    public AgentMain() throws RemoteException {
+    public AgentMain(String processCommandLine, int processID) throws RemoteException {
+        this.processCommandLine = processCommandLine;
+        this.processID = processID;
+
         startRegistry(AGENT_RMI_PORT);
-        registry.rebind(AGENT_RMI_NAME, this);
+
+        GUID guid = new GUID();
+        final String agentID = AGENT_RMI_NAME + "-" + guid.toString();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if (registry != null) {
+                    try {
+                        registry.unbind(agentID);
+                    } catch (Exception e) {
+                        logger.error("Couldn't unbind agent from RMI registry, ID=" + agentID, e);
+                    }
+                }
+            }
+        });
+
+        try {
+            registry.bind(agentID, this);
+        } catch (AlreadyBoundException e) {
+            throw new AgentRuntimeException("Agent ID already exists in RMI registry, ID=" + agentID, e);
+        }
     }
 
     public WidgetInfo[] getWidgetHierarchy(boolean rebuild) throws RemoteException {
@@ -96,8 +124,20 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
     }
 
     public static void main(String[] args) {
+        String processCommandLine = args.length >= 1 ? args[0] : "Unknown";
+        String processIDString = args.length >= 2 ? args[1] : "-1";
+
+        int processID = -1;
         try {
-            new AgentMain();
+            if (processIDString != null) {
+                processID = Integer.parseInt(processIDString);
+            }
+        } catch (NumberFormatException e) {
+            logger.error("Couldn't parse process ID, string=" + processIDString);
+        }
+
+        try {
+            new AgentMain(processCommandLine, processID);
         } catch (RemoteException e) {
             logger.error("Couldn't instantiate AgentMain object.", e);
             throw new AgentRuntimeException("Couldnt' instantiate AgentMain object.");
@@ -120,5 +160,13 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
                 throw new AgentRuntimeException("Couldn't start RMI registry.");
             }
         }
+    }
+
+    public String getProcessCommandLine() throws RemoteException {
+        return processCommandLine;
+    }
+
+    public int getProcessID() throws RemoteException {
+        return processID;
     }
 }
