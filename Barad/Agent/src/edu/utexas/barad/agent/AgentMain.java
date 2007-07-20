@@ -50,12 +50,13 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
         GUID guid = new GUID();
         final String agentID = AGENT_RMI_NAME + "-" + guid.toString();
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread("BaradShutdownHookThread") {
             @Override
             public void run() {
                 if (registry != null) {
                     try {
                         registry.unbind(agentID);
+                        logger.info("Barad agent unbound from RMI registry.");
                     } catch (Exception e) {
                         logger.error("Couldn't unbind agent from RMI registry, ID=" + agentID, e);
                     }
