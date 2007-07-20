@@ -17,22 +17,45 @@ static void JNICALL callbackVMInit(jvmtiEnv* jvmti, JNIEnv* jni, jthread thread)
 
 	// Start the client, which will register the client in the RMI registry.
 	jclass clazz = jni->FindClass(baradAgentClass.c_str());
-	if (jni->ExceptionCheck()) {
-		jni->ExceptionClear(); // ClassNotFoundException?
-	}
+	Utils::handleJNIException(jni);
+
 	if (clazz != NULL) {
 		jmethodID method = jni->GetStaticMethodID(clazz, "main", "([Ljava/lang/String;)V"); // MethodNotFoundException?
-		if (jni->ExceptionCheck()) {
-			jni->ExceptionClear();
-		}
+		Utils::handleJNIException(jni);
 		if (method != NULL) {
-			jni->CallStaticVoidMethod(clazz, method, NULL);
+			// Pass the process ID and process file name to the agent.
+			string processID;
+			string fileName;
+#ifdef WIN32
+			processID = Utils::toString(GetCurrentProcessId());
+			
+			TCHAR szPath[MAX_PATH];
+			if (!GetModuleFileName(NULL, szPath, MAX_PATH)) {
+				LOG_ERROR("Couldn't get module file name for current process, error=" + Utils::toString(GetLastError()) + "\n");
+				fileName = "Unknown";
+			} else {
+				fileName = szPath;
+			}
+#else
+			processID = -1;
+			fileName = "Unknown";
+#endif // WIN32			
+			
+			// Start the agent.
+			jstring fileNameJString = jni->NewStringUTF(fileName.c_str());
+			jstring processIDJString = jni->NewStringUTF(processID.c_str());
+			jobjectArray args = jni->NewObjectArray(2, jni->FindClass("java/lang/String"), fileNameJString);
+			jni->SetObjectArrayElement(args, 1, processIDJString);
+
+			jni->CallStaticVoidMethod(clazz, method, args);
 			if (jni->ExceptionCheck()) {
-				jni->ExceptionDescribe();
-				jni->ExceptionClear();
+				Utils::handleJNIException(jni);
 				LOG_ERROR("Couldn't start Barad agent: exception occurred in AgentMain#main(String[]).\n");
 				return;
 			}
+
+			jni->DeleteLocalRef(fileNameJString);
+			jni->DeleteLocalRef(processIDJString);
 		} else {
 			LOG_ERROR("Couldn't start Barad agent: AgentMain#main(String[]) method not found.\n");
 			return;
@@ -60,7 +83,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM* jvm, char* options, void* reserved) 
 		 * This means that the VM was unable to obtain this version of the
 		 * JVMTI interface, this is a fatal error.
 		 */
-		Utils::fatalError("Unable to access JVMTI, is your J2SE a 1.5 or newer version?  JNIEnv's GetEnv() returned" + Logger::toString(retval));
+		Utils::fatalError("Unable to access JVMTI, is your J2SE a 1.5 or newer version?  JNIEnv's GetEnv() returned" + Utils::toString(retval));
 	}
 
 	jvmtiEventCallbacks callbacks;
@@ -84,6 +107,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM* jvm, char* options, void* reserved) 
 
 	// Set the classpath.
 	try {
+		LOG_DEBUG("BARAD_HOME=" + Utils::getBaradHome() + "\n");
 		Utils::addFileToBootClasspath(jvmti, "baradagent.jar");	
 		Utils::addFileToBootClasspath(jvmti, "log4j-1.2.14.jar");
 	} catch(BaradHomeNotFoundException) {

@@ -11,7 +11,7 @@ string Logger::FILENAME = "barad-native.log";
 Logger* Logger::pInstance = NULL;
 
 Logger::Logger() {
-	pFile = new ofstream(FILENAME.c_str());
+	pFile = new ofstream(FILENAME.c_str(), ios_base::app);
 }
 
 Logger::~Logger() {
@@ -56,13 +56,15 @@ void Logger::write(const string& message, const char* file, int line) const {
 
 void Logger::debug(const string& message, const char* file, int line) const {
 #ifdef _DEBUG
-	write("DEBUG: ");
+	write(getTimestamp());
+	write(" DEBUG: ");
 	write(message, file, line);
 #endif // _DEBUG
 }
 
 void Logger::info(const string& message, const char* file, int line) const {
-	write("INFO: ");
+	write(getTimestamp());
+	write(" INFO: ");
 #ifdef _DEBUG
 	write(message, file, line);
 #else
@@ -71,7 +73,8 @@ void Logger::info(const string& message, const char* file, int line) const {
 }
 
 void Logger::warn(const string& message, const char* file, int line) const {
-	write("WARN: ");
+	write(getTimestamp());
+	write(" WARN: ");
 #ifdef _DEBUG
 	write(message, file, line);
 #else
@@ -80,7 +83,8 @@ void Logger::warn(const string& message, const char* file, int line) const {
 }
 
 void Logger::error(const string& message, const char* file, int line) const {
-	write("ERROR: ");
+	write(getTimestamp());
+	write(" ERROR: ");
 #ifdef _DEBUG
 	write(message, file, line);
 #else
@@ -89,7 +93,8 @@ void Logger::error(const string& message, const char* file, int line) const {
 }
 
 void Logger::fatal(const string& message, const char* file, int line) const {
-	write("FATAL: ");
+	write(getTimestamp());
+	write(" FATAL: ");
 #ifdef _DEBUG
 	write(message, file, line);
 #else
