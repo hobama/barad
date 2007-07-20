@@ -56,7 +56,8 @@ public class SpyTreeElementComparer implements IElementComparer {
             WidgetInfo widgetInfo2 = (WidgetInfo) object2;
             return equalsWidget(widgetInfo1, widgetInfo2);
         }
-        throw new StudioRuntimeException("Unexpected arguments, object1=" + object1 + ", object2=" + object2);
+
+        return false;
     }
 
     private static boolean equalsWidget(WidgetInfo widgetInfo1, WidgetInfo widgetInfo2) {

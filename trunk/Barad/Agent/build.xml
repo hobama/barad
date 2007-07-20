@@ -29,7 +29,7 @@
 
         <mkdir dir="${classesDir}"/>
 
-        <javac srcdir="${srcDir}" destdir="${classesDir}" classpathref="classpathPath" debug="true" fork="true"/>
+        <javac srcdir="${srcDir}" destdir="${classesDir}" classpathref="classpathPath" debug="true" fork="true" target="1.5"/>
 
         <rmic base="${classesDir}">
             <patternset refid="remoteObjectsPatternSet"/>

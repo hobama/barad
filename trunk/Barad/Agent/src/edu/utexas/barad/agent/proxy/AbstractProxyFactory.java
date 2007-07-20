@@ -57,9 +57,12 @@ public abstract class AbstractProxyFactory implements IProxyFactory {
             // Is the actual class a subclass of one of the SWT classes?
             Set<Map.Entry<Class, Class>> entrySet = actualClassToProxyClassMap.entrySet();
             for (Map.Entry<Class, Class> entry : entrySet) {
-                proxyClass = entry.getValue();
-                if (proxyClass != null && proxyClass.isAssignableFrom(actualClass)) {
+                Class clazz = entry.getKey();
+                if (clazz.isAssignableFrom(actualClass)) {
+                    proxyClass = entry.getValue();
                     break;
+                } else {
+                    proxyClass = null;
                 }
             }
 
