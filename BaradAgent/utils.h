@@ -9,6 +9,7 @@
 #include "windows.h"
 
 #include <string>
+#include <jni.h>
 #include <jvmti.h>
 
 namespace barad {
@@ -41,11 +42,19 @@ namespace barad {
 		 */
 		static void* allocate(jvmtiEnv* jvmti, jint len);		
 
-		static void addFileToBootClasspath(jvmtiEnv* jvmti, const string& fileName);
-	private:
-		Utils() {}
-
 		static string getBaradHome();
+
+		static void addFileToBootClasspath(jvmtiEnv* jvmti, const string& fileName);
+
+		static void handleJNIException(JNIEnv* jni);
+
+		template <class T> static string toString(const T& t) {
+			ostringstream oss;
+			oss << t;
+			return oss.str();
+		}
+	private:
+		Utils() {}		
 	};
 }
 

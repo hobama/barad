@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <ctime>
 
 namespace barad {
 	using namespace std;
@@ -25,6 +26,24 @@ namespace barad {
 			return *this;
 		}		
 		void write(const string&, const char* file = 0, int line = -1) const;
+		inline static string getTimestamp() {
+			time_t t;
+			time(&t);
+			string timestamp;
+
+#ifdef WIN32
+			char timebuf[26];
+			if (ctime_s(timebuf, 26, &t)) {
+				cerr << "Couldn't get local time." << endl;
+			} else {
+				timebuf[24] = '\0'; // Remove newline.
+				timestamp = timebuf;
+			}
+#else
+			// Do nothing.
+#endif // WIN32
+			return timestamp;
+		}
 
 	public:
 		virtual ~Logger();
@@ -50,13 +69,7 @@ namespace barad {
 		 */
 		void error(const string& message, const char* file = NULL, int line = -1) const;
 
-		void fatal(const string& message, const char* file = NULL, int line = -1) const;
-
-		template <class T> static string toString(const T& t) {
-			ostringstream oss;
-			oss << t;
-			return oss.str();
-		}
+		void fatal(const string& message, const char* file = NULL, int line = -1) const;		
 	};
 }
 
