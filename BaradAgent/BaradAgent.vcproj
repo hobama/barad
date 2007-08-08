@@ -241,6 +241,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\messageboxhelper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\utils.cpp"
 				>
 			</File>
@@ -258,11 +262,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\edu_utexas_barad_agent_swt_widgets_MessageBoxHelper.h"
+				>
+			</File>
+			<File
 				RelativePath=".\exceptions.h"
 				>
 			</File>
 			<File
 				RelativePath=".\logger.h"
+				>
+			</File>
+			<File
+				RelativePath=".\messageboxhelper.h"
 				>
 			</File>
 			<File
