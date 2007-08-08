@@ -9,11 +9,13 @@ When Barad was first conceived, we wanted to design an automated testing tool fo
 
 == Major Requirements ==
 
-  # Automatic test case generation
+  # Automated test case generation
 
-Test cases should be automatically generated, the faster the better.  Guided feedback from the end user can be inputted that will constrain the operating state space of the generation algorithm.  An option to achieve maximum state coverage of a GUI is required, as is an option to discover maximum defects.
+Test cases should be automatically generated, the faster the better.  Guided feedback from the end user can be inputted that will constrain the GUI state space considered by the generation algorithm.  An option to achieve maximum GUI state coverage is required, as is an option to discover maximum defects.
 
-  * 
+  # Ease of use
+
+The tool should be easy to install and use.  Access to source code cannot be assumed, and therefore the design cannot use source instrumentation.  A minimal amount of changes to the environment of the GUI AUT in order for the tool to work is required.
 
 == Nice to Have Requirements ==
 
