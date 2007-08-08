@@ -26,4 +26,5 @@ A view of the widget hierarchy along with their associate runtime values is a co
 === Terminology ===
 
 SWT: [http://www.eclipse.org/swt/ Standard Widget Toolkit]
+
 AUT: Application Under Test
