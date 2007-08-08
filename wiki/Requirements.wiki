@@ -5,15 +5,15 @@
 
 When Barad was first conceived, we wanted to design an automated testing tool for SWT applications.  The ability to automatically generate test cases was a major requirement.  Ease of use and a feature to view the internal widget hierarchy of an SWT application are also important requirements.
 
-= Requirements List =
+= Requirements =
 
 == Major Requirements ==
 
-  # Automated test case generation
+  1. Automated test case generation
 
 Test cases should be automatically generated, the faster the better.  Guided feedback from the end user can be inputted that will constrain the GUI state space considered by the generation algorithm.  An option to achieve maximum GUI state coverage is required, as is an option to discover maximum defects.
 
-  # Ease of use
+  2. Ease of use
 
 The tool should be easy to install and use.  Access to source code cannot be assumed, and therefore the design cannot use source instrumentation.  A minimal amount of changes to the environment of the GUI AUT in order for the tool to work is required.
 
