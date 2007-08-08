@@ -59,6 +59,9 @@ public class SpyTreeLabelProvider extends LabelProvider {
         if (className.startsWith(SWT_PACKAGE_PREFIX)) {
             className = className.substring(SWT_PACKAGE_PREFIX.length());
         }
+        if (className.equals("edu.utexas.barad.agent.swt.widgets.MessageBoxHelper")) {
+            className = "MessageBox";
+        }
         String displayText = className;
         String text = widgetInfo.getText();
         if (text != null && !"".equals(text)) {

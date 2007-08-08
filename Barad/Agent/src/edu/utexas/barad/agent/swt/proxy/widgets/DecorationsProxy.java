@@ -36,4 +36,8 @@ public interface DecorationsProxy extends CanvasProxy {
     public String getText();
 
     public boolean isReparentable();
+
+    public void setMinimized(boolean minimized);
+
+    public void setMaximized(boolean maximized);
 }

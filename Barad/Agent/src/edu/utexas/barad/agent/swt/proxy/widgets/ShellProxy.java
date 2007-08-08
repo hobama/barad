@@ -10,13 +10,19 @@ import edu.utexas.barad.agent.swt.proxy.graphics.RegionProxy;
  *
  *
  */
-public interface ShellProxy extends DecorationsProxy {
+public interface ShellProxy extends DecorationsProxy {    
+    public MenuProxy __fieldGetactiveMenu();
+
+    public void close();
+    
     public void forceActive();
 
     public RectangleProxy getBounds();
 
     public boolean getEnabled();
 
+    public int getImeInputMode();
+    
     public PointProxy getLocation();
 
     public PointProxy getMinimumSize();
@@ -31,5 +37,5 @@ public interface ShellProxy extends DecorationsProxy {
 
     public boolean isEnabled();
 
-    boolean isVisible();
+    public boolean isVisible();
 }

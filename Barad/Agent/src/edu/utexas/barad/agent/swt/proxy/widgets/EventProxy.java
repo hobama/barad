@@ -1,14 +1,15 @@
 package edu.utexas.barad.agent.swt.proxy.widgets;
 
+import edu.utexas.barad.agent.AgentUtils;
+import edu.utexas.barad.agent.swt.proxy.SWTProxyFactory;
+import edu.utexas.barad.agent.swt.proxy.SWTProxyMarker;
 import edu.utexas.barad.agent.swt.proxy.graphics.RectangleProxy;
 
 /**
  * University of Texas at Austin
  * Barad Project, Jul 7, 2007
- *
- *
  */
-public interface EventProxy {
+public interface EventProxy extends SWTProxyMarker {
     public int __fieldGetbutton();
 
     public void __fieldSetbutton(int button);
@@ -53,9 +54,9 @@ public interface EventProxy {
 
     public void __fieldSetitem(WidgetProxy item);
 
-    public int __fieldGetkeycode();
+    public int __fieldGetkeyCode();
 
-    public void __fieldSetkeycode(int keycode);
+    public void __fieldSetkeyCode(int keycode);
 
     public int __fieldGetstart();
 
@@ -94,4 +95,10 @@ public interface EventProxy {
     public void __fieldSety(int y);
 
     public RectangleProxy getBounds();
+
+    public static class Factory {
+        public static EventProxy newEventProxy() {
+            return (EventProxy) SWTProxyFactory.getInstance().newProxy(AgentUtils.swtClassForName(SWTProxyFactory.ORG_ECLIPSE_SWT_WIDGETS_EVENT), null, null);
+        }
+    }
 }

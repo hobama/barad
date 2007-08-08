@@ -16,7 +16,8 @@ public class WidgetInfo implements Serializable {
     private String text;
     private GUID guid;
     private WidgetInfo parent;
-    private List<WidgetInfo> children = new ArrayList<WidgetInfo>();     
+    private List<WidgetInfo> children = new ArrayList<WidgetInfo>();
+    private WidgetID widgetID;
 
     public WidgetInfo(String className, String text, GUID guid, WidgetCategory category) {
         setClassName(className);
@@ -88,6 +89,14 @@ public class WidgetInfo implements Serializable {
         return children.get(index);
     }
 
+    public WidgetID getWidgetID() {
+        return widgetID;
+    }
+
+    public void setWidgetID(WidgetID widgetID) {
+        this.widgetID = widgetID;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == null) {
@@ -95,18 +104,18 @@ public class WidgetInfo implements Serializable {
         }
         if (object instanceof WidgetInfo) {
             WidgetInfo another = (WidgetInfo) object;
-            return another.getGuid().equals(getGuid());
+            return another.getWidgetID().equals(getWidgetID());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return getGuid().hashCode();
+        return getWidgetID().hashCode();
     }
 
     @Override
     public String toString() {
-        return getText();
+        return getWidgetID().toString();
     }
 }

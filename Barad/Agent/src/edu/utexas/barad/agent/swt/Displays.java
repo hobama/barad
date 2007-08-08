@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class Displays {
     /**
-     * @param display The Display.
-     * @return <code>true</code> if the caller is running the Display's {@link Thread},
+     * @param display The DisplayProxy.
+     * @return <code>true</code> if the caller is running the DisplayProxy's {@link Thread},
      *         <code>false</code> otherwise.
      */
     public static boolean isOnDisplayThread(DisplayProxy display) {
@@ -25,30 +25,35 @@ public class Displays {
     }
 
     /**
-     * Gets the default Display.
-     *
-     * @return The default Display.
+     * Gets the default {@link DisplayProxy}.
      */
-    private static DisplayProxy getDefault() {
-        Class clazz = AgentUtils.swtClassForName(SWTProxyFactory.ORG_ECLIPSE_SWT_WIDGETS_DISPLAY);
-        DisplayProxy displayProxyClass = (DisplayProxy) SWTProxyFactory.getInstance().newProxy(clazz);
-        return displayProxyClass.getDefault();
+    private static DisplayProxy getDisplay() {
+        return Robot.getDefault().getDisplay();
     }
 
     /**
-     * Gets all undisposed root Shells for the default Display.
+     * Gets the default DisplayProxy.
      *
-     * @return A list of Shells belonging to the default Display.
+     * @return The default DisplayProxy.
+     */
+    private static DisplayProxy getDefault() {
+        return DisplayProxy.Factory.getDefault();
+    }
+
+    /**
+     * Gets all undisposed root Shells for the default DisplayProxy.
+     *
+     * @return A list of Shells belonging to the default DisplayProxy.
      */
     public static List<ShellProxy> getShells() {
         return getShells(getDefault());
     }
 
     /**
-     * Gets all undisposed root Shells for the specified Display.
+     * Gets all undisposed root Shells for the specified DisplayProxy.
      *
-     * @param display The Display.
-     * @return A list of Shells belonging to the specified Display.
+     * @param display The DisplayProxy.
+     * @return A list of Shells belonging to the specified DisplayProxy.
      */
     public static List<ShellProxy> getShells(DisplayProxy display) {
         ShellProxy[] shells = getShellsArray(display);
@@ -59,10 +64,10 @@ public class Displays {
     }
 
     /**
-     * Gets an array of all undisposed root Shells for the specified Display.
+     * Gets an array of all undisposed root Shells for the specified DisplayProxy.
      *
-     * @param display The Display.
-     * @return An array of Shells belonging to the specified Display.
+     * @param display The DisplayProxy.
+     * @return An array of Shells belonging to the specified DisplayProxy.
      * @see #getShells(DisplayProxy)
      */
     private static ShellProxy[] getShellsArray(final DisplayProxy display) {
@@ -84,7 +89,7 @@ public class Displays {
     }
 
     /*
-     * The following methods are not specific to a particular Display.
+     * The following methods are not specific to a particular DisplayProxy.
      */
 
     /**
@@ -103,5 +108,83 @@ public class Displays {
             }
         }
         return displays;
+    }
+
+    public static void syncExec(DisplayProxy display, Runnable runnable) {
+        display.syncExec(runnable);
+    }
+
+    public static void syncExec(Runnable runnable) {
+        syncExec(getDisplay(), runnable);
+    }
+
+    public static interface Result<T> {
+        T result();
+    }
+
+    public static interface BooleanResult {
+        boolean result();
+    }
+
+    public static interface IntResult {
+        int result();
+    }
+
+    public static interface CharResult {
+        char result();
+    }
+
+    public static interface StringResult {
+        String result();
+    }
+
+    public static Object syncExec(DisplayProxy display, final Result result) {
+        final Object[] wrapper = new Object[1];
+        display.syncExec(new Runnable() {
+            public void run() {
+                wrapper[0] = result.result();
+            }
+        });
+        return wrapper[0];
+    }
+
+    public static boolean syncExec(DisplayProxy display, final BooleanResult result) {
+        final boolean[] wrapper = new boolean[1];
+        display.syncExec(new Runnable() {
+            public void run() {
+                wrapper[0] = result.result();
+            }
+        });
+        return wrapper[0];
+    }
+
+    public static int syncExec(DisplayProxy display, final IntResult result) {
+        final int[] wrapper = new int[1];
+        display.syncExec(new Runnable() {
+            public void run() {
+                wrapper[0] = result.result();
+            }
+        });
+        return wrapper[0];
+    }
+
+    public static char syncExec(DisplayProxy display, final CharResult result) {
+        final char[] wrapper = new char[1];
+        display.syncExec(new Runnable() {
+            public void run() {
+                wrapper[0] = result.result();
+            }
+        });
+        return wrapper[0];
+    }
+
+    public static String syncExec(DisplayProxy display, final StringResult result) {
+        final String[] wrapper = new String[1];
+        display.syncExec(new Runnable() {
+            public void run() {
+                wrapper[0] = result.result();
+            }
+        });
+        return wrapper[0];
     }
 }

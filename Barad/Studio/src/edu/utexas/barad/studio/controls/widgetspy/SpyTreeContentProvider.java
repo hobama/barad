@@ -30,7 +30,7 @@ public class SpyTreeContentProvider implements ITreeContentProvider {
     }
 
     public Object[] getElements(Object inputElement) {
-        return (WidgetInfo[])inputElement;
+        return getChildren(inputElement);
     }
 
     public void dispose() {

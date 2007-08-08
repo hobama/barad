@@ -12,6 +12,7 @@ public class Images {
 
     public static final ImageDescriptor HOME = ImageDescriptor.createFromURL(StudioMain.getImageURL("home.png"));
     public static final ImageDescriptor SPY = ImageDescriptor.createFromURL(StudioMain.getImageURL("spy.png"));
+    public static final ImageDescriptor TESTCASES = ImageDescriptor.createFromURL(StudioMain.getImageURL("testcases.png"));
     public static final ImageDescriptor REFRESH = ImageDescriptor.createFromURL(StudioMain.getImageURL("refresh.png"));
 
     public static final ImageDescriptor CONNECT = ImageDescriptor.createFromURL(StudioMain.getImageURL("connect.png"));

@@ -1,28 +1,20 @@
 package edu.utexas.barad.agent;
 
 import edu.utexas.barad.agent.exceptions.AgentRuntimeException;
-import edu.utexas.barad.agent.exceptions.WidgetNotFoundException;
-import edu.utexas.barad.agent.proxy.IProxyInvocationHandler;
-import edu.utexas.barad.agent.swt.Displays;
-import edu.utexas.barad.agent.swt.Hierarchy;
+import edu.utexas.barad.agent.swt.GenerateTestCases;
+import edu.utexas.barad.agent.swt.WidgetHierarchy;
 import edu.utexas.barad.agent.swt.WidgetValueBuilder;
-import edu.utexas.barad.agent.swt.proxy.widgets.DisplayProxy;
-import edu.utexas.barad.agent.swt.proxy.widgets.WidgetProxy;
 import edu.utexas.barad.common.swt.GUID;
 import edu.utexas.barad.common.swt.WidgetInfo;
 import edu.utexas.barad.common.swt.WidgetValues;
+import edu.utexas.barad.common.testcase.TestCase;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Proxy;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * University of Texas at Austin
@@ -36,10 +28,8 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
 
     private String processCommandLine;
     private int processID;
-
     private Registry registry;
-    private Map<GUID, Object> proxyObjectCache = new HashMap<GUID, Object>();
-    private WidgetInfo[] cachedHierarchy;
+    private WidgetHierarchy widgetHierarchy = new WidgetHierarchy();
 
     public AgentMain(String processCommandLine, int processID) throws RemoteException {
         this.processCommandLine = processCommandLine;
@@ -71,57 +61,16 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
         }
     }
 
-    public WidgetInfo[] getWidgetHierarchy(boolean rebuild) throws RemoteException {
-        // Do we have a cached version?  If so, just return it.
-        if (!rebuild && cachedHierarchy != null) {
-            return cachedHierarchy;
-        }
-
-        // Clear the caches.
-        proxyObjectCache.clear();
-        cachedHierarchy = null;
-
-        // Build the hierarchy.
-        List<DisplayProxy> displays = Displays.getDisplays();
-        List<WidgetInfo> roots = new ArrayList<WidgetInfo>();
-        for (DisplayProxy display : displays) {
-            Hierarchy hierarchy = new Hierarchy(display);
-            WidgetInfo displayInfo = hierarchy.buildHierarchy(proxyObjectCache);
-            proxyObjectCache.put(displayInfo.getGuid(), display);
-            roots.add(displayInfo);
-        }
-        cachedHierarchy = roots.toArray(new WidgetInfo[0]);
-        return cachedHierarchy;
+    public WidgetInfo getWidgetHierarchy(boolean rebuild) throws RemoteException {
+        return widgetHierarchy.getWidgetHierarchy(rebuild);
     }
 
-    public WidgetValues getWidgetValues(GUID guid) throws RemoteException {
-        Object proxy = proxyObjectCache.get(guid);
-        if (proxy == null) {
-            throw new WidgetNotFoundException("Widget doesn't exist", guid);
-        }
-        if (!Proxy.isProxyClass(proxy.getClass())) {
-            throw new AgentRuntimeException("Cached object is not a proxy.");
-        }
+    public WidgetValues getWidgetValues(WidgetInfo widgetInfo) throws RemoteException {
+        return WidgetValueBuilder.getWidgetValues(widgetInfo, widgetHierarchy);
+    }
 
-        DisplayProxy display;
-        if (proxy instanceof DisplayProxy) {
-            display = (DisplayProxy) proxy;
-        } else {
-            WidgetProxy widgetProxy = (WidgetProxy) proxy;
-            display = widgetProxy.getDisplay();
-        }
-
-        IProxyInvocationHandler invocationHandler = (IProxyInvocationHandler) Proxy.getInvocationHandler(proxy);
-        Object actualInstance = invocationHandler.getActualInstance();
-        if (actualInstance == null) {
-            // Widget has been disposed.
-            throw new WidgetNotFoundException("Widget no longer exists.", guid);
-        }
-
-        WidgetValues widgetValues = new WidgetValues();
-        widgetValues.setPropertyValues(WidgetValueBuilder.buildPropertyValues(actualInstance, display));
-        widgetValues.setFieldValues(WidgetValueBuilder.buildFieldValues(actualInstance, display));
-        return widgetValues;
+    public TestCase[] generateTestCases() throws RemoteException {
+        return new GenerateTestCases().generate();
     }
 
     public static void main(String[] args) {
