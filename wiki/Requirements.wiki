@@ -3,7 +3,7 @@
 
 = Introduction =
 
-When we first thought of Barad we wanted to design an automated testing tool for SWT applications.  The ability to automatically generate test cases was a major requirement.  Ease of use and a feature to view the widget hierarchy of an SWT application are also important requirements.
+When we first thought of Barad we wanted to design an automated testing tool for SWT applications.  The ability to automatically generate test cases is a major requirement.  Ease of use and a feature to view the widget hierarchy of an SWT application are also important requirements.
 
 = Requirements =
 
