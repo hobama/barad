@@ -16,17 +16,21 @@ public class AgentUtils {
 
     private static native ClassLoader getSWTClassLoaderImpl() throws ClassNotFoundException;
 
-    public static ClassLoader getSWTClassLoader() throws ClassNotFoundException {
+    public static ClassLoader getSWTClassLoader() {
         if (swtClassLoader != null) {
             return swtClassLoader;
         }
 
-        ClassLoader classLoader = getSWTClassLoaderImpl();
-        if (classLoader == null) {
-            classLoader = ClassLoader.getSystemClassLoader();
+        try {
+            ClassLoader classLoader = getSWTClassLoaderImpl();
+            if (classLoader == null) {
+                classLoader = ClassLoader.getSystemClassLoader();
+            }
+            swtClassLoader = classLoader;
+            return swtClassLoader;
+        } catch (ClassNotFoundException e) {
+            throw new AgentRuntimeException(e);
         }
-        swtClassLoader = classLoader;
-        return swtClassLoader;
     }
 
     public static Class swtClassForName(String swtClassName) {

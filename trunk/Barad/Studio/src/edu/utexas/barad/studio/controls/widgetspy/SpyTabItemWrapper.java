@@ -36,8 +36,7 @@ import java.rmi.RemoteException;
  * University of Texas at Austin
  * Barad Project, Jul 10, 2007
  */
-public class
-        SpyTabItemWrapper implements IPropertyChangeListener, ISelectionChangedListener {
+public class SpyTabItemWrapper implements IPropertyChangeListener, ISelectionChangedListener {
     private static final Logger logger = Logger.getLogger(SpyTabItemWrapper.class);
 
     private CTabFolder tabFolder;
@@ -166,7 +165,7 @@ public class
                     monitor.beginTask("Getting widget hierarchy...", IProgressMonitor.UNKNOWN);
                     monitor.worked(1);
                     try {
-                        WidgetInfo[] hierarchy = agent.getWidgetHierarchy(rebuild);
+                        WidgetInfo hierarchy = agent.getWidgetHierarchy(rebuild);
                         holder[0] = hierarchy;
                     } catch (RemoteException e) {
                         logger.error("Couldn't get UI object hierarchy.", e);
@@ -179,12 +178,12 @@ public class
             logger.error("An unexpected exception occurred getting UI object hierarchy.", e);
         }
 
-        WidgetInfo[] hierarchy = (WidgetInfo[]) holder[0];
+        WidgetInfo hierarchy = (WidgetInfo) holder[0];
         if (hierarchy != null) {
             // Try to maintain the current tree selection.
             ITreeSelection selection = (ITreeSelection) treeViewer.getSelection();
             if (selection.isEmpty()) {
-                selection = new TreeSelection(new TreePath(new Object[]{hierarchy[0]}));
+                selection = new TreeSelection(new TreePath(new Object[]{hierarchy}));
             }
             treeViewer.setInput(hierarchy);
             treeViewer.expandAll();
@@ -223,7 +222,7 @@ public class
                     monitor.beginTask("Getting widget values...", IProgressMonitor.UNKNOWN);
                     monitor.worked(1);
                     try {
-                        WidgetValues widgetValues = agent.getWidgetValues(widgetInfo.getGuid());
+                        WidgetValues widgetValues = agent.getWidgetValues(widgetInfo);
                         holder[0] = widgetValues;
                     } catch (RemoteException e) {
                         logger.error("Couldn't get widget values.", e);

@@ -3,6 +3,7 @@ package edu.utexas.barad.studio;
 import edu.utexas.barad.agent.IAgent;
 import edu.utexas.barad.studio.actions.*;
 import edu.utexas.barad.studio.controls.widgetspy.SpyTabItemWrapper;
+import edu.utexas.barad.studio.controls.testcases.TestCaseItemWrapper;
 import edu.utexas.barad.studio.exceptions.StudioRuntimeException;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.*;
@@ -139,6 +140,8 @@ public class StudioMain extends ApplicationWindow {
         spyTabItemWrapper = new SpyTabItemWrapper(tabFolder);
         connectAction.addPropertyChangeListener(spyTabItemWrapper);
         disconnectAction.addPropertyChangeListener(spyTabItemWrapper);
+
+        TestCaseItemWrapper testCaseItemWrapper = new TestCaseItemWrapper(tabFolder);
 
         tabFolder.addSelectionListener(refreshAction);
         tabFolder.setSimple(false);

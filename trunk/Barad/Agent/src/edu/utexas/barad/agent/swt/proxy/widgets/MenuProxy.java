@@ -1,5 +1,7 @@
 package edu.utexas.barad.agent.swt.proxy.widgets;
 
+import edu.utexas.barad.agent.swt.proxy.graphics.RectangleProxy;
+
 /**
  * University of Texas at Austin
  * Barad Project, Jul 6, 2007
@@ -7,6 +9,8 @@ package edu.utexas.barad.agent.swt.proxy.widgets;
  *
  */
 public interface MenuProxy extends WidgetProxy {
+    public RectangleProxy getBounds();
+    
     public MenuItemProxy getDefaultItem();
 
     public boolean getEnabled();
@@ -16,6 +20,8 @@ public interface MenuProxy extends WidgetProxy {
     public int getItemCount();
 
     public MenuItemProxy[] getItems();
+
+    public DecorationsProxy getParent(); 
 
     public MenuItemProxy getParentItem();
 
@@ -30,4 +36,6 @@ public interface MenuProxy extends WidgetProxy {
     public boolean isEnabled();
 
     public boolean isVisible();
+
+    public void setVisible(boolean visible);
 }

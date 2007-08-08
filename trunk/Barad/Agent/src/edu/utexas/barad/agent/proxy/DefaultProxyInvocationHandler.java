@@ -4,8 +4,10 @@ import edu.utexas.barad.agent.exceptions.AgentRuntimeException;
 import edu.utexas.barad.common.ReflectionUtils;
 import org.apache.log4j.Logger;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * University of Texas at Austin
@@ -16,7 +18,7 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
 
     private IProxyFactory proxyFactory;
     private Class actualClass;
-    private WeakReference<Object> actualInstance;
+    private Object actualInstance;
 
     public DefaultProxyInvocationHandler(Class actualClass, IProxyFactory proxyFactory) {
         if (actualClass == null) {
@@ -44,7 +46,7 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
             throw new AgentRuntimeException("actualInstance must be a complex type.");
         }
 
-        this.actualInstance = new WeakReference<Object>(actualInstance);
+        this.actualInstance = actualInstance;
         this.actualClass = actualInstance.getClass();
         this.proxyFactory = proxyFactory;
     }
@@ -88,14 +90,8 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
         // Convert parameter types, replacing proxy types with actual types.
         Class[] actualParameterTypes = new Class[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; ++i) {
-            if (Proxy.isProxyClass(parameterTypes[i])) {
-                InvocationHandler invocationHandler = Proxy.getInvocationHandler(parameterTypes[i]);
-                if (invocationHandler instanceof DefaultProxyInvocationHandler) {
-                    DefaultProxyInvocationHandler defaultProxyInvocationHandler = (DefaultProxyInvocationHandler) invocationHandler;
-                    actualParameterTypes[i] = defaultProxyInvocationHandler.getActualClass();
-                } else {
-                    actualParameterTypes[i] = parameterTypes[i];
-                }
+            if (getProxyFactory().isProxyClass(parameterTypes[i])) {
+                actualParameterTypes[i] = getProxyFactory().getActualClass(parameterTypes[i]);                
             } else {
                 actualParameterTypes[i] = parameterTypes[i];
             }
@@ -122,7 +118,8 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
         Object actualResult = null;
         if (!isFieldAccess) {
             // Invoke the actual method.
-            Method actualMethod = actualClass.getMethod(methodName, actualParameterTypes);
+            Method actualMethod = ReflectionUtils.getMethod(actualClass, methodName, actualParameterTypes);
+            actualMethod.setAccessible(true);
             try {
                 actualResult = actualMethod.invoke(getActualInstance(), actualArgs);
             } catch (Exception e) {
@@ -132,15 +129,21 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
         } else {
             if (isFieldRead) {
                 // Read from the field.
-                Field field = actualClass.getField(fieldName);
-                actualResult = field.get(getActualInstance());
+                if (getActualInstance() == null) {
+                    actualResult = ReflectionUtils.getField(actualClass, fieldName);
+                } else {
+                    actualResult = ReflectionUtils.getField(getActualInstance(), fieldName);
+                }
             } else {
                 // Write to the field.
-                Field field = actualClass.getField(fieldName);
                 if (actualArgs == null || actualArgs.length != 1) {
                     throw new AgentRuntimeException("Can't write to field without exactly one argument to write, field=" + fieldName);
                 }
-                field.set(getActualInstance(), actualArgs[0]);
+                if (getActualInstance() == null) {
+                    ReflectionUtils.setField(actualClass, fieldName, actualArgs[0]);
+                } else {
+                    ReflectionUtils.setField(getActualInstance(), fieldName, actualArgs[0]);
+                }
             }
         }
 
@@ -153,7 +156,7 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
                     throw new AgentRuntimeException("Only one-dimensional arrays are supported currently.");
                 }
                 returnType = ReflectionUtils.getBaseType(returnType);
-                if (proxyFactory.isProxyInterface(returnType)) {
+                if (proxyFactory.isProxyClass(returnType)) {
                     int length = Array.getLength(actualResult);
                     Object array = Array.newInstance(returnType, length);
                     for (int i = 0; i < length; ++i) {
@@ -166,7 +169,7 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
                     }
                     return array;
                 }
-            } else if (proxyFactory.isProxyInterface(returnType)) {
+            } else if (proxyFactory.isProxyClass(returnType)) {
                 // Not an array type.
                 return proxyFactory.newProxy(actualResult);
             }
@@ -180,10 +183,7 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
     }
 
     public Object getActualInstance() {
-        if (actualInstance != null) {
-            return actualInstance.get();
-        }
-        return null;
+        return actualInstance;
     }
 
     public IProxyFactory getProxyFactory() {

@@ -1,14 +1,17 @@
 package edu.utexas.barad.agent.swt.proxy.widgets;
 
+import edu.utexas.barad.agent.AgentUtils;
+import edu.utexas.barad.agent.swt.proxy.SWTProxyFactory;
 import edu.utexas.barad.agent.swt.proxy.graphics.*;
+import edu.utexas.barad.common.ReflectionUtils;
 
 /**
  * University of Texas at Austin
  * Barad Project, Jul 3, 2007
- *
- *
  */
 public interface DisplayProxy extends DeviceProxy {
+    public void addListener(int eventType, ListenerProxy listener);
+
     public void asyncExec(Runnable runnable);
 
     public void disposeExec(Runnable runnable);
@@ -27,8 +30,6 @@ public interface DisplayProxy extends DeviceProxy {
 
     public RectangleProxy getClientArea();
 
-    public DisplayProxy getCurrent();
-
     public ControlProxy getCursorControl();
 
     public PointProxy getCursorLocation();
@@ -38,8 +39,6 @@ public interface DisplayProxy extends DeviceProxy {
     public Object getData();
 
     public Object getData(String key);
-
-    public DisplayProxy getDefault();
 
     public int getDismissalAlignment();
 
@@ -73,6 +72,14 @@ public interface DisplayProxy extends DeviceProxy {
 
     public Thread getThread();
 
+    public PointProxy map(ControlProxy from, ControlProxy to, int x, int y);
+
+    public RectangleProxy map(ControlProxy from, ControlProxy to, int x, int y, int width, int height);
+
+    public PointProxy map(ControlProxy from, ControlProxy to, PointProxy point);
+
+    public RectangleProxy map(ControlProxy from, ControlProxy to, RectangleProxy rectangle);
+
     public boolean post(EventProxy event);
 
     public boolean readAndDispatch();
@@ -88,4 +95,18 @@ public interface DisplayProxy extends DeviceProxy {
     public void timerExec(int milliseconds, Runnable runnable);
 
     public void wake();
+
+    public static class Factory {
+        public static DisplayProxy getDefault() {
+            Class displayClass = AgentUtils.swtClassForName(SWTProxyFactory.ORG_ECLIPSE_SWT_WIDGETS_DISPLAY);
+            Object displayObject = ReflectionUtils.invokeMethod(displayClass, "getDefault", null, null);
+            return (DisplayProxy) SWTProxyFactory.getInstance().newProxy(displayObject);
+        }
+
+        public static DisplayProxy getCurrent() {
+            Class displayClass = AgentUtils.swtClassForName(SWTProxyFactory.ORG_ECLIPSE_SWT_WIDGETS_DISPLAY);
+            Object displayObject = ReflectionUtils.invokeMethod(displayClass, "getCurrent", null, null);
+            return (DisplayProxy) SWTProxyFactory.getInstance().newProxy(displayObject);
+        }
+    }
 }
