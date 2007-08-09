@@ -1,0 +1,67 @@
+Manifest-Version: 1.0
+Created-By: 1.4.2 (IBM Corporation)
+Ant-Version: Apache Ant 1.7.0
+
+Name: doc-html/swt_texteditor_ex.html
+SHA1-Digest: QIU2hn52mFGXmVGC5ztIA5OUnVw=
+
+Name: doc-html/swt_clipboard_ex.html
+SHA1-Digest: VzSYiRAz3m9PagofHmZONKHNbkM=
+
+Name: plugin.xml
+SHA1-Digest: n1wfMBh46PBKUFQuLe+mnVkdU/s=
+
+Name: doc-html/swt_controls_ex.html
+SHA1-Digest: 7tJqM9dVD97rHWFJczbw1ZaExfM=
+
+Name: doc-html/swt_javaviewer_ex.html
+SHA1-Digest: CsHfd6G4nI+PlzE86gKT7K6/2cM=
+
+Name: doc-html/swt_manual_setup.html
+SHA1-Digest: dTnp516BoPJy7UsK16a9qlhYrpQ=
+
+Name: doc-html/swt_fileviewer_ex.html
+SHA1-Digest: /AZOjHeJnutZHn/Y8M0AsnQmaO0=
+
+Name: doc-html/swt_browser_ex.html
+SHA1-Digest: Cd13TtyqQBlXBJ6eu/5eiZqZUBM=
+
+Name: doc-html/swt_layout_ex.html
+SHA1-Digest: 8U3obheNPh1WJ7O7V10wG3EwZlo=
+
+Name: plugin.properties
+SHA1-Digest: JA5F1aqrNTUelTrEHiIgr0kIZpU=
+
+Name: about.html
+SHA1-Digest: ejOZra0kypGLQQ2bJtGTX+LI8tU=
+
+Name: doc-html/swt_customcontrols_ex.html
+SHA1-Digest: 0Qh7Wco+kU7pzcD0Rk1+jjvzMwM=
+
+Name: doc-html/swt_imageanalyzer_ex.html
+SHA1-Digest: shHR1RCDvnye8iayp7eBXsbmlGY=
+
+Name: doc-html/swt_paint_ex.html
+SHA1-Digest: 64aZPLQPqcOJghm0WjQ7/Sfqc7Q=
+
+Name: swtexamples.jar
+SHA1-Digest: vAYlkgbWyIowQwFQRKJjhjsFJRU=
+
+Name: doc-html/swt_addressbook_ex.html
+SHA1-Digest: CfF9KhcqCOWmFLSTEhpYhG0qnZQ=
+
+Name: doc-html/swt_hoverhelp_ex.html
+SHA1-Digest: ryxMSAvdgqm/9la8MuKHvvAzQSk=
+
+Name: doc-html/swt_helloworld_ex.html
+SHA1-Digest: ksW5mSW+b22LEvBQcoAiOaAeFo4=
+
+Name: doc-html/swt_launcher_ex.html
+SHA1-Digest: RaoxRybCmR+neeXSQN3wCM4KZys=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: KyT9FF7C7t86NoBoa2kZT3ZJBfw=
+
+Name: doc-html/swt_dnd_ex.html
+SHA1-Digest: WSxOiKEE4LazWK9iRiFzNRfzQbw=
+

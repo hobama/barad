@@ -1,0 +1,1 @@
+java -agentpath:"D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\Barad\Agent\bin\BaradAgent.dll" -classpath swt.jar;swtexamples.jar org.eclipse.swt.examples.controlexample.ControlExample
