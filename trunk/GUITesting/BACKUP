@@ -1,0 +1,237 @@
+			/*
+			Field classesField = null;
+			try{
+				classesField = loader.getClass().getDeclaredField("classes");
+				classesField.setAccessible(true);
+				if (classesField != null) {
+					final Vector<Class> classes = (Vector<Class>)classesField.get(loader);
+					for (Class c: classes) {
+						if (loadedClasses.put(c, null) == null) {
+							instrumentClass(loader, className, classBeingRedefined, protectionDomain, classfileBuffer);
+						}
+					}
+				}
+			} catch (Throwable t) {
+				log.error(this, "Error while obtaining the declared classes by " + loader.toString() + t);
+			}
+			*/
+			
+					/**
+		 * Prints all the classes loaded by a class loader
+		 * @param loader The class loader
+		 */
+		public void printLoadedClasses(ClassLoader loader) {
+			log.info(this, "[LOADEDED CLASSES]");
+			Field classesField = null;
+			try{
+				classesField = ClassLoader.class.getDeclaredField("classes");
+				classesField.setAccessible(true);
+				if (classesField != null) {
+					final Vector<Class> classes = (Vector<Class>)classesField.get(loader);
+					for (Class c: classes) {
+						log.info(this, "[LOADED CLASS] " + c.getName());
+					}
+				}
+			} catch (Throwable t) {
+				log.error(this, "Error while obtaining the declared classes by " + loader.toString() + t);
+			}
+		}
+		
+		/**
+		 * Add all new classes from the current class loader in a weak hash map. 
+		 * If the method is called for the first time is adds all the classes
+		 * loaded by the current class loader. Otherwise, only the last class is 
+		 * added. Not that this method is called after loading of a class that is
+		 * not present in the map.
+		 * @param loader The class loader that loaded the last class
+		 */
+		private void addClassName(ClassLoader loader) {
+			Field classesField = null;
+			try{
+				classesField = ClassLoader.class.getDeclaredField("classes");
+				classesField.setAccessible(true);
+				if (classesField != null) {
+					Vector<Class> classes = (Vector<Class>)classesField.get(loader);
+					if (classes.size() > 0) {
+						if (!bootstrapped) {
+							for (int i = 0; i < classes.size(); i++) {
+								Util.getLoadedClasses().put(classes.get(i).getName(), null);
+							}
+							bootstrapped = true;
+						} else {
+							Util.getLoadedClasses().put(classes.lastElement().getName(), null);
+						}
+					}
+				}
+			} catch (Throwable t) {
+				log.error(this, "Error while obtaining the declared classes by " + loader.toString() + t);
+			}
+		}
+		
+		public static void printLoadedClasses() {
+		if (loadedClasses == null) {
+			log.warn(Util.class, "[EMPTY CLASS SET]");
+			return;
+		}
+		log.info(Util.class, "[LOADEDED CLASSES]");
+		try{
+			for (Map.Entry<String, String> e: loadedClasses.entrySet()) {
+				String printString = "";
+				if (e.getKey() != null) {
+					printString = printString + "[LOADED CLASS]" + e.getKey();
+					log.info(Util.class, printString);
+				}
+			}
+		}catch(ConcurrentModificationException cme) {
+			log.warn(Util.class, "Some classes were grabage collected and the iterator is invalid!" + cme);
+		}
+	}
+	
+	
+	/*
+		 * If an EventListener is regitered for an event in a widget, create private field
+		 * storing a reference to this type 
+		 */	
+		if (isSubclass(owner.replace('/', '.'), "org.eclipse.swt.widgets.Widget")) {
+		/*
+			if (opcode == Opcodes.INVOKEVIRTUAL && desc.length() > 3 && desc.contains("add") && desc.contains("Listener")) {	
+				//FIXME: Maybe I should use regular expression
+				int index = desc.indexOf(';');
+				if (index > -1 && index < desc.length() - 1 && desc.charAt(index + 1) == ')') {
+					log.debug(this, "[GENERATE EVENT LISTENER FILED] " + desc);
+			*/
+					/*
+					String className = desc.substring(2, index).replace('/', '.');
+					if (isInterfaceImlemented(className, "org.eclipse.swt.internal.SWTEventListener")) {						
+						log.debug(this, "[GENERATE EVENT LISTENER FILED] " + desc);
+						generateEventListenerField(owner, desc);	
+						*/
+					    /*
+						if (DEBUG) {
+							mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+							mv.visitVarInsn(Opcodes.ALOAD, 0);
+							mv.visitFieldInsn(Opcodes.GETFIELD, ownerClassName, fieldName, desc);
+							mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Object", "toString", "()Ljava/lang/String;");
+							mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
+						}
+						*/
+					//}
+			//	}
+		//	}
+		}
+		
+		
+		/**
+	 * Checks if a class is a subclass of other class
+	 * @param subClassName The name of the sub class
+	 * @param superClassName The name of the super class
+	 * @return True if the sub class is a sub class of the super class
+	 */
+	private boolean isSubclass(String subClassName, String superClassName) {
+		if (subClassName.equals(superClassName)) {
+			return true;
+		}
+		if (subClassName.equals(instrumentedClassName) || subClassName.equals(innerClassName)
+				|| subClassName.contains("java")) {
+			
+			/*
+			String superClassOfInstrumentedName = Util.getInstrumentedClassSuperName();
+			if (superClassOfInstrumentedName != null) { 
+				if (superClassOfInstrumentedName.equals(superClassName)) {
+					return true;
+				} else {
+					subClassName = superClassOfInstrumentedName;
+				}
+			} else {
+				return false;
+			}
+			*/
+			return false;
+		}
+		return exploreClassHierarchy(subClassName, superClassName);
+	}
+	
+	/**
+	 * Checks if a class is a subclass of other class traversing the class hierarchy
+	 * @param subClassName The name of the sub class
+	 * @param superClassName The name of the super class
+	 * @return True if the sub class is a sub class of the super class
+	 */
+	private boolean exploreClassHierarchy(String subClassName, String superClassName) {
+		try{
+			//Class.forName(superClassName);
+			log.debug(this, "SubClassName class " + subClassName);
+			log.debug(this, "Instrumented class " + instrumentedClassName);
+			if (Util.getLoadedClasses().get(subClassName) == null) {
+				Class.forName(subClassName);
+				log.debug(this, "Loading class " + subClassName);
+			} else {
+				return false;
+			}
+			
+			
+		}catch(Throwable t){
+			log.error(this, "Error during class loading " + t.getStackTrace());
+		}
+
+			//while (subClass != null) {
+			//	if (subClass.equals(superClass)) {
+			//		return true;
+			//	}
+			//	subClass = subClass.getSuperclass();
+			//	if (VERBOSE) {
+			//		log.debug(this, "[SUBCLASS] " + subClass + " [SUPERCLASS] " + superClass);
+			//	}
+		return false;
+	}
+	
+	/**
+	 * Checks if a class implements certain interface
+	 * @param className The name of the class
+	 * @param interfaceName The name of the interface
+	 * @return True if the class implements the interface
+	 */
+	private boolean isInterfaceImlemented(String className, String interfaceName) {
+		try{
+			Class interfaze = Class.forName(interfaceName);
+			Class clazz = Class.forName(className);
+			Class[] interfaces = clazz.getInterfaces();
+			for (Class c: interfaces) {
+				if (c.equals(interfaze)) {
+					return true;
+				}
+			}
+		}catch(ClassNotFoundException cnfe){
+			log.error(this, "ASM library or application under test are not on the classpath " + cnfe);
+		}
+		return false;
+	}
+	
+				    /* This reproduces my problem
+				if (!className.equalsIgnoreCase("org/eclipse/swt/widgets/Display")) {
+					try{
+						Class.forName("org.eclipse.swt.widgets.Display$1");
+					}catch(Throwable t) {
+						log.error(this, "Error during class loading " + t);
+					}
+					log.error(this, "[LOADED CLASS]");
+				}
+				*/
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				private void logWidgetsClassNames() {
+			for (String s: Util.getWidgetClassNames()) {
+				log.info(this, "[WIDGET CLASS NAME]\t" + s);
+			}
+		}
