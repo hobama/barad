@@ -1,0 +1,10 @@
+To build a distributable package for your current OS, run ant package.
+This will create a zip file build/blogcaster.zip that contains
+- blogcaster.jar
+- native
+-- A bunch of objects needed for SWT on the target platform
+-- blogcaster.{sh|cmd}
+
+Just running "ant" or "ant build" will run build for the current platform, 
+not doing the packaging, everything will live under build/blogcaster at that point.  
+If you want to build for windows or linux run "ant win" or "ant linux".
