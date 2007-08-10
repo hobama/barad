@@ -1,1 +1,1 @@
-java -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -agentpath:"D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\Barad\Agent\bin\BaradAgent.dll" -classpath swt.jar;swtexamples.jar org.eclipse.swt.examples.addressbook.AddressBook
+java -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -agentpath:"%BARAD_HOME%\bin\BaradAgent.dll" -classpath swt.jar;swtexamples.jar org.eclipse.swt.examples.addressbook.AddressBook
