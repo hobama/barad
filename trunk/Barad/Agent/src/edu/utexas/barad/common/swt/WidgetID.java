@@ -105,13 +105,21 @@ public class WidgetID implements Serializable {
         return false;
     }
 
+    public String toShortDisplayString() {
+        return "WidgetID{" +
+                "className='" + className + '\'' +
+                ", childIndex=" + childIndex +
+                ", text='" + text + '\'' +
+                '}';
+    }
+
     @Override
     public String toString() {
         return "WidgetID{" +
                 "className='" + className + '\'' +
                 ", childIndex=" + childIndex +
                 ", text='" + text + '\'' +
-                ", parentID=" + parentID +                
+                ", parentID=" + parentID +
                 '}';
     }
 }

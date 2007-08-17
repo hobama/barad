@@ -10,6 +10,7 @@ import edu.utexas.barad.agent.swt.proxy.widgets.*;
 import edu.utexas.barad.agent.swt.widgets.MessageBoxHelper;
 import edu.utexas.barad.common.Visitable;
 import edu.utexas.barad.common.Visitor;
+import edu.utexas.barad.common.ReflectionUtils;
 import edu.utexas.barad.common.swt.GUID;
 import edu.utexas.barad.common.swt.WidgetCategory;
 import edu.utexas.barad.common.swt.WidgetID;
@@ -347,58 +348,52 @@ public class WidgetHierarchy implements Visitable {
 
                 WidgetCategory category = null;
                 String text = null;
+                try {
+                    text = (String) ReflectionUtils.invokeMethod(widget, "getText", null, null);
+                } catch (Exception ignore) {
+                    // Ignore exception.
+                }
 
                 if (widget instanceof ShellProxy) {
                     category = WidgetCategory.SHELL;
-                    text = ((ShellProxy) widget).getText();
                 } else if (widget instanceof MenuItemProxy) {
                     category = WidgetCategory.MENU;
-                    text = ((MenuItemProxy) widget).getText();
                 } else if (widget instanceof MenuProxy) {
                     category = WidgetCategory.MENU;
                 } else if (widget instanceof ToolBarProxy) {
                     category = WidgetCategory.MENU;
                 } else if (widget instanceof ToolItemProxy) {
                     category = WidgetCategory.MENU;
-                    text = ((ToolItemProxy) widget).getText();
                 } else if (widget instanceof TreeProxy) {
                     category = WidgetCategory.TREE;
                 } else if (widget instanceof TreeItemProxy) {
                     category = WidgetCategory.TREE;
-                    text = ((TreeItemProxy) widget).getText();
                 } else if (widget instanceof TreeColumnProxy) {
                     category = WidgetCategory.TREE;
-                    text = ((TreeColumnProxy) widget).getText();
                 } else if (widget instanceof TableProxy) {
                     category = WidgetCategory.TABLE;
                 } else if (widget instanceof TableItemProxy) {
                     category = WidgetCategory.TABLE;
-                    text = ((TableItemProxy) widget).getText();
                 } else if (widget instanceof TableColumnProxy) {
                     category = WidgetCategory.TABLE;
-                    text = ((TableColumnProxy) widget).getText();
                 } else if (widget instanceof TabFolderProxy) {
                     category = WidgetCategory.TAB;
                 } else if (widget instanceof TabItemProxy) {
                     category = WidgetCategory.TAB;
-                    text = ((TabItemProxy) widget).getText();
                 } else if (widget instanceof CTabFolderProxy) {
                     category = WidgetCategory.TAB;
                 } else if (widget instanceof CTabItemProxy) {
                     category = WidgetCategory.TAB;
-                    text = ((CTabItemProxy) widget).getText();
-                } else if (widget instanceof CompositeProxy) {
-                    if (widget instanceof TextProxy) {
-                        category = WidgetCategory.TEXT;
-                        text = ((TextProxy) widget).getText();
-                    } else if (widget instanceof LabelProxy) {
-                        category = WidgetCategory.LABEL;
-                        text = ((LabelProxy) widget).getText();
-                    } else if (widget instanceof ButtonProxy) {
-                        category = WidgetCategory.BUTTON;
-                        text = ((ButtonProxy) widget).getText();
-                    }
+                } else if (widget instanceof TextProxy) {
+                    category = WidgetCategory.TEXT;
+                } else if (widget instanceof LabelProxy) {
+                    category = WidgetCategory.LABEL;
+                } else if (widget instanceof ButtonProxy) {
+                    category = WidgetCategory.BUTTON;
+                } else if (widget instanceof ComboProxy) {
+                    category = WidgetCategory.TEXT;
                 }
+
                 if (category == null) {
                     category = WidgetCategory.OTHER;
                 }

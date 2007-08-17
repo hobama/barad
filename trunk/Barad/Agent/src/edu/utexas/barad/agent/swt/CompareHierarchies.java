@@ -41,6 +41,7 @@ public class CompareHierarchies {
                                 propertyDiff.setPropertyName(propertyNameToCompare);
                                 propertyDiff.setBeforeValue(beforeValue);
                                 propertyDiff.setAfterValue(afterValue);
+                                diff.addChangedWidget(afterWidgetInfo);
                                 diff.addPropertyChange(afterWidgetInfo, propertyDiff);
                             }
                         }
@@ -112,6 +113,15 @@ public class CompareHierarchies {
         public boolean isDifferent() {
             return added.size() > 0 || removed.size() > 0 || changed.size() > 0;
         }
+
+        public String toString() {
+            return "HierarchyDiff{" +
+                    "added=" + added +
+                    ", removed=" + removed +
+                    ", changed=" + changed +
+                    ", changes=" + changes +
+                    '}';
+        }
     }
 
     public static class PropertyDiff {
@@ -141,6 +151,14 @@ public class CompareHierarchies {
 
         public void setAfterValue(Object afterValue) {
             this.afterValue = afterValue;
+        }
+
+        public String toString() {
+            return "PropertyDiff{" +
+                    "propertyName='" + propertyName + '\'' +
+                    ", beforeValue=" + beforeValue +
+                    ", afterValue=" + afterValue +
+                    '}';
         }
     }
 }

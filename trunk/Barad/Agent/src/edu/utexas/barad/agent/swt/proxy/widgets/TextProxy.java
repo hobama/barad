@@ -5,8 +5,6 @@ import edu.utexas.barad.agent.swt.proxy.graphics.PointProxy;
 /**
  * University of Texas at Austin
  * Barad Project, Jul 6, 2007
- *
- *
  */
 public interface TextProxy extends ScrollableProxy {
     public int getBorderWidth();
@@ -52,4 +50,6 @@ public interface TextProxy extends ScrollableProxy {
     public int getTopIndex();
 
     public int getTopPixel();
+
+    public void setText(String string);
 }
