@@ -101,9 +101,10 @@ public class GenerateTestCases {
                                 MenuProxy menuProxy = menuItemProxy.getParent();
                                 String text = menuItemProxy.getText();
 //                                if ("&Help".equals(text) || "&About Address Book...".equals(text)) {
+                                if ("&Search".equals(text) || text.startsWith("&Find...") || text.startsWith("Find &Next...")) {
                                     return menuProxy.isVisible() && menuItemProxy.isEnabled();
-//                                }
-//                                return false;
+                                }
+                                return false;
                             }
                         });
                     } else if (proxy instanceof ButtonProxy) {
@@ -199,6 +200,12 @@ public class GenerateTestCases {
                     break;
                 }
                 case ENTER_TEXT: {
+                    final TextProxy textProxy = (TextProxy) widgetProxy;
+                    textProxy.getDisplay().syncExec(new Runnable() {
+                        public void run() {
+                            textProxy.setText(""); // Clear the textfield to prevent generation of new strings.    
+                        }
+                    });
                     widgetTester.actionKeyString("This is a test");
                     break;
                 }
@@ -329,6 +336,10 @@ public class GenerateTestCases {
 
         if (states.contains(widgetHierarchy)) {
             return true;
+        } else {
+            for (WidgetHierarchy existingState : states) {
+                logger.debug(CompareHierarchies.compare(existingState, widgetHierarchy));
+            }
         }
         states.add(widgetHierarchy);
         return false;

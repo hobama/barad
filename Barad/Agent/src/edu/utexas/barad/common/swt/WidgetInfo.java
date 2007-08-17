@@ -116,6 +116,7 @@ public class WidgetInfo implements Serializable {
 
     @Override
     public String toString() {
-        return getWidgetID().toString();
+        WidgetID widgetID = getWidgetID();
+        return widgetID != null ? widgetID.toShortDisplayString() : "No WidgetID";
     }
 }
