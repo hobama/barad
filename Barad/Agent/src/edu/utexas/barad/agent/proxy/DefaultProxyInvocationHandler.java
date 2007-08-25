@@ -186,6 +186,10 @@ public class DefaultProxyInvocationHandler implements IProxyInvocationHandler {
         return actualInstance;
     }
 
+    public void setActualInstance(Object actualInstance) {
+        this.actualInstance = actualInstance;
+    }
+
     public IProxyFactory getProxyFactory() {
         return proxyFactory;
     }

@@ -11,9 +11,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.*;
 
 import java.rmi.RemoteException;
 
@@ -34,26 +32,40 @@ public class TestCaseItemWrapper {
 
     private void initialize() {
         tabItem = new CTabItem(tabFolder, SWT.NONE);
-        tabItem.setText("Testcases");
+        tabItem.setText("Test Cases");
         tabItem.setImage(Images.TESTCASES.createImage());
 
         Composite composite = new Composite(tabFolder, SWT.NONE);
         GridLayout gridLayout = new GridLayout();
         composite.setLayout(gridLayout);
-        gridLayout.numColumns = 1;
+        gridLayout.numColumns = 4;
 
-        Button generateTestcasesButton = new Button(composite, SWT.PUSH);
-        generateTestcasesButton.setText("Generate Testcases");
-        generateTestcasesButton.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+        Label generateTestCasesLabel = new Label(composite, SWT.WRAP);
+        generateTestCasesLabel.setText("Generate test cases:");
+
+        Label separatorLabel = new Label(composite, SWT.SEPARATOR);
+        Label currentStatusLabel = new Label(composite, SWT.LEFT);
+
+        Button playButton = new Button(composite, SWT.PUSH);
+        playButton.setImage(Images.PLAY.createImage());
+        Button pauseButton = new Button(composite, SWT.PUSH);
+        pauseButton.setImage(Images.PAUSE.createImage());
+        Button stopButton = new Button(composite, SWT.PUSH);
+        stopButton.setImage(Images.STOP.createImage());
+
+        Label predicatesLabel = new Label(composite, SWT.LEFT);
+        predicatesLabel.setLayoutData(new GridData());        
+        Combo predicateCombo = new Combo(composite, SWT.SINGLE);
 
         final List testCaseStepsList = new List(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        testCaseStepsList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        testCaseStepsList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
-        generateTestcasesButton.addSelectionListener(new SelectionListener() {
+
+        playButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
                 testCaseStepsList.removeAll();
                 try {
-                    TestCase[] testCases = StudioMain.getApplicationWindow().getAgent().generateTestCases();
+                    TestCase[] testCases = StudioMain.getApplicationWindow().getAgent().generateTestCases(null);
                     for (TestCase testCase : testCases) {
                         testCaseStepsList.add(testCase.toString());
                     }

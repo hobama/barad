@@ -11,5 +11,7 @@ public interface IProxyInvocationHandler extends InvocationHandler {
 
     public Object getActualInstance();
 
+    public void setActualInstance(Object object);
+
     public IProxyFactory getProxyFactory();
 }

@@ -1,7 +1,8 @@
-package edu.utexas.barad.agent.swt;
+package edu.utexas.barad.agent.testcases;
 
 import edu.utexas.barad.common.Visitor;
 import edu.utexas.barad.common.swt.WidgetInfo;
+import edu.utexas.barad.agent.swt.WidgetHierarchy;
 
 import java.util.*;
 

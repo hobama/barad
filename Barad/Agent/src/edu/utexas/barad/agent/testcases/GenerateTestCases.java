@@ -17,10 +17,7 @@ import edu.utexas.barad.common.testcase.TestCaseAction;
 import edu.utexas.barad.common.testcase.TestStep;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * University of Texas at Austin
@@ -29,58 +26,122 @@ import java.util.Set;
 public class GenerateTestCases {
     private static final Logger logger = Logger.getLogger(GenerateTestCases.class);
 
+    private WidgetInfoPredicate[] predicates;
     private Set<WidgetHierarchy> states = new LinkedHashSet<WidgetHierarchy>();
+    private List<TestCase> testCases = Collections.synchronizedList(new ArrayList<TestCase>());
+    private TestCase currentTestCase;
+    private boolean exceptionOccurred;
+    private ListenerProxy keyListener;
+    private boolean stop;
+    private Thread worker;
+
+    public GenerateTestCases(WidgetInfoPredicate[] predicates) {
+        this.predicates = predicates;
+        if (this.predicates == null) {
+            this.predicates = new WidgetInfoPredicate[]{new DefaultWidgetInfoPredicate()};
+        }
+
+        keyListener = ListenerProxy.Factory.newListenerProxy(new ListenerProxy.Impl() {
+            public void handleEvent(EventProxy event) {
+                int stateMask = event.__fieldGetstateMask();
+                char keyCode = (char) event.__fieldGetkeyCode();
+                if (keyCode == 'q' && (stateMask & SWTProxy.CTRL) == SWTProxy.CTRL && (stateMask & SWTProxy.ALT) == SWTProxy.ALT) {
+                    stop = true;
+                    logger.info("CTRL-ALT-Q entered, stopping testcase generation.");
+                }
+            }
+        });
+
+        worker = new Thread("Generate Test Cases Worker") {
+            public void run() {
+
+            }
+        };
+    }
+
+    public void start() {
+
+    }
+
+    public void pause() {
+
+    }
+
+    public void stop() {
+
+    }
 
     public TestCase[] generate() {
         states.clear();
+        testCases.clear();
+        currentTestCase = null;
+        exceptionOccurred = false;
+        stop = false;
 
-        returnToInitialState();
-
-        List<TestCase> testCases = new ArrayList<TestCase>();
-        int size;
-        do {
-            size = testCases.size();
-
-            List<TestCase> newTestCases = new ArrayList<TestCase>();
-            boolean firstStep = testCases.size() == 0;
-            if (firstStep) {
-                TestStep[] testSteps = generateNextStep();
-                for (TestStep testStep : testSteps) {
-                    TestCase newTestCase = new TestCase();
-                    newTestCase.add(testStep);
-                    newTestCases.add(newTestCase);
+        try {
+            final DisplayProxy defaultDisplay = DisplayProxy.Factory.getDefault();
+            defaultDisplay.asyncExec(new Runnable() {
+                public void run() {
+                    defaultDisplay.addFilter(SWTProxy.KeyDown, keyListener);
                 }
-            } else {
-                for (TestCase testCase : testCases) {
-                    returnToInitialState();
-                    executeTestCase(testCase);
+            });
 
+            returnToInitialState();
+
+            int size;
+            do {
+                size = testCases.size();
+
+                List<TestCase> newTestCases = new ArrayList<TestCase>();
+                boolean firstStep = testCases.size() == 0;
+                if (firstStep) {
                     TestStep[] testSteps = generateNextStep();
                     for (TestStep testStep : testSteps) {
-                        try {
-                            TestCase newTestCase = (TestCase) testCase.clone();
-                            newTestCase.add(testStep);
-                            newTestCases.add(newTestCase);
-                        } catch (CloneNotSupportedException ignore) {
-                            // Ignore.
+                        TestCase newTestCase = new TestCase();
+                        newTestCase.add(testStep);
+                        newTestCases.add(newTestCase);
+                    }
+                } else {
+                    for (TestCase testCase : testCases) {
+                        returnToInitialState();
+
+                        currentTestCase = testCase;
+                        executeTestCase(testCase);
+
+                        if (stop) {
+                            break;
+                        }
+
+                        TestStep[] testSteps = generateNextStep();
+                        for (TestStep testStep : testSteps) {
+                            try {
+                                TestCase newTestCase = (TestCase) testCase.clone();
+                                newTestCase.add(testStep);
+                                newTestCases.add(newTestCase);
+                            } catch (CloneNotSupportedException ignore) {
+                                // Ignore.
+                            }
                         }
                     }
                 }
-            }
 
-            for (TestCase testCase : newTestCases) {
-                if (!pruneTestCase(testCase)) {
-                    logger.debug("Adding testcase, testCase=" + testCase);
-                    testCases.add(testCase);
-                } else {
-                    logger.debug("Test case will be pruned, testCase=" + testCase);
+                for (TestCase testCase : newTestCases) {
+                    if (!pruneTestCase(testCase)) {
+                        logger.debug("Adding testcase, testCase=" + testCase);
+                        testCases.add(testCase);
+                    } else {
+                        logger.debug("Test case will be pruned, testCase=" + testCase);
+                    }
                 }
-            }
 
-            logger.debug("Current testcase count=" + testCases.size() + ", previous testcase count=" + size);
-        } while (testCases.size() > size);
+                logger.debug("Current testcase count=" + testCases.size() + ", previous testcase count=" + size);
+            } while (testCases.size() > size && !stop);
 
-        returnToInitialState();
+            returnToInitialState();
+        } catch (Exception e) {
+            logger.error("An exception occurred during testcase generation.", e);
+            exceptionOccurred = true;
+        }
 
         return testCases.toArray(new TestCase[0]);
     }
@@ -93,43 +154,7 @@ public class GenerateTestCases {
 
         MessageBoxHelper messageBoxHelper = widgetHierarchy.getMessageBoxHelper();
         if (messageBoxHelper == null) {
-            WidgetInfoPredicate predicate = new WidgetInfoPredicate() {
-                public boolean evaluate(final WidgetInfo widgetInfo) {
-                    Object proxy = widgetHierarchy.getWidgetProxy(widgetInfo.getWidgetID());
-                    if (proxy instanceof MenuItemProxy) {
-                        final MenuItemProxy menuItemProxy = (MenuItemProxy) proxy;
-                        return Displays.syncExec(menuItemProxy.getDisplay(), new BooleanResult() {
-                            public boolean result() {
-                                MenuProxy menuProxy = menuItemProxy.getParent();
-                                String text = menuItemProxy.getText();
-//                                if ("&Help".equals(text) || "&About Address Book...".equals(text)) {
-                                if ("&Search".equals(text) || text.startsWith("&Find...") || text.startsWith("Find &Next...")) {
-                                    return menuProxy.isVisible() && menuItemProxy.isEnabled();
-                                }
-                                return false;
-                            }
-                        });
-                    } else if (proxy instanceof ButtonProxy) {
-                        final ButtonProxy buttonProxy = (ButtonProxy) proxy;
-                        return Displays.syncExec(buttonProxy.getDisplay(), new BooleanResult() {
-                            public boolean result() {
-                                return buttonProxy.isVisible() && buttonProxy.isEnabled() && !buttonProxy.getSelection();
-                            }
-                        });
-                    } else if (proxy instanceof TextProxy) {
-                        final TextProxy textProxy = (TextProxy) proxy;
-                        return Displays.syncExec(textProxy.getDisplay(), new BooleanResult() {
-                            public boolean result() {
-                                return textProxy.isVisible() && textProxy.isEnabled();
-                            }
-                        });
-                    }
-
-                    return false;
-                }
-            };
-
-            PredicateVisitor visitor = new PredicateVisitor(predicate);
+            PredicateVisitor visitor = new PredicateVisitor(new CompoundPredicate(predicates), widgetHierarchy);
             widgetHierarchy.accept(visitor);
             List<WidgetInfo> satisfiesList = visitor.getSatisfiesList();
 
@@ -174,6 +199,9 @@ public class GenerateTestCases {
 //        logger.debug("Executing test case, testCase=" + testCase);
 
         for (TestStep testStep : testCase.getSteps()) {
+            if (stop) {
+                return;
+            }
             executeTestStep(testStep);
         }
     }
@@ -205,7 +233,7 @@ public class GenerateTestCases {
                     final TextProxy textProxy = (TextProxy) widgetProxy;
                     textProxy.getDisplay().syncExec(new Runnable() {
                         public void run() {
-                            textProxy.setText(""); // Clear the textfield to prevent generation of new strings.    
+                            textProxy.setText(""); // Clear the textfield to prevent generation of new strings.
                         }
                     });
                     widgetTester.actionKeyString("This is a test");
@@ -250,7 +278,7 @@ public class GenerateTestCases {
         List<WidgetInfo> satisfiesList;
         do {
             PredicateVisitor visitor = new PredicateVisitor(new WidgetInfoPredicate() {
-                public boolean evaluate(WidgetInfo widgetInfo) {
+                public boolean evaluate(WidgetInfo widgetInfo, WidgetHierarchy widgetHierarchy) {
                     Object proxy = widgetHierarchy.getWidgetProxy(widgetInfo.getWidgetID());
                     if (proxy instanceof ShellProxy) {
                         final ShellProxy shell = (ShellProxy) proxy;
@@ -262,7 +290,7 @@ public class GenerateTestCases {
                     }
                     return false;
                 }
-            });
+            }, widgetHierarchy);
             widgetHierarchy.accept(visitor);
             satisfiesList = visitor.getSatisfiesList();
             if (satisfiesList.size() > 0) {
@@ -287,7 +315,7 @@ public class GenerateTestCases {
 
         // Hide any showing menus.
         PredicateVisitor visitor = new PredicateVisitor(new WidgetInfoPredicate() {
-            public boolean evaluate(WidgetInfo widgetInfo) {
+            public boolean evaluate(WidgetInfo widgetInfo, WidgetHierarchy widgetHierarchy) {
                 Object proxy = widgetHierarchy.getWidgetProxy(widgetInfo.getWidgetID());
                 if (proxy instanceof ShellProxy) {
                     final ShellProxy shell = (ShellProxy) proxy;
@@ -299,7 +327,7 @@ public class GenerateTestCases {
                 }
                 return false;
             }
-        });
+        }, widgetHierarchy);
         widgetHierarchy.accept(visitor);
         satisfiesList = visitor.getSatisfiesList();
         if (satisfiesList.size() > 0) {
@@ -349,15 +377,17 @@ public class GenerateTestCases {
 
     private static class PredicateVisitor implements Visitor {
         private WidgetInfoPredicate predicate;
+        private WidgetHierarchy widgetHierarchy;
         private List<WidgetInfo> satisfiesList = new ArrayList<WidgetInfo>();
 
-        public PredicateVisitor(WidgetInfoPredicate predicate) {
+        public PredicateVisitor(WidgetInfoPredicate predicate, WidgetHierarchy widgetHierarchy) {
             this.predicate = predicate;
+            this.widgetHierarchy = widgetHierarchy;
         }
 
         public void visit(Object object) {
             WidgetInfo widgetInfo = (WidgetInfo) object;
-            if (predicate.evaluate(widgetInfo)) {
+            if (predicate.evaluate(widgetInfo, widgetHierarchy)) {
                 satisfiesList.add(widgetInfo);
             }
         }
@@ -367,7 +397,9 @@ public class GenerateTestCases {
         }
     }
 
-    private static interface WidgetInfoPredicate {
-        public boolean evaluate(WidgetInfo widgetInfo);
+    private static enum RunState {
+        RUNNING,
+        PAUSED,
+        STOPPED;
     }
 }

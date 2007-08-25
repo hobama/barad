@@ -1,7 +1,8 @@
 package edu.utexas.barad.agent;
 
 import edu.utexas.barad.agent.exceptions.AgentRuntimeException;
-import edu.utexas.barad.agent.swt.GenerateTestCases;
+import edu.utexas.barad.agent.testcases.GenerateTestCases;
+import edu.utexas.barad.agent.testcases.WidgetInfoPredicate;
 import edu.utexas.barad.agent.swt.WidgetHierarchy;
 import edu.utexas.barad.agent.swt.WidgetValueBuilder;
 import edu.utexas.barad.common.swt.GUID;
@@ -69,8 +70,8 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
         return WidgetValueBuilder.getWidgetValues(widgetInfo, widgetHierarchy);
     }
 
-    public TestCase[] generateTestCases() throws RemoteException {
-        return new GenerateTestCases().generate();
+    public TestCase[] generateTestCases(WidgetInfoPredicate[] predicates) throws RemoteException {
+        return new GenerateTestCases(predicates).generate();
     }
 
     public static void main(String[] args) {
