@@ -10,6 +10,8 @@ import edu.utexas.barad.common.ReflectionUtils;
  * Barad Project, Jul 3, 2007
  */
 public interface DisplayProxy extends DeviceProxy {
+    public void addFilter(int eventType, ListenerProxy listener);
+    
     public void addListener(int eventType, ListenerProxy listener);
 
     public void asyncExec(Runnable runnable);

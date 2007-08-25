@@ -4,6 +4,7 @@ import edu.utexas.barad.common.swt.WidgetInfo;
 import edu.utexas.barad.common.swt.WidgetValues;
 import edu.utexas.barad.common.swt.GUID;
 import edu.utexas.barad.common.testcase.TestCase;
+import edu.utexas.barad.agent.testcases.WidgetInfoPredicate;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -21,5 +22,5 @@ public interface IAgent extends Remote {
 
     public int getProcessID() throws RemoteException;
 
-    public TestCase[] generateTestCases() throws RemoteException;
+    public TestCase[] generateTestCases(WidgetInfoPredicate[] predicates) throws RemoteException;
 }

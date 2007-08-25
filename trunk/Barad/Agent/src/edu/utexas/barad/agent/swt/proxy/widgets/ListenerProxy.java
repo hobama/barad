@@ -1,6 +1,7 @@
 package edu.utexas.barad.agent.swt.proxy.widgets;
 
 import edu.utexas.barad.agent.AgentUtils;
+import edu.utexas.barad.agent.proxy.IProxyInvocationHandler;
 import edu.utexas.barad.agent.swt.proxy.SWTProxyFactory;
 
 import java.lang.reflect.InvocationHandler;
@@ -26,7 +27,10 @@ public interface ListenerProxy {
                     return null;
                 }
             });
-            return (ListenerProxy) SWTProxyFactory.getInstance().newProxy(actualInstance);
+            ListenerProxy proxy = (ListenerProxy) SWTProxyFactory.getInstance().newProxy(listenerInterface);
+            IProxyInvocationHandler invocationHandler = (IProxyInvocationHandler) Proxy.getInvocationHandler(proxy);
+            invocationHandler.setActualInstance(actualInstance);
+            return proxy;
         }
     }
 }
