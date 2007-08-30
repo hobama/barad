@@ -101,8 +101,6 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		}
 	}
 	
-
-
 	public void visitIntInsn(int opcode, int operand) {
 		if (opcode == Opcodes.BIPUSH || opcode == Opcodes.SIPUSH) {
 			if (VERBOSE) log.debug("Integer constant:" + operand + " replaced by symbolic integer constant");
