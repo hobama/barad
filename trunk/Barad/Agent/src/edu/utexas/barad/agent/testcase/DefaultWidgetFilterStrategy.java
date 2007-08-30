@@ -1,4 +1,4 @@
-package edu.utexas.barad.agent.testcases;
+package edu.utexas.barad.agent.testcase;
 
 import edu.utexas.barad.agent.swt.Displays;
 import edu.utexas.barad.agent.swt.WidgetHierarchy;
@@ -8,8 +8,8 @@ import edu.utexas.barad.agent.swt.proxy.widgets.MenuProxy;
 import edu.utexas.barad.agent.swt.proxy.widgets.TextProxy;
 import edu.utexas.barad.common.swt.WidgetInfo;
 
-public class DefaultWidgetInfoPredicate implements WidgetInfoPredicate {
-    public boolean evaluate(final WidgetInfo widgetInfo, final WidgetHierarchy widgetHierarchy) {
+public class DefaultWidgetFilterStrategy implements WidgetFilterStrategy {
+    public boolean include(final WidgetInfo widgetInfo, final WidgetHierarchy widgetHierarchy) {
         Object proxy = widgetHierarchy.getWidgetProxy(widgetInfo.getWidgetID());
         if (proxy instanceof MenuItemProxy) {
             final MenuItemProxy menuItemProxy = (MenuItemProxy) proxy;

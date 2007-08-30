@@ -23,4 +23,33 @@ public enum TestCaseAction {
     public String toString() {
         return getDisplayName();
     }
+
+    public static String toHTML(TestCaseAction testCaseAction) {
+        if (testCaseAction == null) {
+            return "Unknown";
+        }
+        StringBuffer buffer = new StringBuffer();
+        switch (testCaseAction) {
+            case LEFT_MOUSE_CLICK: {
+                buffer.append("Left Mouse Click");
+                break;
+            }
+
+            case RIGHT_MOUSE_CLICK: {
+                buffer.append("Right Mouse Click");
+                break;
+            }
+
+            case ENTER_TEXT: {
+                buffer.append("Input Text");
+                break;
+            }
+
+            default: {
+                break;
+            }
+
+        }
+        return buffer.toString();
+    }
 }

@@ -86,6 +86,8 @@ public interface DisplayProxy extends DeviceProxy {
 
     public boolean readAndDispatch();
 
+    public void removeFilter(int eventType, ListenerProxy listener); 
+
     public void setData(Object data);
 
     public void setData(String key, Object value);

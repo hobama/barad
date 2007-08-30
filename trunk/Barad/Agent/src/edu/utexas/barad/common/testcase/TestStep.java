@@ -35,11 +35,20 @@ public class TestStep implements Cloneable, Serializable {
         this.widgetInfo = widgetInfo;
     }
 
+    @Override
     public String toString() {
         return "TestStep{" +
                 "action=" + action +
                 ", widgetInfo=" + widgetInfo +
                 '}';
+    }
+
+    public String toHTML() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(TestCaseAction.toHTML(action));
+        buffer.append(" on ");
+        buffer.append(widgetInfo.toHTML());
+        return buffer.toString();
     }
 
     @Override

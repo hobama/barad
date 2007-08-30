@@ -1,4 +1,4 @@
-package edu.utexas.barad.agent.testcases;
+package edu.utexas.barad.agent.testcase;
 
 import edu.utexas.barad.common.swt.WidgetInfo;
 import edu.utexas.barad.agent.swt.WidgetHierarchy;
@@ -7,6 +7,6 @@ import edu.utexas.barad.agent.swt.WidgetHierarchy;
  * University of Texas at Austin
  * Barad Project, August 21, 2007
  */
-public interface WidgetInfoPredicate {
-    public boolean evaluate(WidgetInfo widgetInfo, final WidgetHierarchy widgetHierarchy);
+public interface WidgetFilterStrategy {
+    public boolean include(WidgetInfo widgetInfo, final WidgetHierarchy widgetHierarchy);
 }

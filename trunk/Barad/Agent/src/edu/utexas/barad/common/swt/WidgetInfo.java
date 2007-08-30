@@ -119,4 +119,8 @@ public class WidgetInfo implements Serializable {
         WidgetID widgetID = getWidgetID();
         return widgetID != null ? widgetID.toShortDisplayString() : "No WidgetID";
     }
+
+    public String toHTML() {
+        return toString();
+    }
 }

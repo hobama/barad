@@ -1,4 +1,4 @@
-package edu.utexas.barad.agent.testcases;
+package edu.utexas.barad.agent.testcase;
 
 import edu.utexas.barad.common.Visitor;
 import edu.utexas.barad.common.swt.WidgetInfo;
