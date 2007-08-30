@@ -84,8 +84,15 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 			writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, 4);
 		} else if (opcode == Opcodes.ICONST_5) {
 			writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, 5);
-		} else if (opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN || opcode == Opcodes.FRETURN ||
-		
+		} else if (opcode == Opcodes.IADD) { 
+			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/IADD", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+		} else if (opcode == Opcodes.IDIV) {
+			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/IDIV", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+		} else if (opcode == Opcodes.IMUL) {
+			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/IMUL", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+		} else if (opcode == Opcodes.ISUB) {
+			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/ISUB", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+	    } else if (opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN || opcode == Opcodes.FRETURN ||
 				   opcode == Opcodes.DRETURN || opcode == Opcodes.ARETURN || opcode == Opcodes.RETURN) {
 			writeCodeToBacktrack();
 			mv.visitInsn(opcode);
