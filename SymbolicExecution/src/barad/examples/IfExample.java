@@ -6,6 +6,12 @@ public class IfExample {
 	
 	private int test;
 	
+	//public IfExample() {
+		//int x = 10;
+		//x = x + 10;
+	//}
+	
+	//This is OK
 	public IfExample() {
 		int x = 10;
 		if (x > 8) {
@@ -25,8 +31,6 @@ public class IfExample {
 		}
 	}
 	
-
-
 	private void Test(int x) {
 		int y = 2;	
 		if (x > 21) {
@@ -45,4 +49,6 @@ public class IfExample {
 			x = 20;
 		}
 	}
+	
+
 }

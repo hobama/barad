@@ -85,16 +85,16 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		} else if (opcode == Opcodes.ICONST_5) {
 			writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, 5);
 		} else if (opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN || opcode == Opcodes.FRETURN ||
+		
 				   opcode == Opcodes.DRETURN || opcode == Opcodes.ARETURN || opcode == Opcodes.RETURN) {
-			 
-			//mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "printAllConstraints", "()V");
-			
 			writeCodeToBacktrack();
 			mv.visitInsn(opcode);
 		} else {
 			mv.visitInsn(opcode);
 		}
 	}
+	
+
 
 	public void visitIntInsn(int opcode, int operand) {
 		if (opcode == Opcodes.BIPUSH || opcode == Opcodes.SIPUSH) {
@@ -330,17 +330,26 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	 * The generated code adds the condition of the jump instruction as
 	 * a symbolic path condition. 
 	 * @param symbolicClassName The name of a symbolic class used to replace the jump instruction
-	 * FIXME: This works only with symbolic integers
+	 * @param Descriptor of the symbolic operation's constructor
 	 */
 	private void writeCodeToIntroduceSymbolicJumpInsn (String symbolicClassName, String descriptor) {
 		writeCodeToCreateNewState();
+		writeCodeToIntroduceSymbolicOperation(symbolicClassName, descriptor);
+	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "addBranchConstraint", "(Ljava/lang/Object;)Ljava/lang/Object;");
+	}
+	
+	/**
+	 * Writes bytecode that replaces bytecode instruction with symbolic one.
+	 * @param symbolicClassName The name of a symbolic class used to replace the bytecode instruction
+	 * @param descriptor Descriptor of the symbolic operation's constructor
+	 */
+	private void writeCodeToIntroduceSymbolicOperation(String symbolicClassName, String descriptor) {
 		mv.visitTypeInsn(Opcodes.NEW, symbolicClassName);
 		mv.visitInsn(Opcodes.DUP);
 		mv.visitInsn(Opcodes.DUP2_X2);
 		mv.visitInsn(Opcodes.POP);
 		mv.visitInsn(Opcodes.POP);
 	    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, symbolicClassName, "<init>", descriptor);
-	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "addBranchConstraint", "(Ljava/lang/Object;)Ljava/lang/Object;");
 	}
 	
 	/**
