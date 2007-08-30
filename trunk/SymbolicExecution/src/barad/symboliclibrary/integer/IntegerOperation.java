@@ -76,7 +76,7 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
      * 
      * @return New symbolic integer division
      */
-    public IDIF IDIF(SymbolicIntegerEntity op) {
-    	return new IDIF(this, op);
+    public ISUB IDIF(SymbolicIntegerEntity op) {
+    	return new ISUB(this, op);
     }
 }

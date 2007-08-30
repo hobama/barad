@@ -22,8 +22,9 @@ public class ICONST extends SymbolicIntegerEntity implements Serializable {
 		iconst.setName(this.getName());
 		return iconst;
 	}
-        
-    public String getStrValue() {
+     
+	@Override
+    public String toString() {
     	return getName() + " " + String.valueOf(value);
     }
 
@@ -31,7 +32,6 @@ public class ICONST extends SymbolicIntegerEntity implements Serializable {
     	return true;
     }
 
-    //AUXILIARY
     public int getValue() {
     	return value;
     }
@@ -40,7 +40,6 @@ public class ICONST extends SymbolicIntegerEntity implements Serializable {
     	this.value = value;
     }
        
-    // ARITHMETIC
     public IMUL IMUL(SymbolicIntegerEntity op) {
     	return new IMUL(this, op);
     }
@@ -53,39 +52,7 @@ public class ICONST extends SymbolicIntegerEntity implements Serializable {
     	return new IADD(this, op);
     }
 
-    public IDIF IDIF(SymbolicIntegerEntity op) {
-    	return new IDIF(this, op);
+    public ISUB IDIF(SymbolicIntegerEntity op) {
+    	return new ISUB(this, op);
     }
-
-    //LOGICAL
-    /*
-    public IAND IAND(SymbolicIntegerEntity op) {
-    	return new IAND(this, op);
-    }
-
-    public IOR IOR(SymbolicIntegerEntity op) {
-    	return new IOR(this, op);
-    }
-	
-    //COMPARISON
-    public IEQ IEQ(SymbolicIntegerEntity op) {
-    	return new IEQ(this, op);
-    }
-
-    public IGT IGT(SymbolicIntegerEntity op) {
-    	return new IGT(this, op);
-    }
-
-    public ILT ILT(SymbolicIntegerEntity op) {
-    	return new ILT(this, op);
-    }
-
-    public ILTEQ ILTEQ(SymbolicIntegerEntity op) {
-    	return new ILTEQ(this, op);
-    }
-
-    public IGTEQ IGTEQ(SymbolicIntegerEntity op) {
-    	return new IGTEQ(this, op);
-    }
-    */
 }

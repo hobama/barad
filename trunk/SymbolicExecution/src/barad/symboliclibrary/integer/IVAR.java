@@ -26,7 +26,7 @@ public class IVAR extends SymbolicIntegerEntity implements Serializable {
 		return null;
 	}
 	*/
-	public IDIF IDIF(SymbolicIntegerEntity op) {
+	public ISUB IDIF(SymbolicIntegerEntity op) {
 		// TODO Auto-generated method stub
 		return null;
 	}

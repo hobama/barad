@@ -31,5 +31,5 @@ public interface IntegerInterface extends CommonInterface{
 	 * @param Instance that implements IntegerInterface
 	 * @return New integer difference operation
 	 */
-	IDIF IDIF(SymbolicIntegerEntity op);
+	ISUB IDIF(SymbolicIntegerEntity op);
 }
