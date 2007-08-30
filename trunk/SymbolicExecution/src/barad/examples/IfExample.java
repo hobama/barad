@@ -8,7 +8,14 @@ public class IfExample {
 	
 	public IfExample() {
 		int x = 10;
-		x = x + 10;
+		int y = 99;
+		if (y > 89) {
+			x = x + 10;
+			x = x / 20;
+		} else {
+			y = x + 8;
+		}
+		x = x + y;
 	}
 	
 	/*This is OK

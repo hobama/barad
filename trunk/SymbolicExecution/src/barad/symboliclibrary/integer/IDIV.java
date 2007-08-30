@@ -12,7 +12,7 @@ public class IDIV extends IntegerOperation implements Serializable {
 	private static final long serialVersionUID = 1;
 	
 	public IDIV (IntegerInterface op1, IntegerInterface op2) {
-		super(op1, op2, "+", "IDIV");
+		super(op1, op2, "/", "IDIV");
 	}
 	
 	@Override
