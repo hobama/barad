@@ -1,9 +1,9 @@
 package edu.utexas.barad.common.testcase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * University of Texas at Austin
@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class TestCase implements Cloneable, Serializable {
     private static final long serialVersionUID = -7425656005894856047L;
 
-    private List<TestStep> steps = new ArrayList<TestStep>();    
+    private List<TestStep> steps = new ArrayList<TestStep>();
 
     public boolean add(TestStep step) {
         return steps.add(step);
@@ -30,6 +30,19 @@ public class TestCase implements Cloneable, Serializable {
         return "TestCase{" +
                 "steps=" + steps +
                 '}';
+    }
+
+    public String toHTML() {
+        StringBuffer buffer = new StringBuffer();
+        int size = steps.size();
+        for (int i = 0; i < size; ++i) {
+            TestStep testStep = steps.get(i);
+            buffer.append(testStep.toHTML());
+            if (i + 1 < size) {
+                buffer.append("<br/>");
+            }
+        }
+        return buffer.toString();
     }
 
     @Override

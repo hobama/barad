@@ -8,7 +8,7 @@ import edu.utexas.barad.agent.swt.proxy.dnd.DragSourceProxy;
 import edu.utexas.barad.agent.swt.proxy.dnd.DropTargetProxy;
 import edu.utexas.barad.agent.swt.proxy.widgets.*;
 import edu.utexas.barad.agent.swt.widgets.MessageBoxHelper;
-import edu.utexas.barad.agent.testcases.CompareHierarchies;
+import edu.utexas.barad.agent.testcase.CompareHierarchies;
 import edu.utexas.barad.common.Visitable;
 import edu.utexas.barad.common.Visitor;
 import edu.utexas.barad.common.ReflectionUtils;

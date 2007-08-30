@@ -18,6 +18,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import java.net.URL;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * University of Texas at Austin
@@ -40,6 +42,7 @@ public class StudioMain extends ApplicationWindow {
     private RefreshAction refreshAction;
     private ExitAction exitAction;
     private AboutAction aboutAction;
+    private TestCaseItemWrapper testCaseItemWrapper;
 
     private StudioMain() {
         super(null);
@@ -141,7 +144,7 @@ public class StudioMain extends ApplicationWindow {
         connectAction.addPropertyChangeListener(spyTabItemWrapper);
         disconnectAction.addPropertyChangeListener(spyTabItemWrapper);
 
-        TestCaseItemWrapper testCaseItemWrapper = new TestCaseItemWrapper(tabFolder);
+        testCaseItemWrapper = new TestCaseItemWrapper(tabFolder);
 
         tabFolder.addSelectionListener(refreshAction);
         tabFolder.setSimple(false);
@@ -177,8 +180,12 @@ public class StudioMain extends ApplicationWindow {
         disconnectAction.setEnabled(isConnected());
 
         if (tabFolder != null) {
+            List<CTabItem> refreshable = new ArrayList<CTabItem>();
+            refreshable.add(spyTabItemWrapper.getTabItem());
+            refreshable.add(testCaseItemWrapper.getTabItem());
+
             CTabItem selectedTabItem = tabFolder.getSelection();
-            if (selectedTabItem == spyTabItemWrapper.getTabItem()) {
+            if (refreshable.contains(selectedTabItem)) {
                 refreshAction.setEnabled(isConnected());
             } else {
                 refreshAction.setEnabled(false);
@@ -192,6 +199,8 @@ public class StudioMain extends ApplicationWindow {
         CTabItem selectedTabItem = tabFolder.getSelection();
         if (selectedTabItem == spyTabItemWrapper.getTabItem()) {
             spyTabItemWrapper.refresh();
+        } else if (selectedTabItem == testCaseItemWrapper.getTabItem()) {
+            testCaseItemWrapper.refresh();
         }
     }
 
