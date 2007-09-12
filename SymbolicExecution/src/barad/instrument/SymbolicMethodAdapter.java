@@ -12,19 +12,52 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import static barad.util.Properties.DEBUG;
 
 public class SymbolicMethodAdapter implements MethodVisitor {
+	private static final String IVAR = "barad/symboliclibrary/integer/IVAR";
+	private static final String IVAR_SIGNATURE = "()V";
+	private static final String ICONST = "barad/symboliclibrary/integer/ICONST";
+	private static final String ICONST_SIGNATURE = "(I)V";
+	private static final String INTEGER_INTERFACE = "Lbarad/symboliclibrary/integer/IntegerInterface;";
+	private static final String PATH = "barad/symboliclibrary/path/Path";
+	private static final String PATH_ADD_LOCAL_FIELD_SIGNATURE = "(Ljava/lang/Object;Ljava/lang/String;)V";
+	private static final String PATH_ADD_LOCAL_VARIABLE_SIGNATURE = "(Ljava/lang/Object;I)Ljava/lang/Object;";
+	private static final String PATH_ADD_GET_VARIABLE_VALUE_SIGNATURE = "(I)Ljava/lang/Object;";
+	private static final String PATH_ADD_BRANCH_CONSTRAINT = "(Ljava/lang/Object;)Ljava/lang/Object;";
+	private static final String PATH_REMOVE_LAST_STATE_SIGNATURE = "()V";
+	private static final String REVERSE_BRANCH_CONSTRAINTS_SIGNATURE = "()V";
+	private static final String IF_ICMPEQ = "barad/symboliclibrary/integer/IF_ICMPEQ";
+	private static final String IF_ICMPGE = "barad/symboliclibrary/integer/IF_ICMPGE";
+	private static final String IF_ICMPGT = "barad/symboliclibrary/integer/IF_ICMPGT";
+	private static final String IF_ICMPLE = "barad/symboliclibrary/integer/IF_ICMPLE";
+	private static final String IF_ICMPLT = "barad/symboliclibrary/integer/IF_ICMPLT";
+	private static final String IF_ICMPNE = "barad/symboliclibrary/integer/IF_ICMPNE";
+	private static final String PATH_CONSTRAINT_SIGNATURE = "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V";
+	private static final String IADD = "barad/symboliclibrary/integer/IADD";
+	private static final String IDIV = "barad/symboliclibrary/integer/IDIV";
+	private static final String IMUL = "barad/symboliclibrary/integer/IMUL";
+	private static final String ISUB = "barad/symboliclibrary/integer/ISUB";
+	private static final String INTEGER_OPERATION_SIGNATURE = "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V";
+	
 	private MethodVisitor mv;
 	private Logger log;
 	private Stack<HashSet<Integer>> modifiedVariablesForState;
 	private HashMap<Label, Integer> backtrackLabels;
-	private boolean test = false;
+	private HashMap<Label, Integer> lookupSwichValues;
+	private Stack<Label> switchDefaultLabels; 
+	
+	private boolean reverseBranchConstraints = false;
+	private Stack<Integer> indexOfVariablesUsedForSwitch; 
 	
 	public SymbolicMethodAdapter(MethodVisitor mv) {
 		this.mv = mv;
 		this.log = Logger.getLogger(this.getClass());
 		this.modifiedVariablesForState = new Stack<HashSet<Integer>>();
 		this.backtrackLabels = new HashMap<Label, Integer>();
+		this.lookupSwichValues = new HashMap<Label, Integer>();
+		this.indexOfVariablesUsedForSwitch = new Stack<Integer>();
+		this.switchDefaultLabels = new Stack<Label>();
 	}
 
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -85,13 +118,13 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		} else if (opcode == Opcodes.ICONST_5) {
 			writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, 5);
 		} else if (opcode == Opcodes.IADD) { 
-			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/IADD", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceSymbolicOperation(IADD, INTEGER_OPERATION_SIGNATURE);
 		} else if (opcode == Opcodes.IDIV) {
-			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/IDIV", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceSymbolicOperation(IDIV, INTEGER_OPERATION_SIGNATURE);
 		} else if (opcode == Opcodes.IMUL) {
-			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/IMUL", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceSymbolicOperation(IMUL, INTEGER_OPERATION_SIGNATURE);
 		} else if (opcode == Opcodes.ISUB) {
-			writeCodeToIntroduceSymbolicOperation("barad/symboliclibrary/integer/ISUB", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceSymbolicOperation(ISUB, INTEGER_OPERATION_SIGNATURE);
 	    } else if (opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN || opcode == Opcodes.FRETURN ||
 				   opcode == Opcodes.DRETURN || opcode == Opcodes.ARETURN || opcode == Opcodes.RETURN) {
 			writeCodeToBacktrack();
@@ -110,41 +143,32 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 			mv.visitIntInsn(opcode, operand);
 		}
 	}
-
-	private void addBacktrackMarker(Label label) {
-		Integer value = backtrackLabels.get(label); 
-		if (value == null) {
-			backtrackLabels.put(label, 1);
-		} else {
-			backtrackLabels.put(label, value + 1);
-		}
-	}
 	
 	public void visitJumpInsn(int opcode, Label label) {
 		if (opcode == Opcodes.IF_ICMPEQ) {
 			if (VERBOSE) log.debug("IF_ICMPEQ replaced by Symbolic IF_ICMPEQ");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceSymbolicJumpInsn("barad/symboliclibrary/integer/IF_ICMPEQ", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceIfConstraint(IF_ICMPEQ, PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPGE) {
 			if (VERBOSE) log.debug("IF_ICMPGE replaced by Symbolic IF_ICMPGE");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceSymbolicJumpInsn("barad/symboliclibrary/integer/IF_ICMPGE", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceIfConstraint(IF_ICMPGE, PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPGT) {
 			if (VERBOSE) log.debug("IF_ICMPGT replaced by Symbolic IF_ICMPGT");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceSymbolicJumpInsn("barad/symboliclibrary/integer/IF_ICMPGT", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceIfConstraint(IF_ICMPGT, PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPLE) {
 			if (VERBOSE) log.debug("IF_ICMPLE replaced by Symbolic IF_ICMPLE");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceSymbolicJumpInsn("barad/symboliclibrary/integer/IF_ICMPLE", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceIfConstraint(IF_ICMPLE, PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPLT) {
 			if (VERBOSE) log.debug("IF_ICMPLT replaced by Symbolic IF_ICMPLT");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceSymbolicJumpInsn("barad/symboliclibrary/integer/IF_ICMPLT", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceIfConstraint(IF_ICMPLT, PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPNE) {
 			if (VERBOSE) log.debug("IF_ICMPNE replaced by Symbolic IF_ICMPNE");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceSymbolicJumpInsn("barad/symboliclibrary/integer/IF_ICMPNE", "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V");
+			writeCodeToIntroduceIfConstraint(IF_ICMPNE, PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.GOTO) {
 			Integer backtrackSteps = backtrackLabels.get(label);
 			if (backtrackSteps != null) {
@@ -155,7 +179,9 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 				backtrackLabels.remove(label);
 			}
 			addBacktrackMarker(label);
-			test = true;
+			if (!switchDefaultLabels.contains(label)) {
+				reverseBranchConstraints = true;
+			}
 		} else {
 			if (VERBOSE) log.debug("VISIT JUMP INSTRUCTION: Opcode: " + opcode + ", Label: " + label.toString() + ";");
 			mv.visitJumpInsn(opcode, label);
@@ -163,15 +189,24 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 	
 	public void visitLabel(Label label) {	
-		Integer count;
-		if ((count = backtrackLabels.remove(label)) != null) {
-			while (count > 0) {
-				if (test && count == 1) {
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "reverseBranchConstraints", "()V");
-					test = false;
+		if (lookupSwichValues.size() > 0 && lookupSwichValues.containsKey(label)) {
+			Integer value;
+			if ((value = lookupSwichValues.remove(label)) != null) {
+				writeCodeToCreateNewState();
+				writeCodeToIntroduceSwitchConstraint(value);	
+			}
+		} else {	
+			Integer count;
+			if ((count = backtrackLabels.remove(label)) != null) {
+				while (count > 0) {
+					//reverse constrains only if this is the else
+					if (reverseBranchConstraints && count == 1 && !switchDefaultLabels.remove(label)) {
+						mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "reverseBranchConstraints", REVERSE_BRANCH_CONSTRAINTS_SIGNATURE);
+						reverseBranchConstraints = false;
+					}
+					writeCodeToBacktrack();
+					count--;
 				}
-				count--;
-				writeCodeToBacktrack();
 			}
 		}
 		if (VERBOSE) log.debug("VISIT LABEL: Label: " + label.toString() + ";");
@@ -198,8 +233,14 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 
 	public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-		if (VERBOSE) 	log.debug("VISIT LOOKUP SWITCH INSTRUCTION: DefHandlerBlock: " + dflt.toString() + ";");
-		mv.visitLookupSwitchInsn(dflt, keys, labels);
+		writeCodeToCreateNewState();
+		writeCodeToIntroduceSwitchConstraint(keys[0]);	
+		addBacktrackMarker(dflt);
+		switchDefaultLabels.add(dflt);
+		for (int i = 1; i < labels.length; i++) {
+			lookupSwichValues.put(labels[i], keys[i]);
+		}
+		if (VERBOSE) log.debug("VISIT LOOKUP SWITCH INSTRUCTION: DefHandlerBlock: " + dflt.toString() + ";");
 	}
 
 	public void visitMaxs(int maxStack, int maxLocals) {
@@ -251,6 +292,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		} else if (opcode == Opcodes.ILOAD || opcode == Opcodes.LLOAD || 
 				   opcode == Opcodes.FLOAD || opcode == Opcodes.DLOAD ||
 				   opcode == Opcodes.ALOAD) {
+			indexOfVariablesUsedForSwitch.push(var);
 			mv.visitVarInsn(Opcodes.ALOAD, var);
 		} else {
 			mv.visitVarInsn(opcode, var);
@@ -258,15 +300,24 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 	
 	/**
+	 * Add a label at which the program should backtrack. Note
+	 * that at a label multiple backtracks are possible
+	 * @param label The label
+	 */
+	private void addBacktrackMarker(Label label) {
+		Integer value = backtrackLabels.get(label); 
+		if (value == null) {
+			backtrackLabels.put(label, 1);
+		} else {
+			backtrackLabels.put(label, value + 1);
+		}
+	}
+	
+	/**
 	 * Writes bytecode that generates a new program state
 	 */
 	private void writeCodeToCreateNewState() {
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "createNewState", "()V");
-		if (modifiedVariablesForState.size() > 0) {
-			modifiedVariablesForState.push(new HashSet<Integer>(modifiedVariablesForState.peek()));
-		} else {
-			modifiedVariablesForState.push(new HashSet<Integer>());
-		}
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "createNewState", "()V");
 	}
 	
 	/**
@@ -275,16 +326,16 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	 * @param operand The integer value to be replaced
 	 */
 	private void writeCodeToIntroduceSymbolicIntegerConstant(int opcode, int operand) {
-		mv.visitTypeInsn(Opcodes.NEW, "barad/symboliclibrary/integer/ICONST");
+		mv.visitTypeInsn(Opcodes.NEW, ICONST);
 		mv.visitInsn(Opcodes.DUP);
 		mv.visitIntInsn(opcode, operand);
-		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "barad/symboliclibrary/integer/ICONST", "<init>", "(I)V");
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, ICONST, "<init>", ICONST_SIGNATURE);
 	}
 	
 	private void writeCodeToIntroduceSymbolicIntegerVariable(int index) {
-		mv.visitTypeInsn(Opcodes.NEW, "barad/symboliclibrary/integer/IVAR");
+		mv.visitTypeInsn(Opcodes.NEW, IVAR);
 		mv.visitInsn(Opcodes.DUP);
-		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "barad/symboliclibrary/integer/IVAR", "<init>", "()V");
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, IVAR, "<init>", IVAR_SIGNATURE);
 		mv.visitVarInsn(Opcodes.ASTORE, index);
 	}
 	
@@ -299,7 +350,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		modifiedVariablesForState.peek().add(var);
 		mv.visitVarInsn(Opcodes.ALOAD, var);
 		mv.visitIntInsn(Opcodes.BIPUSH, var);
-    	mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "addLocalVariable", "(Ljava/lang/Object;I)Ljava/lang/Object;");
+    	mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "addLocalVariable", PATH_ADD_LOCAL_VARIABLE_SIGNATURE);
 	}
 	
 	/**
@@ -310,24 +361,38 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	 */
 	private void wirteCodeToStoreField(String owner, String name, String desc) {
 		mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, desc);
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "addLocalField", "(Ljava/lang/Object;Ljava/lang/String;)V");
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "addLocalField", PATH_ADD_LOCAL_FIELD_SIGNATURE);
 	}
 	
 	/**
 	 * Writes bytecode to backtrack i.e. to restore all modified local 
 	 * variables and remove the current state
-	 * TODO: Should restore the modifid class fields also
+	 * TODO: Should restore the modified class fields also
 	 */
 	private void writeCodeToBacktrack() {
+		writeCodeToDisplayMessage("Backtracking...");
 		if (modifiedVariablesForState.size() > 0) {
 			for (Integer i: modifiedVariablesForState.peek()) {
 				mv.visitIntInsn(Opcodes.BIPUSH, i);
-				mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "getVariableValue", "(I)Ljava/lang/Object;");
+				mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "getVariableValue", PATH_ADD_GET_VARIABLE_VALUE_SIGNATURE);
 				mv.visitVarInsn(Opcodes.ASTORE, i);
 			}
 			modifiedVariablesForState.pop();
 		}
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "removeLastState", "()V");
+		writeCodeToDisplayMessage("Backtracking complete");
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "removeLastState", PATH_REMOVE_LAST_STATE_SIGNATURE);
+	}
+	
+	/**
+	 * Writtes code to display a message. For testing purposes.
+	 * @param message The text to be displayed
+	 */
+	private void writeCodeToDisplayMessage(String message) {
+		if (DEBUG) {
+			mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+			mv.visitLdcInsn(message);
+			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
+		}
 	}
 	
 	/**
@@ -337,10 +402,23 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	 * @param symbolicClassName The name of a symbolic class used to replace the jump instruction
 	 * @param Descriptor of the symbolic operation's constructor
 	 */
-	private void writeCodeToIntroduceSymbolicJumpInsn (String symbolicClassName, String descriptor) {
+	private void writeCodeToIntroduceIfConstraint (String symbolicClassName, String descriptor) {
 		writeCodeToCreateNewState();
 		writeCodeToIntroduceSymbolicOperation(symbolicClassName, descriptor);
-	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "barad/symboliclibrary/path/Path", "addBranchConstraint", "(Ljava/lang/Object;)Ljava/lang/Object;");
+	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "addBranchConstraint", PATH_ADD_BRANCH_CONSTRAINT);
+	}
+	
+	/**
+	 * Writes bytecode that that adds switch constraint to the path constraints
+	 * @param index Value of the control variable that should be satisfied 
+	 */
+	private void writeCodeToIntroduceSwitchConstraint(int index) {
+		mv.visitTypeInsn(Opcodes.NEW, IF_ICMPNE);
+		mv.visitInsn(Opcodes.DUP);
+		visitVarInsn(Opcodes.ALOAD, indexOfVariablesUsedForSwitch.peek());
+		writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, index);
+	    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, IF_ICMPNE, "<init>", PATH_CONSTRAINT_SIGNATURE);
+	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "addBranchConstraint", PATH_ADD_BRANCH_CONSTRAINT);
 	}
 	
 	/**
@@ -398,7 +476,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	private static String updateClassName(String name) {
 		String newName = name;
 		if (name.equals("I")) {
-			newName = "Lbarad/symboliclibrary/integer/IntegerInterface;";
+			newName = INTEGER_INTERFACE;
 		} else if (false) {
 			//add conditions fo all basic interfaces i.e DoubleInterface and so on
 		} else if (!name.equals("") && !name.equals("V") && !name.equals("Z")) {
