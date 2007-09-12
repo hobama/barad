@@ -8,5 +8,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/SymbolicExecution/lib/automaton.jar" sourcepath="C:/Java/Java String Analyzer/doc"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

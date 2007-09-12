@@ -6,23 +6,53 @@ public class IfExample {
 	
 	private int test;
 	
+	/*Works OK
+	public IfExample() {
+		int x = 0;
+		int y = 0;
+		
+		switch (y) {
+		case 1:
+			x = 1;
+			break;
+		case 2:
+			x = 2;
+			break;
+		}
+	}
+	*/
+	//private enum Test {AAA, BBB;}
+	
+	/*
 	public IfExample() {
 		int x = 10;
 		int y = 99;
 		if (y > 89) {
 			x = x + 10;
+			switch (y) {
+			case 1:
+				x = 1;
+				break;
+			case 2:
+				x = 2;
+				break;
+			}
 			x = x / 20;
 		} else {
 			y = x + 8;
 		}
 		x = x + y;
 	}
+	*/
 	
-	/*This is OK
+	//This is OK
 	public IfExample() {
+		
+		int y = 123;
 		int x = 10;
+		x = x + y;
 		if (x > 8) {
-			x = 6;
+			x = x + y;
 			if (x > 20) {
 				x = 333;
 				if (x == 4) {
@@ -46,6 +76,14 @@ public class IfExample {
 			HashSet<String> set1 = new HashSet<String>();
 			set1.add("Test1");
 			Dummy dummy = new Dummy(set1);
+			switch (y) {
+			case 1:
+				x = 1;
+				break;
+			case 2:
+				x = 2;
+				break;
+			}
 			if (y == 100) {
 				y = 22;
 				HashSet<String> set2 = new HashSet<String>();
@@ -55,7 +93,5 @@ public class IfExample {
 		} else {
 			x = 20;
 		}
-	}
-	*/
-
+	}	
 }
