@@ -1,6 +1,9 @@
 package barad.instrument;
 
+import static barad.util.Properties.DEBUG;
 import static barad.util.Properties.VERBOSE;
+
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.objectweb.asm.AnnotationVisitor;
@@ -110,5 +113,33 @@ public class SymbolicClassAdapter  extends ClassAdapter{
 			interfacez = interfaces;
 		}
 		return interfacez;
+	}
+	
+	/**
+	 * Identifies which variables in the method variable table are inputs
+	 * of the method. The inputs of the first symbolically executed method
+	 * are the ones for which we should generate concrete values. These sre
+	 * stored in a HashMap in the Util static class as mappings of index to 
+	 * type descriptor.  
+	 * @param desc Descriptor of the method
+	 */
+	public void identifyInputs(String desc) {
+		int counter = 0;
+		String parameters = desc.substring(desc.indexOf('(') + 1, desc.indexOf(')'));
+		String[] groups = parameters.split(";");
+		for (String g: groups) {
+			if (g.contains("/") || g.toUpperCase() != g) {
+				Util.getProgramInputs().put(counter++, g);
+			} else {
+				for (Character c: g.toCharArray()) {
+					Util.getProgramInputs().put(counter++, c.toString());
+				}
+			}
+		}
+		if (DEBUG && VERBOSE) {
+			for (Map.Entry<Integer, String> e: Util.getProgramInputs().entrySet()) {
+				System.out.println("Index: " + e.getKey() + " Type: " + e.getValue());
+			}
+		}
 	}
 }
