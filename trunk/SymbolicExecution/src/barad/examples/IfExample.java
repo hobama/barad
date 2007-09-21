@@ -2,9 +2,19 @@ package barad.examples;
 
 import java.util.HashSet;
 
+import barad.symboliclibrary.string.Equals;
+import barad.symboliclibrary.string.SymbolicString;
+
 public class IfExample {
 	
 	private int test;
+	
+	public IfExample() {
+		String s1 = "test";
+		if (s1.equals("test")) {
+			int x = 0;
+		}
+	}
 	
 	/*Works OK
 	public IfExample() {
@@ -44,8 +54,9 @@ public class IfExample {
 		x = x + y;
 	}
 	*/
-	
+
 	//This is OK
+	/*
 	public IfExample() {
 		
 		int y = 123;
@@ -94,4 +105,5 @@ public class IfExample {
 			x = 20;
 		}
 	}	
+	*/
 }
