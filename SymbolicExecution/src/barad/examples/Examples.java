@@ -4,7 +4,7 @@ import static barad.util.Properties.LOG4J_PROPERTIES_FILE_NAME;
 
 import org.apache.log4j.xml.DOMConfigurator;
 
-import barad.symboliclibrary.integer.ICONST;
+import barad.symboliclibrary.integers.ICONST;
 import barad.util.Util;
 
 public class Examples {
