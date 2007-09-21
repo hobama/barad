@@ -18,7 +18,6 @@ import java.io.Serializable;
 	 /**
 	  * Constructor that generates a new instance with 
 	  * unique id and name (is specified)
-	  * 
 	  * @param name The name of the entity (optional)
 	  */
 	 public SymbolicEntity(String name) {
@@ -38,20 +37,19 @@ import java.io.Serializable;
      /**
       * Gives the unique name of the entity in
       * the instrumented code
-      * 
       * @return Unique name of the entity
       */
      public String getId() {
             return name + "_" + String.valueOf(id);
      }
      
- 	@Override
-	public String toString() {
-		return null;
-	}
+ 	 @Override
+	 public String toString() {
+		 return null;
+	 }
 	
-	@Override
-	public Object clone() {
-		return null;
-	}
+	 @Override
+	 public Object clone() {
+		 return null;
+	 }
 }
