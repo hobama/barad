@@ -3,4 +3,5 @@
 <properties>
 	<comment>Hi</comment>
 	<entry key="instrumented.classes.path">C:\TEMP CLASSES</entry>
+	<entry key="default.string.length">50</entry>
 </properties>

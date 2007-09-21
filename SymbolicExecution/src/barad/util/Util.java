@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -28,6 +29,7 @@ public class Util {
 	private static int classId;
 	private static int methodId;
 	private static WeakHashMap<String, String> loadedClasses = new WeakHashMap<String, String>();
+	private static HashMap<Integer, String> programInputs = new HashMap<Integer, String>(); 
 	
 	public static void loadFromSystemPropetiesXML() {
 		Util.loadFromSystemPropetiesXML(null);
@@ -209,6 +211,14 @@ public class Util {
 
 	public static void increaseMethodId() {
 		Util.methodId++;
+	}
+
+	public static HashMap<Integer, String> getProgramInputs() {
+		return programInputs;
+	}
+
+	public static void setProgramInputs(HashMap<Integer, String> programInputs) {
+		Util.programInputs = programInputs;
 	}
 }
 
