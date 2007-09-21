@@ -19,7 +19,7 @@ public class State {
 	private ConstraintType type;
 	private LinkedHashMap<Integer, Object> variableValues;
 	private LinkedHashMap<String, Object> fieldValues;
-	private LinkedList<PathConstraint> consttraints;
+	private LinkedList<PathConstraintInterface> constraints;
 	private Label backtrackLabel;
 	
 	public Label getBacktrackLabel() {
@@ -33,7 +33,7 @@ public class State {
 	public State() {
 		variableValues = new LinkedHashMap<Integer, Object>();
 		fieldValues = new LinkedHashMap<String, Object>();
-		consttraints = new LinkedList<PathConstraint>();
+		constraints = new LinkedList<PathConstraintInterface>();
 		id = ids++;
 	}
 
@@ -82,12 +82,12 @@ public class State {
 		this.type = type;
 	}
 
-	public LinkedList<PathConstraint> getConsttraints() {
-		return consttraints;
+	public LinkedList<PathConstraintInterface> getConsttraints() {
+		return constraints;
 	}
 
-	public void setConsttraints(LinkedList<PathConstraint> consttraints) {
-		this.consttraints = consttraints;
+	public void setConsttraints(LinkedList<PathConstraintInterface> consttraints) {
+		this.constraints = consttraints;
 	}
 }
 

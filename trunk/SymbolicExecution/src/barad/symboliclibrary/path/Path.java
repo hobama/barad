@@ -17,7 +17,7 @@ import barad.symboliclibrary.common.ConstraintType;
 public class Path {
 	private static Logger log = Logger.getLogger(Path.class);  
 	private static LinkedList<State> stateStack = new LinkedList<State>();
-	private static LinkedList<PathConstraint> reversedConstraints = null;
+	private static LinkedList<PathConstraintInterface> reversedConstraints = null;
 	
 	/**
 	 * Add a new branch contraint to the last program state
@@ -25,12 +25,12 @@ public class Path {
 	 * @return The contsraint
 	 */
 	public static Object addBranchConstraint(Object constraint) {
-		if (constraint instanceof PathConstraint) {
-			PathConstraint pathConstraint = ((PathConstraint)constraint).inverse(); 
+		if (constraint instanceof PathConstraintInterface) {
+			PathConstraintInterface pathConstraintInterface = ((PathConstraintInterface)constraint).inverse(); 
 			State lastState = stateStack.peek();
-			lastState.setType(pathConstraint.getType());
-			lastState.getConsttraints().add(pathConstraint);
-			log.debug("Added constraint: " + pathConstraint.toString());
+			lastState.setType(pathConstraintInterface.getType());
+			lastState.getConsttraints().add(pathConstraintInterface);
+			log.debug("Added constraint: " + pathConstraintInterface.toString());
 		} else {
 			log.warn("Unrecognized constraint class");
 		}
@@ -51,7 +51,7 @@ public class Path {
 		} else {
 			State state = stateStack.peek();
 			state.getVariableValues().put(id, deepCloneBySerialization(variable));
-			log.info("Local variale added: " + variable.toString() + " id: " + id);
+			log.info("Local variale added: " + (variable == null ? null : variable.toString()) + " id: " + id);
 		}
 		return variable;
 	}
@@ -90,7 +90,7 @@ public class Path {
 		}
 		if (reversedConstraints != null && reversedConstraints.size() > 0 
 				&& reversedConstraints.peek().getType() == ConstraintType.IF) {
-			for (PathConstraint pc: reversedConstraints) {
+			for (PathConstraintInterface pc: reversedConstraints) {
 				addBranchConstraint(pc);
 			}	
 		}
@@ -192,7 +192,7 @@ public class Path {
 		log.info("STORED CONSTRAINTS");
 		if (stateStack.size() > 3) {
 			for (Iterator<State> iterator = stateStack.iterator(); iterator.hasNext(); iterator.next()) {
-				for (PathConstraint pc: iterator.next().getConsttraints()) {
+				for (PathConstraintInterface pc: iterator.next().getConsttraints()) {
 					log.info(/*"State: " + iterator.toString() + */" Constraint: " + pc.toString());
 				}
 			}
@@ -204,7 +204,7 @@ public class Path {
 	 */
 	public static void printLastStateConstraints() {
 		log.info("STORED CONSTRAINTS FOR THE LAST STATE");
-		for (PathConstraint pc: stateStack.peek().getConsttraints()) {
+		for (PathConstraintInterface pc: stateStack.peek().getConsttraints()) {
 			log.info("State: " + stateStack.peek().toString() + " Constraint: " + pc.toString());
 		}
 	}
