@@ -2,12 +2,6 @@ package barad.symboliclibrary.integers;
 
 import barad.symboliclibrary.common.CommonInterface;
 
-/**
- * Class that implements the symbolic operation
- * "integer greater than or equal"
- * 
- * @author Svetoslav Ganov
- */
 public interface IntegerInterface extends CommonInterface {   
 	/**
 	 * @param Instance that implements IntegerInterface
@@ -31,5 +25,5 @@ public interface IntegerInterface extends CommonInterface {
 	 * @param Instance that implements IntegerInterface
 	 * @return New integer difference operation
 	 */
-	ISUB IDIF(SymbolicIntegerEntity op);
+	ISUB ISUB(SymbolicIntegerEntity op);
 }

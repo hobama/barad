@@ -3,13 +3,11 @@ package barad.symboliclibrary.integers;
 import java.io.Serializable;
 
 /**
- * Class that implements the symbolic operation
- * "integer division"
- * 
+ * Class that implements the symbolic operation "integer division"
  * @author Svetoslav Ganov
  */
 public class IDIV extends IntegerOperation implements Serializable {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1L;
 	
 	public IDIV (IntegerInterface op1, IntegerInterface op2) {
 		super(op1, op2, "/", "IDIV");
@@ -17,8 +15,8 @@ public class IDIV extends IntegerOperation implements Serializable {
 	
 	@Override
 	public Object clone() {
-		IDIV iadd = new IDIV((IntegerInterface)op1.clone(), (IntegerInterface)op2.clone());
-		iadd.setName(this.getName());
-		return iadd;
+		IDIV idiv = new IDIV((IntegerInterface)op1.clone(), (IntegerInterface)op2.clone());
+		idiv.setName(this.getName());
+		return idiv;
 	}
 }

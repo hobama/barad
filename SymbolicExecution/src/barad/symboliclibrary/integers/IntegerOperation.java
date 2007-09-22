@@ -6,7 +6,6 @@ import java.io.Serializable;
  * Class that is inherited by all classes in the
  * library that represent symbolic integer operations
  * (primitives and expressions) 
- * 
  * @author Svetoslav Ganov
  */
 public abstract class IntegerOperation extends SymbolicIntegerEntity implements Serializable {
@@ -27,7 +26,6 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
    
    /**
     * Gets the string equivalent of the expression
-    * 
     * @return The expression as a string
     */
   	@Override
@@ -43,7 +41,6 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
     /**
      * Multiplies the current expression with another symbolic
      * integer expression
-     * 
      * @return New symbolic integer multiplication
      */
     public IMUL IMUL(SymbolicIntegerEntity op) {
@@ -53,7 +50,6 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
     /**
      * Divides the current expression with another symbolic
      * integer expression
-     * 
      * @return New symbolic integer division
      */
     public IDIV IDIV(SymbolicIntegerEntity op) {
@@ -63,7 +59,6 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
     /**
      * Adds the current expression with another symbolic
      * integer expression
-     * 
      * @return New symbolic integer addition
      */
     public IADD IADD(SymbolicIntegerEntity op) {
@@ -73,10 +68,9 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
     /**
      * Substracts from the current expression with another 
      * symbolic integer expression
-     * 
      * @return New symbolic integer division
      */
-    public ISUB IDIF(SymbolicIntegerEntity op) {
+    public ISUB ISUB(SymbolicIntegerEntity op) {
     	return new ISUB(this, op);
     }
 }
