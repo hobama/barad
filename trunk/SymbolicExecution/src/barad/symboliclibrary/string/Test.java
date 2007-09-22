@@ -45,19 +45,21 @@ public class Test {
 		 * TODO: Test again thoroughly
 		 */
 		
-		StringInterface s1 = new SymbolicString(10);
-		StringInterface s2 = new SymbolicString("Svetlio");
-		Equals e1 = new Equals(s1, s2);
+		StringInterface s1 = new SymbolicString("test");
+		StringInterface s2 = new SymbolicString("test");
+		Equals e1 = (Equals)new Equals(s1, s2).inverse().inverse();
 		System.out.println("1st case: Constraint Valid: " + e1.isValid());
 		System.out.println("1st case: Concretized: " + e1.concretize());
 		System.out.println("1st case: Accepted: " + e1.getConstraintString().accept("Svetliofff"));
+		
+		/*
 		StringInterface s3 = s1.substring(3);
 		StringInterface s4 = new SymbolicString("Sve");
 		Equals e2 = (Equals)new Equals(s3, s4).inverse();
 		System.out.println("2nd case: Constraint Valid: " + e2.isValid());
 		System.out.println("2st case: Concretized: " + e2.concretize());
 		System.out.println("2st case: Accepted: " + e2.getConstraintString().accept("SveSvfffff"));
-		
+		*/
 		//StringInterface allConstraints = e1.getConstraintString()
 	}
 }

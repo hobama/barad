@@ -3,8 +3,14 @@ package barad.symboliclibrary.string;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import barad.symboliclibrary.integers.ICONST;
+
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
+
+import static barad.util.Properties.DEBUG;
 
 /**
  * Class that represents symbolic string
@@ -13,6 +19,7 @@ import dk.brics.automaton.BasicAutomata;
 @SuppressWarnings("unused")
 public class SymbolicString extends SymbolicStringEntity implements StringInterface, Serializable {
 	private static final long serialVersionUID = 1L; 
+	private Logger log;
 	private int length;
 	private int begIndex;
 	private int endIndex;
@@ -95,11 +102,14 @@ public class SymbolicString extends SymbolicStringEntity implements StringInterf
 	 * @return New symbolic string that is the character at a specified position 
 	 *         in this one
 	 */
-	public StringInterface charAt(int index) {
+	public StringInterface charAt(ICONST index) {
+		if (DEBUG) {
+			System.out.println("CahrAt(" + index + ") Invoked");
+		}
 		SymbolicString result = new SymbolicString();
 		result.length = length;
-		result.begIndex = index;
-		result.endIndex = index + 1;
+		result.begIndex = index.getValue();
+		result.endIndex = index.getValue() + 1;
 		result.automaton = automaton.clone();
 		return result;
 	}
@@ -109,10 +119,13 @@ public class SymbolicString extends SymbolicStringEntity implements StringInterf
 	 * @param begIndex The beginning index
 	 * @return New symbolic string that is substring of this one
 	 */
-	public StringInterface substring(int begIndex) {
+	public StringInterface substring(ICONST begIndex) {	
+		if (DEBUG) {
+			System.out.println("substring(" + begIndex.getValue() + ") Invoked");
+		}
 		SymbolicString result = new SymbolicString();
 		result.length = length;
-		result.begIndex = begIndex;
+		result.begIndex = begIndex.getValue();
 		result.endIndex = endIndex;
 		result.automaton = automaton.clone();
 		return result;
@@ -124,11 +137,14 @@ public class SymbolicString extends SymbolicStringEntity implements StringInterf
 	 * @param endIndex The end index exclusive
 	 * @return New symbolic string that is substring of this one
 	 */
-	public StringInterface substring(int begIndex, int endIndex) {
+	public StringInterface substring(ICONST begIndex, ICONST endIndex) {
+		if (DEBUG) {
+			System.out.println("substring(" + begIndex.getValue() + ", " + endIndex.getValue() + ") Invoked");
+		}
 		SymbolicString result = new SymbolicString();
 		result.length = length;
-		result.begIndex = begIndex;
-		result.endIndex = endIndex;
+		result.begIndex = begIndex.getValue();
+		result.endIndex = endIndex.getValue();
 		result.automaton = automaton.clone();
 		return result;
 	}
@@ -139,6 +155,9 @@ public class SymbolicString extends SymbolicStringEntity implements StringInterf
 	 * @return New symbolic string that is concatenation of this one and the parmeter
 	 */
 	public StringInterface concat(StringInterface stringInterface) {
+		if (DEBUG) {
+			log.info("concat() Invoked");
+		}
 		SymbolicString result = new SymbolicString();
 		result.length = length + ((SymbolicString)stringInterface).length;
 		result.begIndex = begIndex;
