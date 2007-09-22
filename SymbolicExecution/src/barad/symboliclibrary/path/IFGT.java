@@ -6,25 +6,25 @@ import barad.symboliclibrary.integers.ICONST;
 import barad.symboliclibrary.integers.IntegerInterface;
 
 /**
- * Symbolic path condition for replacing the bytecode instruction IFEQ
+ * Symbolic path condition for replacing the bytecode instruction IFGT
  * @author svetoslavganov
  */
-public class IFEQ extends IntegerPathConstraint implements Serializable {
+public class IFGT extends IntegerPathConstraint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	public IFEQ(IntegerInterface op1) {
-		super(op1, new ICONST(0), "==", "IFEQ");
+	public IFGT(IntegerInterface op1) {
+		super(op1, new ICONST(0), ">", "IFGT");
 	}
 	
 	@Override
 	public IntegerPathConstraint inverse() {
-		return new IFNE(super.getOp1());
+		return new IFLE(super.getOp1());
 	}
 	
 	@Override
 	public Object clone() {
-		IFEQ ifeq = new IFEQ((IntegerInterface)op1.clone());
-		ifeq.setName(this.getName());
-		return ifeq; 
+		IFGT ifgt = new IFGT((IntegerInterface)op1.clone());
+		ifgt.setName(this.getName());
+		return ifgt; 
 	}
 }
