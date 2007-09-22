@@ -36,7 +36,7 @@ public class Test {
 	private static String updateClassName(String name) {
 		String newName = name;
 		if (name.equals("I")) {
-			newName = "barad/symboliclibrary/integer/ICONST;";
+			newName = "barad/symboliclibrary/integer/FCONST;";
 		} else if (false) {
 			//add conditions fo all basic interfaces i.e DoubleInterface and so on
 		} else if (!name.equals("") && !name.equals("V") && !name.equals("Z")) {

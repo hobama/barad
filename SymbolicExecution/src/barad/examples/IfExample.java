@@ -3,18 +3,31 @@ package barad.examples;
 import java.util.HashSet;
 
 import barad.symboliclibrary.string.Equals;
+import barad.symboliclibrary.string.StringInterface;
 import barad.symboliclibrary.string.SymbolicString;
 
 public class IfExample {
 	
 	private int test;
 	
+	public void IfExample() {
+		float f = 4;
+		if (f > 10f) {
+			f = 10f;
+		} else {
+			f = 100f;
+		}
+	}
+	/*
 	public IfExample() {
 		String s1 = "test";
 		if (s1.equals("test")) {
-			int x = 0;
+			s1 = s1.substring(2);
+		} else {
+			s1 = "opala";
 		}
 	}
+	*/
 	
 	/*Works OK
 	public IfExample() {
@@ -37,7 +50,9 @@ public class IfExample {
 	public IfExample() {
 		int x = 10;
 		int y = 99;
-		if (y > 89) {
+		String s1 = "test";
+		if (s1.equals("test")) {
+		s1 = s1.substring(2);
 			x = x + 10;
 			switch (y) {
 			case 1:
@@ -45,10 +60,12 @@ public class IfExample {
 				break;
 			case 2:
 				x = 2;
+				Test(y);
 				break;
 			}
 			x = x / 20;
 		} else {
+		s1 = "opala";
 			y = x + 8;
 		}
 		x = x + y;
@@ -78,7 +95,9 @@ public class IfExample {
 			x = 123;
 		}
 	}
+	*/
 	
+	/*
 	private void Test(int x) {
 		int y = 2;	
 		if (x > 21) {
@@ -104,6 +123,7 @@ public class IfExample {
 		} else {
 			x = 20;
 		}
-	}	
-	*/
+	}
+	*/	
+	
 }

@@ -14,16 +14,16 @@ public class Examples {
 		
 		/*
 		Path.createNewState();
-		ICONST iconst = new ICONST(10);
+		FCONST iconst = new FCONST(10);
 		Path.addLocalVariable(iconst, "X");
-		Path.addLocalVariable(new ICONST(100), "X");
+		Path.addLocalVariable(new FCONST(100), "X");
 		iconst.setValue(12345);
-		Path.addLocalVariable(new ICONST(103), "Y");
+		Path.addLocalVariable(new FCONST(103), "Y");
 		Path.getLastState().printValueToClonePairs();	
 		*/
 		
-		//addLocalVariable(new ICONST(10), "X");
-		//ICONST result = (ICONST)deepCloneBySerialization(iconst);
+		//addLocalVariable(new FCONST(10), "X");
+		//FCONST result = (FCONST)deepCloneBySerialization(iconst);
 		//LinkedList<Integer> list = new LinkedList<Integer>();
 		//LinkedList<Integer> result = (LinkedList<Integer>)deepCloneBySerialization(list);
 		//System.out.println(result);
