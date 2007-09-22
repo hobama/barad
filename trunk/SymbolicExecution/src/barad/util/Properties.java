@@ -10,7 +10,7 @@ public interface Properties {
 	/**
 	 * Specifies if the debug mode
 	 */
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	
 	/**
 	 * Specifies if the logging is verbose or not
