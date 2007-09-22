@@ -1,11 +1,11 @@
 package barad.instrument;
 
+import static barad.util.Properties.DEBUG;
 import static barad.util.Properties.VERBOSE;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
@@ -14,14 +14,20 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import static barad.util.Properties.DEBUG;
 
 public class SymbolicMethodAdapter implements MethodVisitor {
-	private static final String IVAR = "barad/symboliclibrary/integer/IVAR";
+	private static final String IVAR = "barad/symboliclibrary/integers/IVAR";
 	private static final String IVAR_SIGNATURE = "()V";
-	private static final String ICONST = "barad/symboliclibrary/integer/ICONST";
+	private static final String ICONST = "barad/symboliclibrary/integers/ICONST";
 	private static final String ICONST_SIGNATURE = "(I)V";
-	private static final String INTEGER_INTERFACE = "Lbarad/symboliclibrary/integer/IntegerInterface;";
+	private static final String INTEGER_INTERFACE = "Lbarad/symboliclibrary/integers/IntegerInterface;";
+	//============================================================================================
+	private static final String FVAR = "barad/symboliclibrary/floats/FVAR";
+	private static final String FVAR_SIGNATURE = "()V";
+	private static final String FCONST = "barad/symboliclibrary/floats/FCONST";
+	private static final String FCONST_SIGNATURE = "(F)V";
+	private static final String FLOAT_INTERFACE = "Lbarad/symboliclibrary/floats/FloatInterface;";
+	//============================================================================================
 	private static final String PATH = "barad/symboliclibrary/path/Path";
 	private static final String PATH_ADD_LOCAL_FIELD_SIGNATURE = "(Ljava/lang/Object;Ljava/lang/String;)V";
 	private static final String PATH_ADD_LOCAL_VARIABLE_SIGNATURE = "(Ljava/lang/Object;I)Ljava/lang/Object;";
@@ -29,21 +35,28 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	private static final String PATH_ADD_BRANCH_CONSTRAINT = "(Ljava/lang/Object;)Ljava/lang/Object;";
 	private static final String PATH_REMOVE_LAST_STATE_SIGNATURE = "()V";
 	private static final String REVERSE_BRANCH_CONSTRAINTS_SIGNATURE = "()V";
-	private static final String IFEQ  = "barad/symboliclibrary/integer/IFEQ";
-	private static final String IF_ICMPEQ = "barad/symboliclibrary/integer/IF_ICMPEQ";
-	private static final String IF_ICMPGE = "barad/symboliclibrary/integer/IF_ICMPGE";
-	private static final String IF_ICMPGT = "barad/symboliclibrary/integer/IF_ICMPGT";
-	private static final String IF_ICMPLE = "barad/symboliclibrary/integer/IF_ICMPLE";
-	private static final String IF_ICMPLT = "barad/symboliclibrary/integer/IF_ICMPLT";
-	private static final String IF_ICMPNE = "barad/symboliclibrary/integer/IF_ICMPNE";
-	private static final String INTEGER_PATH_CONSTRAINT_SIGNATURE = "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V";
+	private static final String IFEQ  = "barad/symboliclibrary/path/IFEQ";
+	private static final String IFNE  = "barad/symboliclibrary/path/IFNE";
+	private static final String IFLT  = "barad/symboliclibrary/path/IFLT";
+	private static final String IFLE  = "barad/symboliclibrary/path/IFLE";
+	private static final String IFGT  = "barad/symboliclibrary/path/IFGT";
+	private static final String IFGE  = "barad/symboliclibrary/path/IFGE";
+	private static final String IF_ICMPEQ = "barad/symboliclibrary/path/IF_ICMPEQ";
+	private static final String IF_ICMPGE = "barad/symboliclibrary/path/IF_ICMPGE";
+	private static final String IF_ICMPGT = "barad/symboliclibrary/path/IF_ICMPGT";
+	private static final String IF_ICMPLE = "barad/symboliclibrary/path/IF_ICMPLE";
+	private static final String IF_ICMPLT = "barad/symboliclibrary/path/IF_ICMPLT";
+	private static final String IF_ICMPNE = "barad/symboliclibrary/path/IF_ICMPNE";
+	private static final String INTEGER_PATH_CONSTRAINT_SIGNATURE = "(Lbarad/symboliclibrary/integers/IntegerInterface;Lbarad/symboliclibrary/integers/IntegerInterface;)V";
 	private static final String EQUALS = "barad/symboliclibrary/string/Equals";
 	private static final String STRING_PATH_CONSTRAINT_SIGNATURE = "(Lbarad/symboliclibrary/string/StringInterface;Lbarad/symboliclibrary/string/StringInterface;)V";
-	private static final String IADD = "barad/symboliclibrary/integer/IADD";
-	private static final String IDIV = "barad/symboliclibrary/integer/IDIV";
-	private static final String IMUL = "barad/symboliclibrary/integer/IMUL";
-	private static final String ISUB = "barad/symboliclibrary/integer/ISUB";
-	private static final String INTEGER_OPERATION_SIGNATURE = "(Lbarad/symboliclibrary/integer/IntegerInterface;Lbarad/symboliclibrary/integer/IntegerInterface;)V";
+	//============================================================================================
+	private static final String IADD = "barad/symboliclibrary/integers/IADD";
+	private static final String IDIV = "barad/symboliclibrary/integers/IDIV";
+	private static final String IMUL = "barad/symboliclibrary/integers/IMUL";
+	private static final String ISUB = "barad/symboliclibrary/integers/ISUB";
+	private static final String INTEGER_OPERATION_SIGNATURE = "(Lbarad/symboliclibrary/integers/IntegerInterface;Lbarad/symboliclibrary/integers/IntegerInterface;)V";
+	//============================================================================================
 	private static final String SYMBOLICSTRING = "barad/symboliclibrary/string/SymbolicString";
 	private static final String SYMBOLICSTRING_SIGNATURE = "(Ljava/lang/String;)V";
 	private static final String SYMBOLICSTRING_INTRFACE = "Lbarad/symboliclibrary/string/StringInterface;";
@@ -63,6 +76,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		this.mv = mv;
 		this.log = Logger.getLogger(this.getClass());
 		this.modifiedVariablesForState = new Stack<HashSet<Integer>>();
+		this.modifiedVariablesForState.push(new HashSet<Integer>());
 		this.backtrackLabels = new HashMap<Label, Integer>();
 		this.lookupSwichValues = new HashMap<Label, Integer>();
 		this.indexOfVariablesUsedForSwitch = new Stack<Integer>();
@@ -70,28 +84,28 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		if (VERBOSE) log.debug("VISIT ANNOTATION Name: " + desc + ", Visible: " + visible + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT ANNOTATION Name: " + desc + ", Visible: " + visible + ";");
 		return mv.visitAnnotation(desc, visible);
 	}
 
 	public AnnotationVisitor visitAnnotationDefault() {
-		if (VERBOSE) log.debug("VISIT ANNOTATION" + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT ANNOTATION" + ";");
 		return mv.visitAnnotationDefault();
 	}
 
 	public void visitAttribute(Attribute attr) {
-		if(VERBOSE) log.debug("VISIT ATTRIBUTE: Atribute: " + attr.toString() + ";");
+		if(DEBUG && VERBOSE) log.debug("VISIT ATTRIBUTE: Atribute: " + attr.toString() + ";");
 		mv.visitAttribute(attr);
 	}
 
 	public void visitCode() {
-		if (VERBOSE) log.debug("VISIT CODE" + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT CODE" + ";");
 		writeCodeToCreateNewState();
 		mv.visitCode();
 	}
 
 	public void visitEnd() {
-		if (VERBOSE) log.debug("VISIT END" + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT END" + ";");
 		mv.visitEnd();
 	}
 
@@ -99,18 +113,18 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		if (opcode == Opcodes.PUTFIELD) {
 			wirteCodeToStoreField(owner, name, desc);
 		}	
-		if (VERBOSE) log.debug("VISIT FIELD INSTRUCTION: Opcode: " + opcode + ", Owner: " + owner + ", Name: " + name + ", Descriptor: " + desc + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT FIELD INSTRUCTION: Opcode: " + opcode + ", Owner: " + owner + ", Name: " + name + ", Descriptor: " + desc + ";");
 		mv.visitFieldInsn(opcode, owner, name, modifyDescriptor(desc));
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
-		if (VERBOSE) log.debug("VISIT FRAME: Type: " + type + ", Local vriables#: " + nLocal + ", Stack elements#: " + nStack + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT FRAME: Type: " + type + ", Local vriables#: " + nLocal + ", Stack elements#: " + nStack + ";");
 		mv.visitFrame(type, nLocal, local, nStack, stack);
 	}
 
 	public void visitIincInsn(int var, int increment) {
-		if (VERBOSE) log.debug("VISIT INCREMENTAL INSTRUCTION: Variable: " + var + ", Increment: " + increment + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT INCREMENTAL INSTRUCTION: Variable: " + var + ", Increment: " + increment + ";");
 		mv.visitIincInsn(var, increment);
 		lastMethodInstructionIsStringComparison = false;
 	}
@@ -148,10 +162,10 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	
 	public void visitIntInsn(int opcode, int operand) {
 		if (opcode == Opcodes.BIPUSH || opcode == Opcodes.SIPUSH) {
-			if (VERBOSE) log.debug("Integer constant:" + operand + " replaced by symbolic integer constant");
+			if (DEBUG && VERBOSE) log.debug("Integer constant:" + operand + " replaced by symbolic integer constant");
 			writeCodeToIntroduceSymbolicIntegerConstant(opcode, operand);	
 		} else {
-			if (VERBOSE) log.debug("VISIT INTEGER INSTRUCTION: Opcode: " + opcode + ", Operand: " + operand + ";");
+			if (DEBUG && VERBOSE) log.debug("VISIT INTEGER INSTRUCTION: Opcode: " + opcode + ", Operand: " + operand + ";");
 			mv.visitIntInsn(opcode, operand);
 		}
 		lastMethodInstructionIsStringComparison = false;
@@ -163,38 +177,58 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 			if (lastMethodInstructionIsStringComparison) {
 				writeCodeToIntroduceStringConstraint();
 			} else {
-				if (VERBOSE) log.debug("IFEQ replaced by Symbolic IFEQ");
-				writeCodeToIntroduceIfConstraint(IFEQ, STRING_PATH_CONSTRAINT_SIGNATURE);
-				//dfsd
+				if (DEBUG && VERBOSE) log.debug("IFEQ replaced by Symbolic IFEQ");
+				writeCodeToIntroduceIfConstraint(IFEQ, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 			}
+		} else if (opcode == Opcodes.IFNE) {
+			if (DEBUG && VERBOSE) log.debug("IFNE replaced by Symbolic IFNE");
+			addBacktrackMarker(label);
+			writeCodeToIntroduceIfConstraint(IFNE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+		} else if (opcode == Opcodes.IFLT) {
+			if (DEBUG && VERBOSE) log.debug("IFLT replaced by Symbolic IFLT");
+			addBacktrackMarker(label);
+			writeCodeToIntroduceIfConstraint(IFLT, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+		} else if (opcode == Opcodes.IFLE) {
+			if (DEBUG && VERBOSE) log.debug("IFLE replaced by Symbolic IFLE");
+			addBacktrackMarker(label);
+			writeCodeToIntroduceIfConstraint(IFLE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+		} else if (opcode == Opcodes.IFGT) {
+			if (DEBUG && VERBOSE) log.debug("IFGT replaced by Symbolic IFGT");
+			addBacktrackMarker(label);
+			writeCodeToIntroduceIfConstraint(IFGT, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+		} else if (opcode == Opcodes.IFGE) {
+			if (DEBUG && VERBOSE) log.debug("IFGE replaced by Symbolic IFGE");
+			addBacktrackMarker(label);
+			writeCodeToIntroduceIfConstraint(IFGE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPEQ) {
-			if (VERBOSE) log.debug("IF_ICMPEQ replaced by Symbolic IF_ICMPEQ");
+			if (DEBUG && VERBOSE) log.debug("IF_ICMPEQ replaced by Symbolic IF_ICMPEQ");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IF_ICMPEQ, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPGE) {
-			if (VERBOSE) log.debug("IF_ICMPGE replaced by Symbolic IF_ICMPGE");
+			if (DEBUG && VERBOSE) log.debug("IF_ICMPGE replaced by Symbolic IF_ICMPGE");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IF_ICMPGE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPGT) {
-			if (VERBOSE) log.debug("IF_ICMPGT replaced by Symbolic IF_ICMPGT");
+			if (DEBUG && VERBOSE) log.debug("IF_ICMPGT replaced by Symbolic IF_ICMPGT");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IF_ICMPGT, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPLE) {
-			if (VERBOSE) log.debug("IF_ICMPLE replaced by Symbolic IF_ICMPLE");
+			if (DEBUG && VERBOSE) log.debug("IF_ICMPLE replaced by Symbolic IF_ICMPLE");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IF_ICMPLE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPLT) {
-			if (VERBOSE) log.debug("IF_ICMPLT replaced by Symbolic IF_ICMPLT");
+			if (DEBUG && VERBOSE) log.debug("IF_ICMPLT replaced by Symbolic IF_ICMPLT");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IF_ICMPLT, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPNE) {
-			if (VERBOSE) log.debug("IF_ICMPNE replaced by Symbolic IF_ICMPNE");
+			if (DEBUG && VERBOSE) log.debug("IF_ICMPNE replaced by Symbolic IF_ICMPNE");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IF_ICMPNE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.GOTO) {
 			Integer backtrackSteps = backtrackLabels.get(label);
 			if (backtrackSteps != null) {
-				while (backtrackSteps > 0) {
+				//Temporay remove if something breaks
+				while (backtrackSteps > 1/*0*/) {
 					writeCodeToBacktrack();
 					backtrackSteps--;
 				}
@@ -205,7 +239,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 				reverseBranchConstraints = true;
 			}
 		} else {
-			if (VERBOSE) log.debug("VISIT JUMP INSTRUCTION: Opcode: " + opcode + ", Label: " + label.toString() + ";");
+			if (DEBUG && VERBOSE) log.debug("VISIT JUMP INSTRUCTION: Opcode: " + opcode + ", Label: " + label.toString() + ";");
 			mv.visitJumpInsn(opcode, label);
 		}
 		lastMethodInstructionIsStringComparison = false;
@@ -232,14 +266,14 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 				}
 			}
 		}
-		if (VERBOSE) log.debug("VISIT LABEL: Label: " + label.toString() + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT LABEL: Label: " + label.toString() + ";");
 		mv.visitLabel(label);
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public void visitLdcInsn(Object cst) {
-		if (VERBOSE) log.debug("VISIT LDC INSTRUCTION: Object: " + cst.toString() + ";");
-		/*
+		if (DEBUG && VERBOSE) log.debug("VISIT LDC INSTRUCTION: Object: " + cst.toString() + ";");
+	
 		if (cst instanceof Integer) {
 			Integer value = (Integer)cst;
 			writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.LDC, value);
@@ -249,7 +283,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 			
 		} else if (cst instanceof Double) {
 			
-		} else*/ if (cst instanceof String) {
+		} else if (cst instanceof String) {
 			writeCodeToIntroduceSymbolicStringConstant((String)cst);
 		} else if (cst instanceof Type) {
 			mv.visitLdcInsn(cst);
@@ -258,7 +292,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 
 	public void visitLineNumber(int line, Label start) {
-		if (VERBOSE) log.debug("VISIT LINE: Number: " + line + ", Start: " + start.toString() + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT LINE: Number: " + line + ", Start: " + start.toString() + ";");
 		mv.visitLineNumber(line, start);	
 	}
 
@@ -283,53 +317,58 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		for (int i = 1; i < labels.length; i++) {
 			lookupSwichValues.put(labels[i], keys[i]);
 		}
-		if (VERBOSE) log.debug("VISIT LOOKUP SWITCH INSTRUCTION: DefHandlerBlock: " + dflt.toString() + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT LOOKUP SWITCH INSTRUCTION: DefHandlerBlock: " + dflt.toString() + ";");
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public void visitMaxs(int maxStack, int maxLocals) {
-		if (VERBOSE) log.debug("VISIT MAX: MaxStack: " + maxStack + ", Maxlocals: " + maxLocals + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT MAX: MaxStack: " + maxStack + ", Maxlocals: " + maxLocals + ";");
 		mv.visitMaxs(maxStack + 20, maxLocals);
 	}
 
 	public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-		if (VERBOSE) log.debug("VISIT METHOD INSTRUCTION: Opcode: " + opcode + ", Owner: " + owner + ", Name: " + name + ", Descriptor: " + desc + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT METHOD INSTRUCTION: Opcode: " + opcode + ", Owner: " + owner + ", Name: " + name + ", Descriptor: " + desc + ";");
 		lastMethodInstructionIsStringComparison = false;
-		if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals("java/lang/String")
-			&& name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
+		if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals("java/lang/String")) {
+			if (name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
 		    writeCodeToIntroduceSymbolicOperation(EQUALS, STRING_PATH_CONSTRAINT_SIGNATURE);
 			lastMethodInstructionIsStringComparison = true;
+			} else if (name.equals("substring") && desc.equals("(I)Ljava/lang/String;")) {
+				mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, SYMBOLICSTRING, "substring", "(Lbarad/symboliclibrary/integers/ICONST;)Lbarad/symboliclibrary/string/StringInterface;");
+			} else if (name.equals("substring") && desc.equals("(II)Ljava/lang/String")) {
+				mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, SYMBOLICSTRING, "substring", "(II)Lbarad/symboliclibrary/string/StringInterface;");
+			}
 		} else {
 			mv.visitMethodInsn(opcode, owner, name, modifyDescriptor(desc));
 		}
 	}
 
 	public void visitMultiANewArrayInsn(String desc, int dims) {
-		if (VERBOSE) log.debug("VISIT MULTIANEW INSTRUCTION: Descriptor: " + desc + ", Dimensions: " + dims + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT MULTIANEW INSTRUCTION: Descriptor: " + desc + ", Dimensions: " + dims + ";");
 		mv.visitMultiANewArrayInsn(desc, dims);
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
-		if (VERBOSE) log.debug("VISIT PARAMETER ANNOTATION: Parameter: " + parameter + ", Descriptor: " + desc + ", Visible: " + visible + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT PARAMETER ANNOTATION: Parameter: " + parameter + ", Descriptor: " + desc + ", Visible: " + visible + ";");
 		lastMethodInstructionIsStringComparison = false;
 		return mv.visitParameterAnnotation(parameter, desc, visible);
 	}
 
 	public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
-		if (VERBOSE) log.debug("VISIT TABLE SWITCH INSTRUCTION: Min: " + min + ", Max: " + max + ", DefHandlerBlock: " + dflt.toString() + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT TABLE SWITCH INSTRUCTION: Min: " + min + ", Max: " + max + ", DefHandlerBlock: " + dflt.toString() + ";");
 		mv.visitTableSwitchInsn(min, max, dflt, labels);
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
-		if (VERBOSE) log.debug("VISIT TRY/CATCH BLOCK INSTRUCTION: Start: " + start.toString() + ", End: " + end.toString() + ", Handler: " + handler.toString()  + ", Type: " + type + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT TRY/CATCH BLOCK INSTRUCTION: Start: " + start.toString() + ", End: " + end.toString() + ", Handler: " + handler.toString()  + ", Type: " + type + ";");
 		mv.visitTryCatchBlock(start, end, handler, type);
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public void visitTypeInsn(int opcode, String desc) {
-		if (VERBOSE) log.debug("VISIT TYPE INSTRUCTION: Opcode: " + opcode + ", Descriptor: " + desc + ";");
+		if (DEBUG && VERBOSE) log.debug("VISIT TYPE INSTRUCTION: Opcode: " + opcode + ", Descriptor: " + desc + ";");
 		mv.visitTypeInsn(opcode, desc);
 		lastMethodInstructionIsStringComparison = false;
 	}
@@ -374,6 +413,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	 * Writes bytecode that generates a new program state
 	 */
 	private void writeCodeToCreateNewState() {
+		modifiedVariablesForState.push(new HashSet<Integer>());
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, PATH, "createNewState", "()V");
 	}
 	
@@ -389,6 +429,18 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, ICONST, "<init>", ICONST_SIGNATURE);
 	}
 	
+	/**
+	 * Writes code to replace float constant with symbolic float constant
+	 * @param opcode The bytecode instruction used to add the float to the stack.
+	 * @param operand The float value to be replaced
+	 */
+	private void writeCodeToIntroduceSymbolicFloatConstant(int opcode, int operand) {
+		mv.visitTypeInsn(Opcodes.NEW, ICONST);
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitIntInsn(opcode, operand);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, ICONST, "<init>", ICONST_SIGNATURE);
+	}
+	
 	private void writeCodeToIntroduceSymbolicIntegerVariable(int index) {
 		mv.visitTypeInsn(Opcodes.NEW, IVAR);
 		mv.visitInsn(Opcodes.DUP);
@@ -397,9 +449,9 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 	
 	private void writeCodeToIntroduceSymbolicStringVariable(int index) {
-		//mv.visitTypeInsn(Opcodes.NEW, IVAR);
+		//mv.visitTypeInsn(Opcodes.NEW, FVAR);
 		//mv.visitInsn(Opcodes.DUP);
-		//mv.visitMethodInsn(Opcodes.INVOKESPECIAL, IVAR, "<init>", IVAR_SIGNATURE);
+		//mv.visitMethodInsn(Opcodes.INVOKESPECIAL, FVAR, "<init>", IVAR_SIGNATURE);
 		//mv.visitVarInsn(Opcodes.ASTORE, index);
 	}
 	
@@ -420,9 +472,6 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	 * @param var The index of the variable in local variables table
 	 */
 	private void writeCodeToStoreLocalSymbolicVariable(int var) {
-		if (modifiedVariablesForState.size() == 0) {
-			modifiedVariablesForState.push(new HashSet<Integer>());
-		}
 		modifiedVariablesForState.peek().add(var);
 		mv.visitVarInsn(Opcodes.ALOAD, var);
 		mv.visitIntInsn(Opcodes.BIPUSH, var);
