@@ -1,20 +1,20 @@
-package barad.symboliclibrary.integers;
+package barad.symboliclibrary.floats;
 
 import java.io.Serializable;
 
 /**
  * Class that is inherited by all classes in the
- * library that represent symbolic integer operations
+ * library that represent symbolic float operations
  * (primitives and expressions) 
  * @author Svetoslav Ganov
  */
-public abstract class IntegerOperation extends SymbolicIntegerEntity implements Serializable {
-	private static final long serialVersionUID = 1;
-	protected IntegerInterface op1;
-	protected IntegerInterface op2;
+public abstract class FloatOperation extends SymbolicFloatEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
+	protected FloatInterface op1;
+	protected FloatInterface op2;
 	protected String operation;
 
-    public IntegerOperation(IntegerInterface op1, IntegerInterface op2, String operation, String name) {
+    public FloatOperation(FloatInterface op1, FloatInterface op2, String operation, String name) {
 	    super(name);
 	    if (op1 == null || op2 == null || operation == null) {
 		    throw new IllegalArgumentException();
@@ -43,8 +43,8 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
      * integer expression
      * @return New symbolic integer multiplication
      */
-    public IMUL IMUL(SymbolicIntegerEntity op) {
-    	return new IMUL(this, op);
+    public FMUL FMUL(SymbolicFloatEntity op) {
+    	return new FMUL(this, op);
     }
 
     /**
@@ -52,8 +52,8 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
      * integer expression
      * @return New symbolic integer division
      */
-    public IDIV IDIV(SymbolicIntegerEntity op) {
-    	return new IDIV(this, op);
+    public FDIV FDIV(SymbolicFloatEntity op) {
+    	return new FDIV(this, op);
     }
 
     /**
@@ -61,8 +61,8 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
      * integer expression
      * @return New symbolic integer addition
      */
-    public IADD IADD(SymbolicIntegerEntity op) {
-    	return new IADD(this, op);
+    public FADD IADD(SymbolicFloatEntity op) {
+    	return new FADD(this, op);
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class IntegerOperation extends SymbolicIntegerEntity implements 
      * symbolic integer expression
      * @return New symbolic integer division
      */
-    public ISUB ISUB(SymbolicIntegerEntity op) {
-    	return new ISUB(this, op);
+    public FSUB FSUB(SymbolicFloatEntity op) {
+    	return new FSUB(this, op);
     }
 }
