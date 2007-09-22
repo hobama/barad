@@ -1,11 +1,12 @@
 package barad.symboliclibrary.string;
 
+import static barad.util.Properties.DEBUG;
+
 import java.io.Serializable;
 
+import barad.symboliclibrary.path.StringPathConstraint;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-
-import barad.symboliclibrary.path.StringPathConstraint;
 
 /**
  * This class represents symbolic constraints "string1".equals("string2") and
@@ -26,8 +27,6 @@ public class Equals extends StringPathConstraint implements Serializable {
 	public Equals(StringInterface op1, StringInterface op2) {
 		super(op1, op2, "equals", "equals");
 		constraintString = new SymbolicString(-1);
-		isEquals = true;
-		evaluate(isEquals);
 	}
 	
 	/**
@@ -44,8 +43,13 @@ public class Equals extends StringPathConstraint implements Serializable {
 	 */
 	@Override
 	public StringPathConstraint inverse() {
-		evaluate(!isEquals);
-		return (StringPathConstraint)clone();
+		isEquals = !isEquals;
+		evaluate(isEquals);
+	    StringPathConstraint clone = (StringPathConstraint)clone();
+	    if(!isEquals) {
+	    	clone.setOperator("!equals");
+		}
+	    return clone;
 	}
 	
 	/**
@@ -67,7 +71,7 @@ public class Equals extends StringPathConstraint implements Serializable {
 	 * @param isEquals true if the instance represents equals(), false if the 
 	 * instance represents not equals
 	 */
-	private void evaluate(boolean isEquals) {
+	public void evaluate(boolean isEquals) {	
 		int begIndexDifference = Math.abs(op1.getBegIndex() - op2.getBegIndex());
 		if ((op1.getEndIndex() - op1.getBegIndex()) < (op2.getEndIndex() - op2.getBegIndex())) {
 			constraintString.setAutomaton(BasicAutomata.makeEmpty());
@@ -102,6 +106,9 @@ public class Equals extends StringPathConstraint implements Serializable {
 				constraintString.setAutomaton(lhs.getAutomaton().minus(rhs.getAutomaton()));
 				constraintString.setBegIndex(op1.getBegIndex());
 				constraintString.setEndIndex(op1.getEndIndex());
+			}
+			if (DEBUG) { 
+				System.out.println("Concrete value: " + concretize());
 			}
 		}
 	}

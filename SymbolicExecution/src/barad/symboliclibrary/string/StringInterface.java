@@ -1,6 +1,7 @@
 package barad.symboliclibrary.string;
 
 import barad.symboliclibrary.common.CommonInterface;
+import barad.symboliclibrary.integers.ICONST;
 
 public interface StringInterface extends CommonInterface{
 
@@ -8,17 +9,17 @@ public interface StringInterface extends CommonInterface{
 	 * Cretes a symbolic string that represents a character at specific
 	 * position in this one
 	 */
-	public StringInterface charAt(int index);
+	public StringInterface charAt(ICONST index);
 	
 	/**
 	 * Cretes a symbolic string that represents a substring of this one
 	 */
-	public StringInterface substring(int begIndex);
+	public StringInterface substring(ICONST begIndex);
 	
 	/**
 	 * Cretes a symbolic string that represents a substring of this one
 	 */
-	public StringInterface substring(int begIndex, int endIndex);
+	public StringInterface substring(ICONST begIndex, ICONST endIndex);
 	
 	/**
 	 * Cretes a symbolic string that is concatenation of two symbolic strings
