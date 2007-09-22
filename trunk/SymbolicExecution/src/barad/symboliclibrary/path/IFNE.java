@@ -5,6 +5,10 @@ import java.io.Serializable;
 import barad.symboliclibrary.integers.ICONST;
 import barad.symboliclibrary.integers.IntegerInterface;
 
+/**
+ * Symbolic path condition for replacing the bytecode instruction IFNE
+ * @author svetoslavganov
+ */
 public class IFNE extends IntegerPathConstraint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -19,8 +23,8 @@ public class IFNE extends IntegerPathConstraint implements Serializable {
 	
 	@Override
 	public Object clone() {
-		IF_ICMPEQ if_icmpeq = new IF_ICMPEQ((IntegerInterface)op1.clone(), (IntegerInterface)op2.clone());
-		if_icmpeq.setName(this.getName());
-		return if_icmpeq; 
+		IFNE ifne = new IFNE((IntegerInterface)op1.clone());
+		ifne.setName(this.getName());
+		return ifne; 
 	}
 }
