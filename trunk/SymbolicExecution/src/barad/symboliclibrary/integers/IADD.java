@@ -3,13 +3,11 @@ package barad.symboliclibrary.integers;
 import java.io.Serializable;
 
 /**
- * Class that implements the symbolic operation
- * "integer addition"
- * 
+ * Class that implements the symbolic operation "integer addition"
  * @author Svetoslav Ganov
  */
 public class IADD extends IntegerOperation implements Serializable {
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1L;
 	
 	public IADD (IntegerInterface op1, IntegerInterface op2) {
 		super(op1, op2, "+", "IADD");

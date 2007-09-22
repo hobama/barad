@@ -17,67 +17,26 @@ public class IVAR extends SymbolicIntegerEntity implements Serializable {
 	}
 	
 	public IADD IADD(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	/*
-	public IAND IAND(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
-	public ISUB IDIF(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
+
+	public ISUB ISUB(SymbolicIntegerEntity op) {
 		return null;
 	}
 
 	public IDIV IDIV(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/*
-	public IEQ IEQ(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IGT IGT(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IGTEQ IGTEQ(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ILT ILT(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public ILTEQ ILTEQ(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
 	public IMUL IMUL(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-    /*
-	public IOR IOR(SymbolicIntegerEntity op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
+
 	public String getStrValue() {
 		return getName();
 	}
 
 	public boolean Satisfiable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

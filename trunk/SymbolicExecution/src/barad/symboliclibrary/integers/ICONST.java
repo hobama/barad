@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * Class that implements symbolic integer constant
- * 
  * @author Svetoslav Ganov
  */
 public class ICONST extends SymbolicIntegerEntity implements Serializable { 
@@ -12,7 +11,7 @@ public class ICONST extends SymbolicIntegerEntity implements Serializable {
 	private int value;
 
 	public ICONST(int value) {
-		super("ICONST");
+		super("FCONST");
         this.value = value;
 	}
 	
@@ -52,7 +51,7 @@ public class ICONST extends SymbolicIntegerEntity implements Serializable {
     	return new IADD(this, op);
     }
 
-    public ISUB IDIF(SymbolicIntegerEntity op) {
+    public ISUB ISUB(SymbolicIntegerEntity op) {
     	return new ISUB(this, op);
     }
 }
