@@ -5,7 +5,7 @@ import java.io.Serializable;
 import barad.symboliclibrary.floats.FloatInterface;
 
 /**
- * Class that represents the symbolic path constrint: not equal
+ * Class that represents the symbolic float path constrint: not equal
  * @author svetoslavganov
  */
 public class IF_FCMPNE extends FloatPathConstraint implements Serializable {
@@ -16,7 +16,7 @@ public class IF_FCMPNE extends FloatPathConstraint implements Serializable {
 	}
 	
 	/**
-	 * Returns the complementary path constrint: equal
+	 * Returns the complementary float path constrint: equal
 	 * @return New instance of the complementary path constraint
 	 */
 	@Override
@@ -25,7 +25,7 @@ public class IF_FCMPNE extends FloatPathConstraint implements Serializable {
 	}
 	
 	/**
-	 * Clones this path constraint
+	 * Clones this float path constraint
 	 * @return New clone of the path constrint
 	 */
 	@Override
