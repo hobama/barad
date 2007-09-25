@@ -6,7 +6,11 @@ import static barad.util.Properties.VERBOSE;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.objectweb.asm.AnnotationVisitor;
@@ -14,6 +18,8 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+
+import barad.profiler.OpcodeToMnemonicMap;
 
 public class SymbolicMethodAdapter implements MethodVisitor {
 	private static final String IVAR = "barad/symboliclibrary/integers/IVAR";
@@ -35,12 +41,12 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	private static final String PATH_ADD_BRANCH_CONSTRAINT = "(Ljava/lang/Object;)Ljava/lang/Object;";
 	private static final String PATH_REMOVE_LAST_STATE_SIGNATURE = "()V";
 	private static final String REVERSE_BRANCH_CONSTRAINTS_SIGNATURE = "()V";
-	private static final String IFEQ  = "barad/symboliclibrary/path/IFEQ";
-	private static final String IFNE  = "barad/symboliclibrary/path/IFNE";
-	private static final String IFLT  = "barad/symboliclibrary/path/IFLT";
-	private static final String IFLE  = "barad/symboliclibrary/path/IFLE";
-	private static final String IFGT  = "barad/symboliclibrary/path/IFGT";
-	private static final String IFGE  = "barad/symboliclibrary/path/IFGE";
+	private static final String IFEQ  = "barad/symboliclibrary/path/IFFEQ";
+	private static final String IFNE  = "barad/symboliclibrary/path/IFFNE";
+	private static final String IFLT  = "barad/symboliclibrary/path/IFFLT";
+	private static final String IFLE  = "barad/symboliclibrary/path/IFFLE";
+	private static final String IFGT  = "barad/symboliclibrary/path/IFFGT";
+	private static final String IFGE  = "barad/symboliclibrary/path/IFFGE";
 	private static final String IF_ICMPEQ = "barad/symboliclibrary/path/IF_ICMPEQ";
 	private static final String IF_ICMPGE = "barad/symboliclibrary/path/IF_ICMPGE";
 	private static final String IF_ICMPGT = "barad/symboliclibrary/path/IF_ICMPGT";
@@ -71,16 +77,20 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	private boolean lastMethodInstructionIsStringComparison = false;
 	private boolean reverseBranchConstraints = false;
 	private Stack<Integer> indexOfVariablesUsedForSwitch;
+	private BytecodeQueue bytecodeQueue;
+	private Map<Integer, String> opcodeToMnemonicMap;
 	
 	public SymbolicMethodAdapter(MethodVisitor mv) {
 		this.mv = mv;
-		this.log = Logger.getLogger(this.getClass());
-		this.modifiedVariablesForState = new Stack<HashSet<Integer>>();
-		this.modifiedVariablesForState.push(new HashSet<Integer>());
-		this.backtrackLabels = new HashMap<Label, Integer>();
-		this.lookupSwichValues = new HashMap<Label, Integer>();
-		this.indexOfVariablesUsedForSwitch = new Stack<Integer>();
-		this.switchDefaultLabels = new Stack<Label>();
+		log = Logger.getLogger(this.getClass());
+		modifiedVariablesForState = new Stack<HashSet<Integer>>();
+		modifiedVariablesForState.push(new HashSet<Integer>());
+		backtrackLabels = new HashMap<Label, Integer>();
+		lookupSwichValues = new HashMap<Label, Integer>();
+		indexOfVariablesUsedForSwitch = new Stack<Integer>();
+		switchDefaultLabels = new Stack<Label>();
+		bytecodeQueue = new BytecodeQueue();
+		opcodeToMnemonicMap = OpcodeToMnemonicMap.getMap();
 	}
 
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -112,6 +122,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 		if (opcode == Opcodes.PUTFIELD) {
 			wirteCodeToStoreField(owner, name, desc);
+			bytecodeQueue.enqueue(opcodeToMnemonicMap.get(opcode), new String[]{owner, name, desc});
 		}	
 		if (DEBUG && VERBOSE) log.debug("VISIT FIELD INSTRUCTION: Opcode: " + opcode + ", Owner: " + owner + ", Name: " + name + ", Descriptor: " + desc + ";");
 		mv.visitFieldInsn(opcode, owner, name, modifyDescriptor(desc));
@@ -125,11 +136,13 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 
 	public void visitIincInsn(int var, int increment) {
 		if (DEBUG && VERBOSE) log.debug("VISIT INCREMENTAL INSTRUCTION: Variable: " + var + ", Increment: " + increment + ";");
+		//bytecodeQueue.enqueue(opcode, new String[]{owner, name, desc});
 		mv.visitIincInsn(var, increment);
 		lastMethodInstructionIsStringComparison = false;
 	}
 
 	public void visitInsn(int opcode) {
+		bytecodeQueue.enqueue(String.valueOf(opcode), new String[]{});
 		if (opcode == Opcodes.ICONST_0 ) {
 			writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, 0);
 		} else if (opcode == Opcodes.ICONST_1) {
@@ -161,6 +174,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 	
 	public void visitIntInsn(int opcode, int operand) {
+		bytecodeQueue.enqueue(String.valueOf(opcode), new String[]{String.valueOf(operand)});
 		if (opcode == Opcodes.BIPUSH || opcode == Opcodes.SIPUSH) {
 			if (DEBUG && VERBOSE) log.debug("Integer constant:" + operand + " replaced by symbolic integer constant");
 			writeCodeToIntroduceSymbolicIntegerConstant(opcode, operand);	
@@ -172,32 +186,38 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 	
 	public void visitJumpInsn(int opcode, Label label) {
+		bytecodeQueue.enqueue(String.valueOf(opcode), new String[]{label.toString()});
 		if (opcode == Opcodes.IFEQ) {
 			addBacktrackMarker(label);
 			if (lastMethodInstructionIsStringComparison) {
 				writeCodeToIntroduceStringConstraint();
 			} else {
-				if (DEBUG && VERBOSE) log.debug("IFEQ replaced by Symbolic IFEQ");
+				if (DEBUG && VERBOSE) log.debug("IFFEQ replaced by Symbolic IFFEQ");
 				writeCodeToIntroduceIfConstraint(IFEQ, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 			}
 		} else if (opcode == Opcodes.IFNE) {
-			if (DEBUG && VERBOSE) log.debug("IFNE replaced by Symbolic IFNE");
 			addBacktrackMarker(label);
-			writeCodeToIntroduceIfConstraint(IFNE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+			if (bytecodeQueue.getLatestEntry(0).equals("CMPLE")) {
+				if (DEBUG && VERBOSE) log.debug("IFFNE replaced by Symbolic IFFNE");
+				writeCodeToIntroduceIfConstraint(IFNE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+			} else {
+				if (DEBUG && VERBOSE) log.debug("IFFNE replaced by Symbolic IFFNE");
+				writeCodeToIntroduceIfConstraint(IFNE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
+			}
 		} else if (opcode == Opcodes.IFLT) {
-			if (DEBUG && VERBOSE) log.debug("IFLT replaced by Symbolic IFLT");
+			if (DEBUG && VERBOSE) log.debug("IFFLT replaced by Symbolic IFFLT");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IFLT, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IFLE) {
-			if (DEBUG && VERBOSE) log.debug("IFLE replaced by Symbolic IFLE");
+			if (DEBUG && VERBOSE) log.debug("IFFLE replaced by Symbolic IFFLE");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IFLE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IFGT) {
-			if (DEBUG && VERBOSE) log.debug("IFGT replaced by Symbolic IFGT");
+			if (DEBUG && VERBOSE) log.debug("IFFGT replaced by Symbolic IFFGT");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IFGT, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IFGE) {
-			if (DEBUG && VERBOSE) log.debug("IFGE replaced by Symbolic IFGE");
+			if (DEBUG && VERBOSE) log.debug("IFFGE replaced by Symbolic IFFGE");
 			addBacktrackMarker(label);
 			writeCodeToIntroduceIfConstraint(IFGE, INTEGER_PATH_CONSTRAINT_SIGNATURE);
 		} else if (opcode == Opcodes.IF_ICMPEQ) {
@@ -246,6 +266,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	}
 	
 	public void visitLabel(Label label) {	
+		//bytecodeQueue.enqueue(opcode, new String[]{label.toString()});
 		if (lookupSwichValues.size() > 0 && lookupSwichValues.containsKey(label)) {
 			Integer value;
 			if ((value = lookupSwichValues.remove(label)) != null) {
