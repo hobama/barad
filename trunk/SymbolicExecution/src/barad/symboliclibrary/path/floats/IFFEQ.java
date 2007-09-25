@@ -2,37 +2,37 @@ package barad.symboliclibrary.path.floats;
 
 import java.io.Serializable;
 
-import barad.symboliclibrary.integers.ICONST;
-import barad.symboliclibrary.integers.IntegerInterface;
+import barad.symboliclibrary.floats.FCONST;
+import barad.symboliclibrary.floats.FloatInterface;
 
 /**
- * Class that represents the symbolic integer path constrint: equal to 0
+ * Class that represents the symbolic float path constraint: equal to 0
  * @author svetoslavganov
  */
-public class IFFEQ extends IntegerPathConstraint implements Serializable {
+public class IFFEQ extends FloatPathConstraint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	public IFFEQ(IntegerInterface op1) {
-		super(op1, new ICONST(0), "==", "IFFEQ");
+	public IFFEQ(FloatInterface op1) {
+		super(op1, new FCONST(0), "==", "IFFEQ");
 	}
 	
 	/**
-	 * Returns the complementary integer path constrint: not equal to 0
+	 * Returns the complementary float path constraint: not equal to 0
 	 * @return New instance of the complementary path constraint
 	 */
 	@Override
-	public IntegerPathConstraint inverse() {
+	public FloatPathConstraint inverse() {
 		return new IFFNE(super.getOp1());
 	}
 	
 	/**
-	 * Clones this integer path constraint
+	 * Clones this float path constraint
 	 * @return New clone of the path constrint
 	 */
 	@Override
 	public Object clone() {
-		IFFEQ ifeq = new IFFEQ((IntegerInterface)op1.clone());
-		ifeq.setName(this.getName());
-		return ifeq; 
+		IFFEQ iffeq = new IFFEQ((FloatInterface)op1.clone());
+		iffeq.setName(this.getName());
+		return iffeq; 
 	}
 }
