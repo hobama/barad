@@ -4,7 +4,7 @@ import static barad.util.Properties.DEBUG;
 
 import java.io.Serializable;
 
-import barad.symboliclibrary.path.StringPathConstraint;
+import barad.symboliclibrary.path.strings.StringPathConstraint;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 
