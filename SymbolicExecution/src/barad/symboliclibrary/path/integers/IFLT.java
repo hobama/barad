@@ -6,7 +6,7 @@ import barad.symboliclibrary.integers.ICONST;
 import barad.symboliclibrary.integers.IntegerInterface;
 
 /**
- * Class that represents the symbolic integer path constrint: less than 0
+ * Class that represents the symbolic integer path constraint: less than 0
  * @author svetoslavganov
  */
 public class IFLT extends IntegerPathConstraint implements Serializable {
@@ -17,7 +17,7 @@ public class IFLT extends IntegerPathConstraint implements Serializable {
 	}
 	
 	/**
-	 * Returns the complementary integer path constrint: greater than or equal to 0
+	 * Returns the complementary integer path constraint: greater than or equal to 0
 	 * @return New instance of the complementary path constraint
 	 */
 	@Override
@@ -27,7 +27,7 @@ public class IFLT extends IntegerPathConstraint implements Serializable {
 	
 	/**
 	 * Clones this path integer constraint
-	 * @return New clone of the path constrint
+	 * @return New clone of the path constraint
 	 */
 	@Override
 	public Object clone() {

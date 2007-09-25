@@ -5,7 +5,7 @@ import java.io.Serializable;
 import barad.symboliclibrary.integers.IntegerInterface;
 
 /**
- * Class that represents the symbolic integer path constrint: greter than or equal
+ * Class that represents the symbolic integer path constraint: greter than or equal
  * @author svetoslavganov
  */
 public class IF_ICMPGE extends IntegerPathConstraint implements Serializable {
@@ -16,7 +16,7 @@ public class IF_ICMPGE extends IntegerPathConstraint implements Serializable {
 	}
 	
 	/**
-	 * Returns the complementary integer path constrint: less than
+	 * Returns the complementary integer path constraint: less than
 	 * @return New instance of the complementary path constraint
 	 */
 	@Override
@@ -26,7 +26,7 @@ public class IF_ICMPGE extends IntegerPathConstraint implements Serializable {
 	
 	/**
 	 * Clones this integer path constraint
-	 * @return New clone of the path constrint
+	 * @return New clone of the path constraint
 	 */
 	@Override
 	public Object clone() {
