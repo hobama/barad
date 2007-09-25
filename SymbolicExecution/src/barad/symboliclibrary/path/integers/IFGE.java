@@ -6,21 +6,29 @@ import barad.symboliclibrary.integers.ICONST;
 import barad.symboliclibrary.integers.IntegerInterface;
 
 /**
- * Symbolic path condition for replacing the bytecode instruction IFGE
+ * Class that represents the symbolic integer path constrint: greter than or equal to 0
  * @author svetoslavganov
  */
 public class IFGE extends IntegerPathConstraint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public IFGE(IntegerInterface op1) {
-		super(op1, new ICONST(0), ">=", "IFGE");
+		super(op1, new ICONST(0), ">=", "IFFGE");
 	}
 	
+	/**
+	 * Returns the complementary integer path constrint: less than 0
+	 * @return New instance of the complementary path constraint
+	 */
 	@Override
 	public IntegerPathConstraint inverse() {
 		return new IFLT(super.getOp1());
 	}
 	
+	/**
+	 * Clones this integer path constraint
+	 * @return New clone of the path constrint
+	 */
 	@Override
 	public Object clone() {
 		IFGE ifge = new IFGE((IntegerInterface)op1.clone());
