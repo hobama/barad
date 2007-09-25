@@ -3,7 +3,6 @@ package barad.symboliclibrary.path.floats;
 import java.io.Serializable;
 
 import barad.symboliclibrary.floats.FloatInterface;
-import barad.symboliclibrary.path.FloatPathConstraint;
 
 /**
  * Class that represents the symbolic path constrint: not equal
