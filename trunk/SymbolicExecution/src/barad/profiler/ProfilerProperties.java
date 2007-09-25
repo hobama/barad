@@ -1,8 +1,5 @@
 package barad.profiler;
 
-
-import java.util.HashSet;
-
 /**
  * Container class that stores some important parameters
  * @author svetoslavganov
