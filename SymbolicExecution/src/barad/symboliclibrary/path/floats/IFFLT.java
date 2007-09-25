@@ -2,37 +2,37 @@ package barad.symboliclibrary.path.floats;
 
 import java.io.Serializable;
 
-import barad.symboliclibrary.integers.ICONST;
-import barad.symboliclibrary.integers.IntegerInterface;
+import barad.symboliclibrary.floats.FCONST;
+import barad.symboliclibrary.floats.FloatInterface;
 
 /**
- * Class that represents the symbolic integer path constrint: less than 0
+ * Class that represents the symbolic float path constraint: less than 0
  * @author svetoslavganov
  */
-public class IFFLT extends IntegerPathConstraint implements Serializable {
+public class IFFLT extends FloatPathConstraint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	public IFFLT(IntegerInterface op1) {
-		super(op1, new ICONST(0), "<", "IFFLT");
+	public IFFLT(FloatInterface op1) {
+		super(op1, new FCONST(0), "<", "IFFLT");
 	}
 	
 	/**
-	 * Returns the complementary integer path constrint: greater than or equal to 0
+	 * Returns the complementary float path constraint: greater than or equal to 0
 	 * @return New instance of the complementary path constraint
 	 */
 	@Override
-	public IntegerPathConstraint inverse() {
+	public FloatPathConstraint inverse() {
 		return new IFFGE(super.getOp1());
 	}
 	
 	/**
-	 * Clones this path integer constraint
-	 * @return New clone of the path constrint
+	 * Clones this float path constraint
+	 * @return New clone of the path constraint
 	 */
 	@Override
 	public Object clone() {
-		IFFLT iflt = new IFFLT((IntegerInterface)op1.clone());
-		iflt.setName(this.getName());
-		return iflt; 
+		IFFLT ifflt = new IFFLT((FloatInterface)op1.clone());
+		ifflt.setName(this.getName());
+		return ifflt; 
 	}
 }

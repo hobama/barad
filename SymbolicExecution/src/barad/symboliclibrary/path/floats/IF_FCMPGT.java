@@ -5,7 +5,7 @@ import java.io.Serializable;
 import barad.symboliclibrary.floats.FloatInterface;
 
 /**
- * Class that represents the symbolic float path constrint: greter than
+ * Class that represents the symbolic float path constraint: greter than
  * @author svetoslavganov
  */
 public class IF_FCMPGT extends FloatPathConstraint implements Serializable {
@@ -16,7 +16,7 @@ public class IF_FCMPGT extends FloatPathConstraint implements Serializable {
 	}
 	
 	/**
-	 * Returns the complementary float path constrint: less than or equal
+	 * Returns the complementary float path constraint: less than or equal
 	 * @return New instance of the complementary path constraint
 	 */
 	@Override
@@ -26,7 +26,7 @@ public class IF_FCMPGT extends FloatPathConstraint implements Serializable {
 	
 	/**
 	 * Clones this float path constraint
-	 * @return New clone of the path constrint
+	 * @return New clone of the path constraint
 	 */
 	@Override
 	public Object clone() {
