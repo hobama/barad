@@ -1,11 +1,16 @@
-package barad.symboliclibrary.path;
+package barad.symboliclibrary.path.strings;
 
 import barad.symboliclibrary.common.CommonInterface;
 import barad.symboliclibrary.common.ConstraintType;
 import barad.symboliclibrary.common.SymbolicEntity;
+import barad.symboliclibrary.path.PathConstraintInterface;
 import barad.symboliclibrary.string.StringInterface;
 import barad.symboliclibrary.string.SymbolicString;
 
+/**
+ * Class that is should be extended by all string path constraints
+ * @author svetoslavganov
+ */
 public abstract class StringPathConstraint extends SymbolicEntity implements PathConstraintInterface, CommonInterface {
 	protected StringInterface op1;
 	protected StringInterface op2;
