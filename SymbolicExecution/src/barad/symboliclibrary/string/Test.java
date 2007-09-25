@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.sound.midi.Instrument;
 
-import barad.symboliclibrary.path.StringPathConstraint;
+import barad.symboliclibrary.path.strings.StringPathConstraint;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
