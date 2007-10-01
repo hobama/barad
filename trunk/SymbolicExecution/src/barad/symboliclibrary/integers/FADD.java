@@ -30,13 +30,7 @@ public class FADD extends FloatOperation implements Serializable {
 	 * @return New Choco plus expression
 	 * @throws rethrows UnsupportedOperationByChoco if such is caught
 	 */
-	public RealExp getRealExp(Problem problem) throws UnsupportedOperationByChoco {
-		RealExp realExp = null;
-		try {
-			realExp = problem.plus(op1.getRealExp(problem), op2.getRealExp(problem));
-		} catch (UnsupportedOperationByChoco uobc) {
-			throw uobc;
-		}
-		return realExp;
+	public RealExp getRealExp(Problem problem) {
+		return problem.plus(op1.getRealExp(problem), op2.getRealExp(problem));
 	}
 }
