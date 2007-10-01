@@ -1,7 +1,11 @@
 package barad.examples;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 
+import barad.symboliclibrary.integers.ICONST;
+import barad.symboliclibrary.integers.IVAR;
+import barad.symboliclibrary.integers.IntegerInterface;
 import barad.symboliclibrary.string.Equals;
 import barad.symboliclibrary.string.StringInterface;
 import barad.symboliclibrary.string.SymbolicString;
@@ -10,15 +14,67 @@ public class IfExample {
 	
 	private int test;
 	
-	public void IfExample() {
-		float f = 4;
-		if (f > 10f) {
+	public void test(int x, double y, String ii, long v, float d) {
+		//Float
+		d = d + 10; 
+		if (d >= 12) {
+			d = 10;
+		} else {
+			d = 100;
+		}
+		
+		//Integer
+		/*
+		x = x + 10; 
+		if (x >= 12) {
+			x = 10;
+		} else {
+			x = 100;
+		}
+		*/
+	}
+	
+
+	
+	public IfExample() {
+	/*	
+		int x = 4;
+		if (x >= 12) {
+			x = 10;
+		} else {
+			x = 100;
+		}
+		*/
+	}
+	
+	
+	/*
+	//Float
+	public IfExample() {
+		float f = 1;
+		f = (f + 5.0f - 2.0f) / 10.0f * 12.0f;
+		float f = 1;
+		if (f >= 12f) {
 			f = 10f;
 		} else {
 			f = 100f;
+			Test(f);
 		}
 	}
+	*/
+	
 	/*
+	private void Test(float x) {
+		if (x >= 10.0f) {
+			x = 10f;
+		} else {
+			x = 100f;
+		}
+	}
+	*/
+	
+	/*
+	//String
 	public IfExample() {
 		String s1 = "test";
 		if (s1.equals("test")) {
