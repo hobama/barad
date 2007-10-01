@@ -31,6 +31,8 @@ public abstract class StringPathConstraint extends SymbolicEntity implements Pat
 		return null;
 	}
 	
+	public abstract SymbolicString getConstraintString();
+	
    /**
 	* Gets the string equivalent of the expression
 	* @return The expression as a string
