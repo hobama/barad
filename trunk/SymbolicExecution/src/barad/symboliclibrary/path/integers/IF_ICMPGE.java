@@ -2,7 +2,13 @@ package barad.symboliclibrary.path.integers;
 
 import java.io.Serializable;
 
+import choco.Constraint;
+import choco.Problem;
+import choco.integer.IntConstraint;
+import choco.integer.IntExp;
+
 import barad.symboliclibrary.integers.IntegerInterface;
+import barad.symboliclibrary.integers.UnsupportedOperationByChoco;
 
 /**
  * Class that represents the symbolic integer path constraint: greter than or equal
@@ -33,5 +39,23 @@ public class IF_ICMPGE extends IntegerPathConstraint implements Serializable {
 		IF_ICMPGE if_icmpge = new IF_ICMPGE((IntegerInterface)op1.clone(), (IntegerInterface)op2.clone());
 		if_icmpge.setName(this.getName());
 		return if_icmpge; 
+	}
+	
+	/**
+	 * Returns Choco integer constraint that represents 
+	 * this integer constriant
+	 * @param problem Choco Problem instance
+	 * @return New Choco integer constraint instance
+	 */
+	public IntConstraint getIntConstraint(Problem problem) throws UnsupportedOperationByChoco {
+		Constraint constraint = null;
+		try {
+			IntExp p1 = op1.getIntExp(problem);
+			IntExp p2 = op2.getIntExp(problem);
+			constraint = problem.geq(p1, p2);
+		} catch (UnsupportedOperationByChoco uobc) {
+			throw uobc;
+		}
+		return (IntConstraint) constraint; 
 	}
 }

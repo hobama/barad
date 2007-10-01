@@ -1,9 +1,12 @@
 package barad.symboliclibrary.path.integers;
 
+import choco.Problem;
+import choco.integer.IntConstraint;
 import barad.symboliclibrary.common.CommonInterface;
 import barad.symboliclibrary.common.ConstraintType;
 import barad.symboliclibrary.common.SymbolicEntity;
 import barad.symboliclibrary.integers.IntegerInterface;
+import barad.symboliclibrary.integers.UnsupportedOperationByChoco;
 import barad.symboliclibrary.path.PathConstraintInterface;
 
 /**
@@ -29,6 +32,14 @@ public abstract class IntegerPathConstraint extends SymbolicEntity implements Pa
 	public Object clone() {
 		return null;
 	}
+	
+	/**
+	 * Returns Choco integer constraint that represents 
+	 * this integer constriant
+	 * @param problem Choco Problem instance
+	 * @return New Choco integer constraint instance
+	 */
+	public abstract IntConstraint getIntConstraint(Problem problem) throws UnsupportedOperationByChoco;
 	
    /**
 	* Gets the string equivalent of the expression
