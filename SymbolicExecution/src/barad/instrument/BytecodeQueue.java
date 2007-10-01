@@ -1,6 +1,5 @@
 package barad.instrument;
 
-import org.objectweb.asm.Opcodes;
 
 /**
  * Class that caches the last bytecode instructions in the order they
@@ -38,11 +37,11 @@ public class BytecodeQueue {
 	
 	/**
 	 * Add a new entry to the queue
-	 * @param opcode The bytecode's opcode
+	 * @param type The bytecode's type
 	 * @param parameters The string arguments i.e. descriptor and so on
 	 */
-	public void enqueue(String opcode, String[] parameters) {
-		bytecodes[tail++] = new Entry(opcode, parameters);
+	public void enqueue(String type, String[] parameters) {
+		bytecodes[tail++] = new Entry(type, parameters);
 		if (tail == size) {
 			tail = 0;
 		}
@@ -56,7 +55,6 @@ public class BytecodeQueue {
 	 * @return The last entry
 	 */
 	public Entry dequeue() {
-		System.out.println("Entry removed");
 		Entry result = bytecodes[head++];
 		if (head == size) {
 			head = 0;
@@ -74,24 +72,27 @@ public class BytecodeQueue {
 	 */
 	public Entry getLatestEntry(int offset) {
 		int index = (tail - offset - 1) % size;
+		if (index < 0) {
+			index = 0;
+		}
 		return bytecodes[index];
 	}
 	
 	public static class Entry {
-		public String opcode;
+		public String type;
 		public String[] parameters;
 		
-		public Entry(String opcode, String[] parameters) {
-			this.opcode = opcode;
+		public Entry(String type, String[] parameters) {
+			this.type = type;
 			this.parameters = parameters;
 		}
 
-		public String getOpcode() {
-			return opcode;
+		public String getType() {
+			return type;
 		}
 
-		public void setOpcode(String opcode) {
-			this.opcode = opcode;
+		public void setType(String type) {
+			this.type = type;
 		}
 
 		public String[] getParameters() {
