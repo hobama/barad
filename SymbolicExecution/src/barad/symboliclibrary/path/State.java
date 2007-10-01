@@ -82,11 +82,11 @@ public class State {
 		this.type = type;
 	}
 
-	public LinkedList<PathConstraintInterface> getConsttraints() {
+	public LinkedList<PathConstraintInterface> getConstraints() {
 		return constraints;
 	}
 
-	public void setConsttraints(LinkedList<PathConstraintInterface> consttraints) {
+	public void setConstraints(LinkedList<PathConstraintInterface> consttraints) {
 		this.constraints = consttraints;
 	}
 }
