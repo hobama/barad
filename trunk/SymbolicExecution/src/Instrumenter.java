@@ -3,9 +3,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
 
 import org.apache.log4j.Logger;
@@ -19,6 +23,7 @@ import static barad.util.Properties.PROPERTIES_FILE_NAME;
 import static barad.util.Properties.SEPARATOR;
 import static barad.util.Properties.VERBOSE;
 import barad.instrument.SymbolicClassAdapter;
+import barad.instrument.SymbolicExecutionThread;
 import barad.util.Util;
 
 @SuppressWarnings("all")
@@ -34,17 +39,21 @@ public class Instrumenter {
 		instrumentation.addTransformer(classInstrumenter);
 	}
 	
-	public static class ClassInstrumenter implements ClassFileTransformer {
-		
+	public static class ClassInstrumenter implements ClassFileTransformer {	
 		private Logger log;
 		private boolean bootstrapped;
 		private String instrumentedClassesPath;
+		private SymbolicExecutionThread symbolicExecutionThread;
+		
 		
 		public ClassInstrumenter() {
 			DOMConfigurator.configure(LOG4J_PROPERTIES_FILE_NAME);
 			log = Logger.getLogger(this.getClass());
 			bootstrapped = false;
-			instrumentedClassesPath = InitializeInstrumentedClassesPath(); 
+			instrumentedClassesPath = InitializeInstrumentedClassesPath();
+			//Start symbolic execution thread
+			symbolicExecutionThread = new SymbolicExecutionThread(Thread.currentThread());
+			symbolicExecutionThread.start();
 		}
 		
 		/**
@@ -57,20 +66,28 @@ public class Instrumenter {
 		 * @throws IllegalClassFormatException 
 		 */
 		public byte[] transform(ClassLoader loader, String className, Class classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-			byte[] result = null;
+			byte[] instrumntedClass = null;
 			byte[] classToExplore = classfileBuffer.clone();
-			try{
+					
+			try{				
 				if (VERBOSE) {
 					log.info("Processing of class " + className + " started.");
 				}
-				if (!Util.getLoadedClasses().containsKey(className)) {
+				if (!Util.getLoadedClasses().containsKey(className.replace('/', '.'))) {
 					if (loader != null) {
 						Util.addClassName(loader, bootstrapped);
 						bootstrapped = bootstrapped || true;
 						//Temporary if statement
 						if (className.equals("barad/examples/IfExample") ||
 						    className.equals("barad/examples/Example")) {
-							result = exploreClass(classToExplore, className);
+							
+							className = className + "Test";
+							instrumntedClass = exploreClass(classToExplore, className);
+							
+							//FIXME: Only classes with event handles are to be passed here
+							symbolicExecutionThread.setClassName(className.replace('/', '.'));
+							symbolicExecutionThread.setClassAsByteArray(instrumntedClass);
+							symbolicExecutionThread.setMethodNames(new String[]{"symbolicExecution"});
 						}
 					}
 				}
@@ -79,11 +96,13 @@ public class Instrumenter {
 					Util.printLoadedClasses();
 				}	
 			}catch(Exception e){
-				log.warn("Error during class instrumentation instrumentation. " + e);
-			}	
-			return result;
+				log.warn("Error during class instrumentation. " + e, e);
+			}
+			//Load the original class in JVM
+			return null;
 		}
 		
+	
 		/**
 		 * Instruments a GUI class
 		 * 
@@ -104,7 +123,7 @@ public class Instrumenter {
 				}
 				return result;
 			}catch(Exception e){
-				log.error("Uncaught exception during instrumentation of GUI class " + e);
+				log.error("Uncaught exception during instrumentation of GUI class " + e, e);
 			}
 			return null;
 		}
@@ -117,7 +136,7 @@ public class Instrumenter {
 		 */
 		private String generateFileName(String className) {
 			String shortClassName = className.substring(className.lastIndexOf('/') + 1);
-			return instrumentedClassesPath + SEPARATOR + shortClassName + ".class";			
+			return instrumentedClassesPath + SEPARATOR + "barad" + SEPARATOR + "examples" + SEPARATOR + shortClassName + ".class";			
 		}
 		
 		private String InitializeInstrumentedClassesPath() {
