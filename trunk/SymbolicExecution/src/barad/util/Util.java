@@ -23,6 +23,8 @@ import java.util.WeakHashMap;
 
 import org.apache.log4j.Logger;
 
+import barad.instrument.Names;
+
 public class Util {
 	private static Logger log = Logger.getLogger(Util.class);
 	private static Properties properties = new Properties();
@@ -50,14 +52,14 @@ public class Util {
 			try {
 				bis = new BufferedInputStream(new FileInputStream(new File(PROPERTIES_FILE_NAME)));
 			} catch (FileNotFoundException fnfee) {
-				log.error("No properties file loaded. " + fnfee);
+				log.error("No properties file loaded. " + fnfee, fnfee);
 				}
 		} finally {
 			if (bis != null) {
 				try {
 					properties.loadFromXML(bis);
 				} catch (IOException ioe) {
-					log.error("No properties file loaded. " + ioe);
+					log.error("No properties file loaded. " + ioe, ioe);
 				}
 			}
 		}
@@ -81,7 +83,7 @@ public class Util {
 			reader.close();
 			writer.close();
 		}catch(Exception e){
-			log.error("Error during copying " + fromFile + " to " + toFile + " " + e);
+			log.error("Error during copying " + fromFile + " to " + toFile + " " + e, e);
 		}
 	}
 	
@@ -96,7 +98,7 @@ public class Util {
 			writer.write(clazz);
 			writer.close();
 		}catch(Exception e){
-			log.error("Error while writing class to file " + file + " " + e);
+			log.error("Error while writing class to file " + file + " " + e, e);
 		}
 		log.info("File " + file + " written successfuly");
 	}
@@ -121,10 +123,10 @@ public class Util {
 			}
 			input.close();
 		}catch(FileNotFoundException fnfe){
-			log.error("The file with class names does not exist or is not properly set " + fnfe);
+			log.error("The file with class names does not exist or is not properly set " + fnfe, fnfe);
 		}
 		catch(IOException ioe) {
-			log.error("Error occured during loading of class names " + ioe);
+			log.error("Error occured during loading of class names " + ioe, ioe);
 		}
 	}
 	
@@ -155,7 +157,7 @@ public class Util {
 				}
 			}
 		} catch (Throwable t) {
-			log.error("Error while obtaining the declared classes by " + loader.toString() + t);
+			log.error("Error while obtaining the declared classes by " + loader.toString() + t, t);
 		}
 	}
 	
@@ -177,10 +179,10 @@ public class Util {
 				}
 			}
 		}catch(ConcurrentModificationException cme) {
-			log.warn("Some classes were grabage collected and the iterator is invalid!" + cme);
+			log.warn("Some classes were grabage collected and the iterator is invalid!" + cme, cme);
 		}
 	}
-
+	
 	public static WeakHashMap<String, String> getLoadedClasses() {
 		return loadedClasses;
 	}
