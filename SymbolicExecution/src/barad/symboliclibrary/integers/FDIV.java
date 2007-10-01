@@ -30,13 +30,7 @@ public class FDIV extends FloatOperation implements Serializable {
 	 * @return New Choco division expression (X / Y <+> X * Y^-1)
 	 * @throws rethrows UnsupportedOperationByChoco if such is caught
 	 */
-	public RealExp getRealExp(Problem problem) throws UnsupportedOperationByChoco {
-		RealExp realExp = null;
-		try {
-			realExp = problem.mult(op1.getRealExp(problem), problem.power(op2.getRealExp(problem), -1));
-		} catch (UnsupportedOperationByChoco uobc) {
-			throw uobc;
-		}
-		return realExp;
+	public RealExp getRealExp(Problem problem) {
+		return problem.mult(op1.getRealExp(problem), problem.power(op2.getRealExp(problem), -1));
 	}
 }

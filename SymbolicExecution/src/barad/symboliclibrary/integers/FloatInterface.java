@@ -35,5 +35,5 @@ public interface FloatInterface extends CommonInterface {
 	 * @param Choco problem instance
 	 * @return New real Choco constraint
 	 */
-	RealExp getRealExp(Problem problem) throws UnsupportedOperationByChoco;
+	RealExp getRealExp(Problem problem);
 }

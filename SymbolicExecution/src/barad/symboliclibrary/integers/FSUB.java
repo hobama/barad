@@ -30,13 +30,7 @@ public class FSUB extends FloatOperation implements Serializable {
 	 * @return New Choco substraction expression
 	 * @throws rethrows UnsupportedOperationByChoco if such is caught
 	 */
-	public RealExp getRealExp(Problem problem) throws UnsupportedOperationByChoco {
-		RealExp realExp = null;
-		try {
-			realExp = problem.minus(op1.getRealExp(problem), op2.getRealExp(problem));
-		} catch (UnsupportedOperationByChoco uobc) {
-			throw uobc;
-		}
-		return realExp;
+	public RealExp getRealExp(Problem problem) {
+		return problem.minus(op1.getRealExp(problem), op2.getRealExp(problem));
 	}
 }
