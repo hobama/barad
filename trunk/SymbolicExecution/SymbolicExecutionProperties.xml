@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-	<comment>Hi</comment>
+	<!-- Path for storing of permanent copies of the instrumented classes -->
 	<entry key="instrumented.classes.path">C:\TEMP CLASSES</entry>
+	<!-- Default length for strings during constrint solving -->
 	<entry key="default.string.length">50</entry>
+	<!-- The lower bound for integers during constraint solving -->
+	<entry key="integers.min">-100</entry>
+	<!-- The upper bound for integers during constraint solving -->
+	<entry key="integers.max">100</entry>
+	<!-- The lower bound for doubles during constraint solving -->
+	<entry key="doubles.min">-100</entry>
+	<!-- The upper bound for doubles during constraint solving -->
+	<entry key="doubles.max">100</entry>
 </properties>
