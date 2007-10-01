@@ -3,6 +3,8 @@ package barad.symboliclibrary.path.floats;
 import java.io.Serializable;
 
 import barad.symboliclibrary.floats.FloatInterface;
+import choco.Problem;
+import choco.real.constraint.RealConstraint;
 
 /**
  * Class that represents the symbolic float path constraint: equal
@@ -33,5 +35,15 @@ public class IF_FCMPEQ extends FloatPathConstraint implements Serializable {
 		IF_FCMPEQ if_fcmpeq = new IF_FCMPEQ((FloatInterface)op1.clone(), (FloatInterface)op2.clone());
 		if_fcmpeq.setName(this.getName());
 		return if_fcmpeq; 
+	}
+	
+	/**
+	 * Returns Choco real constraint that represents 
+	 * this real constriant
+	 * @param problem Choco Problem instance
+	 * @return New Choco real constraint instance
+	 */
+	public RealConstraint getRealConstraint(Problem problem) {
+		return (RealConstraint)problem.eq(op1.getRealExp(problem), op2.getRealExp(problem));
 	}
 }
