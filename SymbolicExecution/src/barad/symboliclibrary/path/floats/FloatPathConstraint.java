@@ -5,6 +5,8 @@ import barad.symboliclibrary.common.ConstraintType;
 import barad.symboliclibrary.common.SymbolicEntity;
 import barad.symboliclibrary.floats.FloatInterface;
 import barad.symboliclibrary.path.PathConstraintInterface;
+import choco.Problem;
+import choco.real.constraint.RealConstraint;
 
 /**
  * Class that is should be extended by all float path constraints
@@ -24,6 +26,14 @@ public abstract class FloatPathConstraint extends SymbolicEntity implements Path
 		this.operator = operator;
 		validInCurrentContext = false;
 	}
+	
+	/**
+	 * Returns Choco real constraint that represents 
+	 * this real constriant
+	 * @param problem Choco Problem instance
+	 * @return New Choco integer constraint instance
+	 */
+	public abstract RealConstraint getRealConstraint(Problem problem);
 	
 	@Override
 	public Object clone() {
