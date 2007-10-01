@@ -7,18 +7,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
 import barad.symboliclibrary.common.ConstraintType;
+import barad.symboliclibrary.integers.UnsupportedOperationByChoco;
+import barad.symboliclibrary.path.floats.FloatPathConstraint;
+import barad.symboliclibrary.path.integers.IntegerPathConstraint;
+import barad.symboliclibrary.path.strings.StringPathConstraint;
+import barad.symboliclibrary.string.SymbolicString;
+import choco.Problem;
+import choco.integer.IntConstraint;
+import choco.integer.IntDomainVar;
+import choco.real.constraint.RealConstraint;
 
 public class Path {
 	private static Logger log = Logger.getLogger(Path.class);  
 	private static LinkedList<State> stateStack = new LinkedList<State>();
 	private static LinkedList<PathConstraintInterface> reversedConstraints = null;
-	
+	private static LinkedList<HashMap<String, String>> concreteValues = new LinkedList<HashMap<String,String>>();
 	/**
 	 * Add a new branch contraint to the last program state
 	 * @param constraint The contsraint
@@ -29,7 +39,7 @@ public class Path {
 			PathConstraintInterface pathConstraintInterface = ((PathConstraintInterface)constraint).inverse(); 
 			State lastState = stateStack.peek();
 			lastState.setType(pathConstraintInterface.getType());
-			lastState.getConsttraints().add(pathConstraintInterface);
+			lastState.getConstraints().add(pathConstraintInterface);
 			log.debug("Added constraint: " + pathConstraintInterface.toString());
 		} else {
 			log.warn("Unrecognized constraint class");
@@ -157,7 +167,7 @@ public class Path {
 	 * the bytecode responsible for the else 
 	 */
 	public static void reverseBranchConstraints() {
-		reversedConstraints = stateStack.peek().getConsttraints();
+		reversedConstraints = stateStack.peek().getConstraints();
 	}
 	
 	/**
@@ -175,13 +185,68 @@ public class Path {
 			ObjectInputStream objectInput = new ObjectInputStream(bais);
 			result = objectInput.readObject();
 		} catch (IOException ioe) {
-			log.error("Error during object serialization " + ioe);
-			System.out.println("Error during object serialization " + ioe);
-			ioe.printStackTrace();
+			log.error("Error during object serialization " + ioe, ioe);
 		} catch (ClassNotFoundException cnfe) {
 			/*never thrown we work on the same machine*/
 		}
 		return result;
+	}
+	
+	public static void generateInputs() {
+		HashMap<String, String> concretized = new HashMap<String, String>();
+		Problem integerProblem = new Problem();
+		Problem realProblem = new Problem();
+		//Fix the strings
+		for (State s:stateStack) {
+			//Read constraints from each state
+			for (PathConstraintInterface c: s.getConstraints()) {
+				if (c instanceof IntegerPathConstraint) {
+					IntegerPathConstraint constraint = (IntegerPathConstraint)c;
+					try {
+						IntConstraint intConstraint = constraint.getIntConstraint(integerProblem);
+						integerProblem.post(intConstraint);
+						if (DEBUG) {
+							log.info("Integer constraint: " + intConstraint.pretty());
+						}
+					} catch (UnsupportedOperationByChoco uobc) {
+						log.error("Unsupported operation by Choco" + uobc, uobc);
+					}
+				} 
+			}
+				/*
+				else if (c instanceof FloatPathConstraint) {
+					FloatPathConstraint constraint = (FloatPathConstraint)c;
+					try {
+						integerConstraints.add(constraint.getFloatConstraint(integerProblem));
+					} catch (UnsupportedOperationByChoco uobc) {
+						log.error(uobc.getStackTrace());
+					}
+				} else if (c instanceof StringPathConstraint) {
+					StringPathConstraint constraint = (StringPathConstraint)c;
+					//stringConstraints.add(constraint.getConstraintString());
+				} else {
+					log.error("Unsupported constraint type: " + c.getClass());
+				}
+			}
+			*/
+			//Solve and concretize
+			//Integers
+			
+			if (integerProblem.solve()) {
+				for (int i = 0; i < integerProblem.getNbIntVars(); i++) {
+					IntDomainVar var = (IntDomainVar)integerProblem.getIntVar(i);
+					concretized.put(var.toString(), String.valueOf(var.getVal()));
+					if (DEBUG) {
+						log.info("Concretized variable\\value pair: " +  var.toString());
+					}
+				}
+			}
+			/*
+			if (realProblem.solve()) {
+				
+			}
+			*/
+		}
 	}
 	
 	/**
@@ -192,7 +257,7 @@ public class Path {
 		log.info("STORED CONSTRAINTS");
 		if (stateStack.size() > 3) {
 			for (Iterator<State> iterator = stateStack.iterator(); iterator.hasNext(); iterator.next()) {
-				for (PathConstraintInterface pc: iterator.next().getConsttraints()) {
+				for (PathConstraintInterface pc: iterator.next().getConstraints()) {
 					log.info(/*"State: " + iterator.toString() + */" Constraint: " + pc.toString());
 				}
 			}
@@ -204,7 +269,7 @@ public class Path {
 	 */
 	public static void printLastStateConstraints() {
 		log.info("STORED CONSTRAINTS FOR THE LAST STATE");
-		for (PathConstraintInterface pc: stateStack.peek().getConsttraints()) {
+		for (PathConstraintInterface pc: stateStack.peek().getConstraints()) {
 			log.info("State: " + stateStack.peek().toString() + " Constraint: " + pc.toString());
 		}
 	}
