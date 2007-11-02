@@ -1,26 +1,22 @@
 package barad.examples;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-
-import barad.symboliclibrary.integers.ICONST;
-import barad.symboliclibrary.integers.IVAR;
-import barad.symboliclibrary.integers.IntegerInterface;
-import barad.symboliclibrary.string.Equals;
-import barad.symboliclibrary.string.StringInterface;
-import barad.symboliclibrary.string.SymbolicString;
 
 public class IfExample {
 	
 	private int test;
 	
-	public void test(int x, double y, String ii, long v, float d) {
+	public void test(float x, int y) {
 		//Float
-		d = d + 10; 
-		if (d >= 12) {
-			d = 10;
+		if (x < 10) {
+			x = 7;
+			if (y <= 20) {
+				x = x + 20;
+				y = y + 10;
+			} else {
+				x = 1;
+			}
 		} else {
-			d = 100;
+			x = 22;
 		}
 		
 		//Integer
