@@ -55,6 +55,6 @@ public class FCONST extends SymbolicFloatEntity implements Serializable {
     }
     
 	public RealExp getRealExp(Problem problem) {
-		return problem.makeRealVar(getName(), value, value);
+		return problem.makeRealVar(getId(), value, value);
 	}
 }
