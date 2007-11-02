@@ -50,9 +50,7 @@ public class IF_ICMPGE extends IntegerPathConstraint implements Serializable {
 	public IntConstraint getIntConstraint(Problem problem) throws UnsupportedOperationByChoco {
 		Constraint constraint = null;
 		try {
-			IntExp p1 = op1.getIntExp(problem);
-			IntExp p2 = op2.getIntExp(problem);
-			constraint = problem.geq(p1, p2);
+			constraint = problem.geq(op1.getIntExp(problem), op2.getIntExp(problem));
 		} catch (UnsupportedOperationByChoco uobc) {
 			throw uobc;
 		}
