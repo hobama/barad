@@ -1,10 +1,8 @@
 package barad.symboliclibrary.floats;
 
-import choco.Problem;
-import choco.integer.IntExp;
-import choco.real.RealExp;
 import barad.symboliclibrary.common.CommonInterface;
-import barad.symboliclibrary.integers.UnsupportedOperationByChoco;
+import choco.Problem;
+import choco.real.RealExp;
 
 public interface FloatInterface extends CommonInterface {   
 	/**
