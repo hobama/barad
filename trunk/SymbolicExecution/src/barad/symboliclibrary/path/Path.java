@@ -7,28 +7,48 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import barad.symboliclibrary.common.ConstraintType;
+import barad.symboliclibrary.common.SymbolicEntity;
 import barad.symboliclibrary.integers.UnsupportedOperationByChoco;
 import barad.symboliclibrary.path.floats.FloatPathConstraint;
 import barad.symboliclibrary.path.integers.IntegerPathConstraint;
+import barad.symboliclibrary.path.solver.NumericConstraintSolver;
+import barad.symboliclibrary.path.solver.ConstraintSolverFactory;
 import barad.symboliclibrary.path.strings.StringPathConstraint;
-import barad.symboliclibrary.string.SymbolicString;
 import choco.Problem;
 import choco.integer.IntConstraint;
 import choco.integer.IntDomainVar;
-import choco.real.constraint.RealConstraint;
+import choco.real.RealVar;
 
 public class Path {
 	private static Logger log = Logger.getLogger(Path.class);  
 	private static LinkedList<State> stateStack = new LinkedList<State>();
 	private static LinkedList<PathConstraintInterface> reversedConstraints = null;
-	private static LinkedList<HashMap<String, String>> concreteValues = new LinkedList<HashMap<String,String>>();
+	private static NumericConstraintSolver solver =  ConstraintSolverFactory.getInstance().getSolverInstance();
+	
+	/**
+	 * Adds an input parameter of the initial method from which the
+	 * symbolic xecution begins. These are variables we should concretize
+	 * @param value The variable name
+	 */
+	public static Object addInputVariable(Object obj) {
+		if (obj instanceof SymbolicEntity) {
+			SymbolicEntity entity = (SymbolicEntity)obj;
+			solver.addInputVaribale(entity.getId());
+		} else {
+			log.warn("The initial symbolic execution method takes as a parameter non symbolic entity: " + obj.toString());
+		}
+		return obj;
+	}
+	
 	/**
 	 * Add a new branch contraint to the last program state
 	 * @param constraint The contsraint
@@ -193,60 +213,32 @@ public class Path {
 	}
 	
 	public static void generateInputs() {
-		HashMap<String, String> concretized = new HashMap<String, String>();
-		Problem integerProblem = new Problem();
-		Problem realProblem = new Problem();
-		//Fix the strings
+		//Create problems
+		solver.createIntProblem();
+		solver.createRealProblem();
+		//Add consraints
 		for (State s:stateStack) {
 			//Read constraints from each state
 			for (PathConstraintInterface c: s.getConstraints()) {
 				if (c instanceof IntegerPathConstraint) {
-					IntegerPathConstraint constraint = (IntegerPathConstraint)c;
-					try {
-						IntConstraint intConstraint = constraint.getIntConstraint(integerProblem);
-						integerProblem.post(intConstraint);
-						if (DEBUG) {
-							log.info("Integer constraint: " + intConstraint.pretty());
-						}
-					} catch (UnsupportedOperationByChoco uobc) {
-						log.error("Unsupported operation by Choco" + uobc, uobc);
-					}
-				} 
-			}
-				/*
-				else if (c instanceof FloatPathConstraint) {
-					FloatPathConstraint constraint = (FloatPathConstraint)c;
-					try {
-						integerConstraints.add(constraint.getFloatConstraint(integerProblem));
-					} catch (UnsupportedOperationByChoco uobc) {
-						log.error(uobc.getStackTrace());
-					}
+					solver.addIntCosntraint((IntegerPathConstraint)c);
+				} else if (c instanceof FloatPathConstraint) {
+					solver.addRealCosntraint((FloatPathConstraint) c);
 				} else if (c instanceof StringPathConstraint) {
-					StringPathConstraint constraint = (StringPathConstraint)c;
-					//stringConstraints.add(constraint.getConstraintString());
+					//TODO: Implement	
 				} else {
-					log.error("Unsupported constraint type: " + c.getClass());
+					log.error("Unsupported cosnstraint type: " + c.toString());
 				}
 			}
-			*/
-			//Solve and concretize
-			//Integers
-			
-			if (integerProblem.solve()) {
-				for (int i = 0; i < integerProblem.getNbIntVars(); i++) {
-					IntDomainVar var = (IntDomainVar)integerProblem.getIntVar(i);
-					concretized.put(var.toString(), String.valueOf(var.getVal()));
-					if (DEBUG) {
-						log.info("Concretized variable\\value pair: " +  var.toString());
-					}
-				}
-			}
-			/*
-			if (realProblem.solve()) {
-				
-			}
-			*/
 		}
+		//Solve the ptoblem
+		solver.solveIntProblem();
+		solver.solveRealProblem();
+		//Concretize
+		solver.concretizeInt();
+		solver.concretizeReal();
+		//Print values
+		solver.printConcretizedSolution();
 	}
 	
 	/**
