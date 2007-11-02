@@ -22,8 +22,10 @@ import static barad.util.Properties.PRINT_INSTRUMENTED_CLASS;
 import static barad.util.Properties.PROPERTIES_FILE_NAME;
 import static barad.util.Properties.SEPARATOR;
 import static barad.util.Properties.VERBOSE;
+import static barad.util.Properties.DEBUG;
 import barad.instrument.SymbolicClassAdapter;
 import barad.instrument.SymbolicExecutionThread;
+import barad.instrument.SymbolicExecutionThread.SymbolicClassLoader;
 import barad.util.Util;
 
 @SuppressWarnings("all")
@@ -66,9 +68,15 @@ public class Instrumenter {
 		 * @throws IllegalClassFormatException 
 		 */
 		public byte[] transform(ClassLoader loader, String className, Class classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-			byte[] instrumntedClass = null;
-			byte[] classToExplore = classfileBuffer.clone();
-					
+			//Do not process already instrumented classes
+			if (loader instanceof SymbolicClassLoader) {
+				if (DEBUG && VERBOSE) {
+					log.info("Loading instrumented class: Loader: " + loader.toString() + " Class name: " + className);
+				}
+				return null;
+			}
+			byte[] instrumentedClass = null;
+			byte[] classToExplore = classfileBuffer.clone();		
 			try{				
 				if (VERBOSE) {
 					log.info("Processing of class " + className + " started.");
@@ -78,16 +86,11 @@ public class Instrumenter {
 						Util.addClassName(loader, bootstrapped);
 						bootstrapped = bootstrapped || true;
 						//Temporary if statement
-						if (className.equals("barad/examples/IfExample") ||
-						    className.equals("barad/examples/Example")) {
-							
-							className = className + "Test";
-							instrumntedClass = exploreClass(classToExplore, className);
-							
-							//FIXME: Only classes with event handles are to be passed here
-							symbolicExecutionThread.setClassName(className.replace('/', '.'));
-							symbolicExecutionThread.setClassAsByteArray(instrumntedClass);
-							symbolicExecutionThread.setMethodNames(new String[]{"symbolicExecution"});
+						if (className.equals("barad/examples/IfExample")) {
+							instrumentedClass = exploreClass(classToExplore, className);
+							//TODO: Get the list of hte event handlers
+							//execute symbolically
+							symbolicExecutionThread.executeSymbolically(className, instrumentedClass, new String[]{"symbolicExecution"});
 						}
 					}
 				}
