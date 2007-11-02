@@ -42,6 +42,12 @@ public interface Properties {
 	 * and void return type
 	 */
 	public static final boolean  PRINT_INSTRUMENTED_CLASS = true;
+	
+	/**
+	 * Specifies if the embedded constraint solver based on Choco library will be
+	 * used or the one specified in SymbolicExecutionProperies.xml
+	 */
+	public static final boolean  USE_EMBEDDED_NUMERIC_CONSTRAINT_SOLVER = false;
 }
 
 
