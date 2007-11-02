@@ -18,7 +18,7 @@ public enum Names {
 	FLOAT_INTERFACE("Lbarad/symboliclibrary/floats/FloatInterface;"),
 	//String
 	SYMBOLICSTRING("barad/symboliclibrary/string/SymbolicString"),
-	SYMBOLICSTRING_VAR_SIGNATURE("()V"),
+	SYMBOLICSTRING_VAR_SIGNATURE("(I)V"),
 	SYMBOLICSTRING_CONST_SIGNATURE("(Ljava/lang/String;)V"),
 	SYMBOLICSTRING_INTRFACE("Lbarad/symboliclibrary/string/StringInterface;"),
 	STRING("Ljava/lang/String;"),
@@ -26,6 +26,7 @@ public enum Names {
 	//PATH
 	//======================
 	PATH("barad/symboliclibrary/path/Path"),
+	PATH_ADD_INPUT_VARIABLE_SIGNATURE("(Ljava/lang/Object;)Ljava/lang/Object;"),
 	PATH_ADD_LOCAL_FIELD_SIGNATURE("(Ljava/lang/Object;Ljava/lang/String;)V"),
 	PATH_ADD_LOCAL_VARIABLE_SIGNATURE("(Ljava/lang/Object;I)Ljava/lang/Object;"),
 	PATH_ADD_GET_VARIABLE_VALUE_SIGNATURE("(I)Ljava/lang/Object;"),

@@ -3,6 +3,8 @@ package barad.instrument;
 import static barad.util.Properties.DEBUG;
 import static barad.util.Properties.VERBOSE;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -22,22 +24,22 @@ public class SymbolicClassAdapter  extends ClassAdapter{
 	private Logger log = Logger.getLogger(this.getClass().getName());
 	private String instrumentedClass;
 	private String initialMethod = "test";
-	private String initialMethodSignsture = "(IDLjava/lang/String;JF)V";
+	private String initialMethodSignsture = "(FI)V";
 	private boolean instrument = true;
 	private String className = null;
 	private String signature = null;
+	private List<String> eventHandlers;
 	
 	public SymbolicClassAdapter(ClassVisitor cv) {
 		super(cv);
+		//????
+		eventHandlers = new LinkedList<String>();
 	}
 	
 	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 		if (VERBOSE) log.debug("VISIT CLASS: " + name + ", Version: " + version + ", Access: " + access + ", SuperClass: " + superName + ";");
 		Util.increaseClassId();
-		
-		name = name + "Test";
-		
 		instrumentedClass = name;
 		cv.visit(version, access, name, signature, superName, makeSerializable(interfaces));
 	}
@@ -82,24 +84,21 @@ public class SymbolicClassAdapter  extends ClassAdapter{
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		MethodVisitor mv = null;
-		//Remove - public static void main(String[] args)
-		if (!name.equals("main") || !desc.equals("([Ljava/lang/String)V")) {
-			if (VERBOSE) log.debug("VISIT METHOD: " + name + ", Access: " + access + ", Descriptor: " + desc + ", Signature: " + signature + ";");
-			if (name.equals(initialMethod)) {
-				log.info("Generating main method ");
-				identifyInputs(desc);
+		if (VERBOSE) log.debug("VISIT METHOD: " + name + ", Access: " + access + ", Descriptor: " + desc + ", Signature: " + signature + ";");
+		if (name.equals(initialMethod)) {
+			log.info("Generating main method ");
+			identifyInputs(desc);
+		}
+		Util.increaseMethodId();
+		if (instrument) {
+			mv = cv.visitMethod(access, name, SymbolicMethodAdapter.modifyDescriptor(desc), signature, exceptions); 
+			if (mv != null) {
+				mv = new SymbolicMethodAdapter(mv);
 			}
-			Util.increaseMethodId();
-			if (instrument) {
-				mv = cv.visitMethod(access, name, SymbolicMethodAdapter.modifyDescriptor(desc), signature, exceptions); 
-				if (mv != null) {
-					mv = new SymbolicMethodAdapter(mv);
-				}
-			} else {
-				mv = cv.visitMethod(access, name, desc, signature, exceptions);
-				if (mv != null) {
-					mv = new MethodAdapter(mv);
-				}
+		} else {
+			mv = cv.visitMethod(access, name, desc, signature, exceptions);
+			if (mv != null) {
+				mv = new MethodAdapter(mv);
 			}
 		}
 		return mv;
@@ -169,7 +168,8 @@ public class SymbolicClassAdapter  extends ClassAdapter{
 			setVariableGenerationParameters(e.getValue());
 			mv.visitTypeInsn(Opcodes.NEW, className);
 			mv.visitInsn(Opcodes.DUP);
-			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, className, "<init>", signature);			
+			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, className, "<init>", signature);	
+			mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "addInputVariable", Names.PATH_ADD_INPUT_VARIABLE_SIGNATURE.getValue());
 		}
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, instrumentedClass, methodName, SymbolicMethodAdapter.modifyDescriptor(methodDesc));
 		Label l2 = new Label();
@@ -178,9 +178,8 @@ public class SymbolicClassAdapter  extends ClassAdapter{
 		mv.visitInsn(Opcodes.RETURN);
 		Label l3 = new Label();
 		mv.visitLabel(l3);
-		mv.visitLocalVariable("args", "[Ljava/lang/String;", null, l0, l3, 0);
-		mv.visitLocalVariable("instrumentedClassInstance", "L" + instrumentedClass + ";", null, l1, l3, 1);
-		mv.visitMaxs(Util.getProgramInputs().size() + 2, 2);
+		mv.visitLocalVariable("this", "L" + instrumentedClass + ";", null, l0, l3, 0);
+		mv.visitMaxs(Util.getProgramInputs().size() + 2, 1);
 		mv.visitEnd();
 	}
 	

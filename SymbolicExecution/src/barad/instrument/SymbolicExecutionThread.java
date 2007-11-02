@@ -13,10 +13,22 @@ import org.apache.log4j.Logger;
 public class SymbolicExecutionThread extends Thread {
 	private Logger log;
 	private String className;
-	private byte[] classAsByteArray;
+	private byte[] instrumentedClass;
 	private volatile Thread mainThread;
-	private String[] methodNames;
+	private String[] eventHandlers;
 
+	/**
+	 * @param className Name of the class to be symbolicaly executed
+	 * @param classDefinitionAsByteArray The byte array with the 
+	 * @param eventHandlers names of the methods to be symbolically executed
+	 */
+	public void executeSymbolically(String className, byte[] instrumentedClass, String[] eventHandlers) {
+		this.className = className.replace('/', '.');
+		this.instrumentedClass = instrumentedClass;
+		this.eventHandlers = eventHandlers;
+		this.interrupt();
+	}
+	
 	/**
 	 * Creates an instance of this class
 	 * @param mainThread The main program thread
@@ -41,15 +53,15 @@ public class SymbolicExecutionThread extends Thread {
 			} catch (InterruptedException ie) {
 				/*do nothing*/
 			}
-			if (className != null && classAsByteArray != null && methodNames != null) {
-				Class<?> clazz = new MyClassLoader().getClass(classAsByteArray, className);
+			if (className != null && instrumentedClass != null && eventHandlers != null) {
+				Class<?> clazz = new SymbolicClassLoader().getClass(instrumentedClass, className);
 				Object instance = getInstance(clazz);
-				for (int i = 0; i < methodNames.length; i++) {
-					invokeMethod(clazz, instance, methodNames[i]);
+				for (int i = 0; i < eventHandlers.length; i++) {
+					invokeMethod(clazz, instance, eventHandlers[i]);
 				}
 				className = null;
-				classAsByteArray = null;
-				methodNames = null;
+				instrumentedClass = null;
+				eventHandlers = null;
 			}
 		}
 		log.info("Symbolic execution thread terminated");
@@ -107,7 +119,7 @@ public class SymbolicExecutionThread extends Thread {
 	 * loading classes from a byte array definition and name
 	 * @author svetoslavganov
 	 */
-	public static class MyClassLoader extends ClassLoader {
+	public static class SymbolicClassLoader extends ClassLoader {
 		/**
 		 * Loads a class from class definition as byte array
 		 * and class name
@@ -138,30 +150,5 @@ public class SymbolicExecutionThread extends Thread {
 	         super.resolveClass(clazz);
 	    	 return clazz;
 	     } 
-	}
-	
-	/**
-	 * Setter for the name of the class to be symbolicaly executed
-	 * @param className The class name
-	 */
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	/**
-	 * The instrumented class as byte array
-	 * @param classDefinitionAsByteArray The byte array with the 
-	 * class definition
-	 */
-	public void setClassAsByteArray(byte[] classAsByteArray) {
-		this.classAsByteArray = classAsByteArray;
-	}
-
-	/**
-	 * Setter for the names of the methods to be symbolically executed
-	 * @param methodNames
-	 */
-	public void setMethodNames(String[] methodNames) {
-		this.methodNames = methodNames;
 	}
 }

@@ -17,7 +17,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import barad.profiler.OpcodeToMnemonicMap;
-import barad.util.Util;
 
 public class SymbolicMethodAdapter implements MethodVisitor {
 	private MethodVisitor mv;
@@ -224,7 +223,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 			Integer backtrackSteps = backtrackLabels.get(label);
 			if (backtrackSteps != null) {
 				//Temporay remove if something breaks
-				while (backtrackSteps > 1/*0*/) {
+				while (backtrackSteps > /*1*/0) {
 					writeCodeToBacktrack();
 					backtrackSteps--;
 				}
@@ -254,6 +253,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 					//reverse constrains only if this is the else
 					if (reverseBranchConstraints && count == 1 && !switchDefaultLabels.remove(label)) {
 						mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "reverseBranchConstraints", Names.REVERSE_BRANCH_CONSTRAINTS_SIGNATURE.getValue());
+						writeCodeToGenerateConcerteValues();
 						reverseBranchConstraints = false;
 					}
 					writeCodeToBacktrack();
@@ -292,15 +292,16 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 
 	public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
 		bytecodeQueue.enqueue("visitLocalVariable", new String[]{desc, signature, start.toString(), end.toString(), String.valueOf(index)});
-		if (desc.equals("I")) {
+		if (desc.equals("I") || desc.equals("J")) {
 			mv.visitLocalVariable(name, modifyDescriptor(desc), signature, start, end, index);
-			writeCodeToIntroduceSymbolicIntegerVariable(index);
-		} else if (desc.equals("F")) {
+			//writeCodeToIntroduceSymbolicIntegerVariable(index);
+		} else if (desc.equals("F") || desc.equals("D")) {
 			mv.visitLocalVariable(name, modifyDescriptor(desc), signature, start, end, index);
-			writeCodeToIntroduceSymbolicFloatVariable(index);
+			//writeCodeToIntroduceSymbolicFloatVariable(index);
 		} else if (desc.equals(Names.STRING.getValue())) {
 			mv.visitLocalVariable(name, modifyDescriptor(desc), signature, start, end, index);
-			//writeCodeToIntroduceSymbolicStringVariable(index);
+			//TODO: Make the length of string variable parametrized
+			//writeCodeToIntroduceSymbolicStringVariable(index, 10);
 		} else {
 			mv.visitLocalVariable(name, desc, signature, start, end, index);
 		}
@@ -442,6 +443,15 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		mv.visitVarInsn(Opcodes.ASTORE, index);
 	}
 	
+	
+	private void writeCodeToIntroduceSymbolicStringVariable(int index, int length) {
+		mv.visitTypeInsn(Opcodes.NEW, Names.SYMBOLICSTRING.getValue());
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitIntInsn(Opcodes.BIPUSH, length);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Names.SYMBOLICSTRING.getValue(), "<init>", Names.SYMBOLICSTRING_VAR_SIGNATURE.getValue());
+		mv.visitVarInsn(Opcodes.ASTORE, index);
+	}
+	
 	private void writeCodeToIntroduceSymbolicFloatVariable(int index) {
 		mv.visitTypeInsn(Opcodes.NEW, Names.FVAR.getValue());
 		mv.visitInsn(Opcodes.DUP);
@@ -500,6 +510,11 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 			}
 			modifiedVariablesForState.pop();
 		}
+		//writeCodeToGenerateConcerteValues();
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "removeLastState", Names.PATH_REMOVE_LAST_STATE_SIGNATURE.getValue());
+	}
+	
+	private void writeCodeToGenerateConcerteValues() {
 		if (DEBUG) {
 			writeCodeToDisplayMessage("Backtracking completed");
 			writeCodeToDisplayMessage("Genrating concrete values....");
@@ -508,7 +523,6 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		if (DEBUG) {
 			writeCodeToDisplayMessage("Genrating concrete values completed");
 		}
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "removeLastState", Names.PATH_REMOVE_LAST_STATE_SIGNATURE.getValue());
 	}
 	
 	/**
@@ -526,6 +540,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 	private void writeCodeToIntroduceStringConstraint() {
 		writeCodeToCreateNewState();
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "addBranchConstraint", Names.PATH_ADD_BRANCH_CONSTRAINT.getValue());
+	
 	}
 	
 	/**
@@ -539,6 +554,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		writeCodeToCreateNewState();
 		writeCodeToIntroduceSymbolicOperation(symbolicClassName, descriptor);
 	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "addBranchConstraint", Names.PATH_ADD_BRANCH_CONSTRAINT.getValue());
+	    writeCodeToGenerateConcerteValues();
 	}
 	
 	/**
@@ -552,6 +568,7 @@ public class SymbolicMethodAdapter implements MethodVisitor {
 		writeCodeToIntroduceSymbolicIntegerConstant(Opcodes.BIPUSH, index);
 	    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Names.IF_ICMPNE.getValue(), "<init>", Names.BINARY_INTEGER_PATH_CONSTRAINT_SIGNATURE.getValue());
 	    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Names.PATH.getValue(), "addBranchConstraint", Names.PATH_ADD_BRANCH_CONSTRAINT.getValue());
+	    writeCodeToGenerateConcerteValues();
 	}
 	
 	/**
