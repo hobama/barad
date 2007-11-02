@@ -3,9 +3,12 @@ package barad.symboliclibrary.path.floats;
 import java.io.Serializable;
 
 import choco.Problem;
+import choco.real.RealExp;
+import choco.real.RealVar;
 import choco.real.constraint.RealConstraint;
 
 import barad.symboliclibrary.floats.FloatInterface;
+import barad.util.Util;
 
 /**
  * Class that represents the symbolic float path constraint: greter than
@@ -43,8 +46,13 @@ public class IF_FCMPGT extends FloatPathConstraint implements Serializable {
 	 * this real constriant
 	 * @param problem Choco Problem instance
 	 * @return New Choco real constraint instance
+	 * NOTE: Choco does not support x > y real operation and
+	 * it is modeled as x + delta < = y
 	 */
 	public RealConstraint getRealConstraint(Problem problem) {
-		return (RealConstraint)problem.not(problem.leq(op1.getRealExp(problem), op2.getRealExp(problem)));
+		double value = Double.parseDouble(Util.getProperties().getProperty("doubles.delta", "0.1"));
+		RealVar delta = problem.makeRealVar(value, value);
+		RealExp op2PlusDelta = problem.plus(op2.getRealExp(problem), delta);
+		return (RealConstraint)problem.geq(op1.getRealExp(problem), op2PlusDelta);
 	}
 }
