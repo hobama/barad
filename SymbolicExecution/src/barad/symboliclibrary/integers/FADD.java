@@ -2,7 +2,6 @@ package barad.symboliclibrary.floats;
 
 import java.io.Serializable;
 
-import barad.symboliclibrary.integers.UnsupportedOperationByChoco;
 import choco.Problem;
 import choco.real.RealExp;
 
