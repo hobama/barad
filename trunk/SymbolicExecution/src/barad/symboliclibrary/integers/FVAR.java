@@ -59,6 +59,6 @@ public class FVAR extends SymbolicFloatEntity implements Serializable {
 		} catch (NumberFormatException nfe) {
 			/*ignore*/
 		}
-		return problem.makeRealVar(getName(), min, max);
+		return problem.makeRealVar(getId(), min, max);
 	}
 }
