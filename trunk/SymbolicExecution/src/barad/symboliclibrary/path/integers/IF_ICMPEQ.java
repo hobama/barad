@@ -52,7 +52,7 @@ public class IF_ICMPEQ extends IntegerPathConstraint implements Serializable {
 	public IntConstraint getIntConstraint(Problem problem) throws UnsupportedOperationByChoco {
 		Constraint constraint = null;
 		try {
-			problem.eq(op1.getIntExp(problem), op2.getIntExp(problem));
+			constraint = problem.eq(op1.getIntExp(problem), op2.getIntExp(problem));
 		} catch (UnsupportedOperationByChoco uobc) {
 			throw uobc;
 		}
