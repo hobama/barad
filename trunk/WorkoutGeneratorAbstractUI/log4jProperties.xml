@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+  
+   <appender name="A1" class="org.apache.log4j.ConsoleAppender">
+    <param name="threshold" value="debug"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d %-5p [%t] %c (%F:%L) - %m\n"/>
+    </layout>
+  </appender>
+ 
+  <appender name="A2" class="org.apache.log4j.FileAppender">
+    <param name="File" value="SymbolicExecutionLog.txt"/>
+    <param name="Append" value="false"/>
+    <param name="threshold" value="debug"/>
+    <param name="ImmediateFlush" value="false"/>
+    <param name="BufferedIO" value="true"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d %-5p [%t] %c (%F:%L) - %m\n"/>
+    </layout> 
+  </appender>
+  
+  <root>
+    <param name="level" value="debug"/>
+    <priority value ="debug" />
+    <appender-ref ref="A1" />
+    <appender-ref ref="A2" />
+  </root>
+  
+</log4j:configuration>
