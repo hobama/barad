@@ -1,0 +1,20 @@
+1. For each event listener create a set with widgets that it listens to.
+	- Create a hash map of type <listener, set of widgets>
+	- NOTE: 
+	
+2. How to detect the hierarchy of events?
+
+3. Maybe I should add to each shell a field containing an event
+   executor that will trigger all events for which there are listeners
+   in the current shell. 
+   
+4. Problem: After execution of an event there is a state transition
+   => How to backtrack!? Is it possible? Should I store the Heap and
+   restore it after each event?!
+   
+5. How to handle the case of cascade windows?
+
+6. How to trigger an event from the code?
+	Just call the method of the event listener with appropriate parameters  
+	
+7. Maybe I should use reflection to invoke the methods (see bookmarked page)
