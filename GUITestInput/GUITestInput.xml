@@ -1,0 +1,20 @@
+<testinputs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/XMLSchema.xsd">
+  <widget>
+    <clazz>clazz1</clazz>
+    <index>index1</index>
+    <parent>parent1</parent>
+    <values>
+      <value>value1</value>
+      <value>value2</value>
+    </values>
+  </widget>
+  <widget>
+    <clazz>clazz2</clazz>
+    <index>index2</index>
+    <parent>parent2</parent>
+    <values>
+      <value>value3</value>
+      <value>value4</value>
+    </values>
+  </widget>
+</testinputs>
