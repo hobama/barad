@@ -1,0 +1,28 @@
+/**
+	 * Writes a public setter for an object field
+	 * @param methodName The name of the method
+	 * @param parameterClassname The name of the parameter class for the method
+	 * @param owner The class name of the object owner of the method 
+	 */
+	private void writeSetFieldMethod(String methodName, String parameterClassname, String owner) {
+		MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, methodName, "(" + parameterClassname + ")V", null, null);
+		if (mv != null) {
+			mv.visitCode();
+			Label l0 = new Label();
+			mv.visitLabel(l0);
+			mv.visitLineNumber(8, l0);
+			mv.visitVarInsn(Opcodes.ALOAD, 0);
+			mv.visitVarInsn(Opcodes.ALOAD, 1);
+			mv.visitFieldInsn(Opcodes.PUTFIELD, owner, "value", parameterClassname);
+			Label l1 = new Label();
+			mv.visitLabel(l1);
+			mv.visitLineNumber(9, l1);
+			mv.visitInsn(Opcodes.RETURN);
+			Label l2 = new Label();
+			mv.visitLabel(l2);
+			mv.visitLocalVariable("this", "L" + owner + ";", null, l0, l2, 0);
+			mv.visitLocalVariable("value", parameterClassname, null, l0, l2, 1);
+			mv.visitMaxs(2, 2);
+			mv.visitEnd();
+		}
+	}
