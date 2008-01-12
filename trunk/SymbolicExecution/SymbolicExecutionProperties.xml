@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- GENERAL SECTION -->
+	
+	<!-- Path for storing of permanent copies of the instrumented classes -->
+	<entry key="instrumented.classes.path">C:\TEMP CLASSES</entry>
+	
+	<!-- CONSTRAINT SOLVERS SECTION -->
+	
+	<!-- NUMERIC SOLVER PROPERTIES-->
+	<!-- The class name of the numeric constraint solver -->
+	<entry key="numeric.constraint.solver">barad.symboliclibrary.path.solver.numeric.impl.BaradNumericConstraintSolver</entry>
+	<!-- The lower bound for integers during constraint solving -->
+	<entry key="integers.min">-100</entry>
+	<!-- The upper bound for integers during constraint solving -->
+	<entry key="integers.max">100</entry>
+	<!-- The lower bound for doubles during constraint solving -->
+	<entry key="doubles.min">-100</entry>
+	<!-- The upper bound for doubles during constraint solving -->
+	<entry key="doubles.max">100</entry>
+	<!-- The decimal places for rounding of doubles -->
+	<!-- NOTE: The solution provided by the solver is not precise
+		and in case of constraints that compare two values 
+		the generated input does not match the concrete value
+		it is compared to.
+	-->
+	<entry key="doubles.decimal.places.round.value">5</entry>	
+	<!-- The precision for doubles constraint solving -->
+	<!-- NOTE: The constrint solving library does not provide
+		implementation of some constraints and they are modeled as 
+		follows (not provided operation => implementation):
+		1. x < y => x + delta <= y
+		2. x > y => x >= y + delta
+		3. x != y => x + delta <= y || x >= y + delta
+	-->
+	<entry key="doubles.delta">0.1</entry>
+	
+	<!-- STRING SOLVER PROPERTIES-->
+	<!-- The class name of the string constraint solver -->
+	<entry key="string.constraint.solver">barad.symboliclibrary.path.solver.string.impl.BaradStringConstraintSolver</entry>
+	<!-- Default length for strings during constrint solving -->
+	<entry key="default.string.length">50</entry>
+	
+	<!-- XML WRITER PROPERTIES-->
+	<!-- The class name of the string constraint solver -->
+	<entry key="xml.writer">barad.symboliclibrary.test.xml.impl.BaradXMLWriter</entry>
+	<!-- Default length for strings during constrint solving -->
+	<entry key="destination.folder">./xml</entry>
+	
+	<!-- TEST GENERATION SECTION -->
+	
+	<!-- Specifies if disjoint test cases should be merged -->
+	<entry key="merge.test.cases">true</entry>
+	<!-- Specifies if the generated test cases should be outputed to the console -->
+	<entry key="output.to.console">true</entry>
+	<!-- Specifies if the generated test cases should be outputed to XML filels -->
+	<entry key="output.to.xml">true</entry>
+	<!-- Specifies if the generated test cases should be outputed as static reference in JVM -->
+	<entry key="output.to.jvm">true</entry>
+	
+</properties>
