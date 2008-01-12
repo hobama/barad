@@ -1,0 +1,6 @@
+barad/staticanalysis
+org/eclipse/swt/events
+org/eclipse/swt/internal
+org/eclipse/swt/widgets
+org/eclipse/swt/graphics
+choco/
