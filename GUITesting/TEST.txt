@@ -1,3 +1,0 @@
-[java.lang.Class] [ERROR] TEST
-[java.lang.Class] [ERROR] Class constructor was not identified java.lang.NoSuchMethodException: eventgenerators.ArmEventGenerator.<init>(org.eclipse.swt.widgets.Widget, java.util.Properties)
-[java.lang.Class] [ERROR] Generated null
