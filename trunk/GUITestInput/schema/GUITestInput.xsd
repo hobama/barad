@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://tempuri.org/XMLSchema.xsd" elementFormDefault="qualified" xmlns="http://tempuri.org/XMLSchema.xsd" xmlns:mstns="http://tempuri.org/XMLSchema.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="WidgetInput">
+    <xs:sequence>
+      <xs:element name="parentId" type="xs:string" />
+      <xs:element name="parentClass" type="xs:string" />
+      <xs:element name="parentIndex" type="xs:short" />
+      <xs:element name="widgetId" type="xs:string" />
+      <xs:element name="widgetClass" type="xs:string" />
+      <xs:element name="widgetIndex" type="xs:short" />
+      <xs:element name="widgetProperty" type="xs:string" />
+      <xs:element name="propertyValue" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TestSuite">
+    <xs:sequence>
+      <xs:element name="testcase" type="TestCase" maxOccurs="unbounded" minOccurs="0" nillable="false" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="testsuite" type="TestSuite">
+  </xs:element>
+  <xs:complexType name="TestCase">
+    <xs:sequence>
+      <xs:element name="widgetinput" type="WidgetInput" maxOccurs="unbounded" minOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
