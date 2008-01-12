@@ -1,0 +1,80 @@
+<project name="SymbolicExecution" default="deployagent" basedir=".">
+  <description>Blogcaster build file</description>
+	
+  <!-- Load build properties -->
+  <target name="properties" >
+    <property file="build.properties" />
+  </target>	
+	
+  <!-- Clead taget folders -->
+  <target name="clean" depends="properties">
+    <delete dir="${build.dir}" />
+	<delete dir="${dist.dir}" />
+  </target>
+
+  <!-- Create target folders and init classpath -->
+  <target name="init" depends="clean">
+    <mkdir dir="${build.dir}" />
+	<mkdir dir="${dist.dir}" />
+    <path id="classpath">
+      <fileset dir="${lib.dir}">
+	    <include name="**/*.jar" />
+	  </fileset>
+	  <fileset dir="${build.dir}">
+	    <include name="**/*.class" />
+	  </fileset>
+    </path>
+  </target>
+	
+  <!-- Compile the source code -->
+  <target name="compile" depends="init" >
+    <javac destdir="${build.dir}" debug="${build.debug}" debuglevel="${build.debug.level}" optimize="${build.optimize}" deprecation="${build.deprecation}" srcdir="${src.dir}">
+	  <classpath refid="classpath" />
+	</javac>
+  </target>	
+	
+  <!-- Copy dependency libs -->
+  <target name="libcopy" depends="compile">
+    <copy todir="${dist.dir}">
+	  <fileset dir="${lib.dir}">
+	    <include name="**/*.jar" />
+	  </fileset>
+	</copy>
+  </target>
+
+  <!-- Package the agent in a jar file -->
+  <target name="jar" depends="libcopy">
+    <path id="jar.libs">
+      <fileset dir="${dist.dir}">
+        <include name="${lib.dir}/*.*"/>
+      </fileset>
+    </path>
+  	<pathconvert property="manifest.classpath" pathsep=" ">
+  	  <path refid="classpath"/>
+  	  <chainedmapper>
+  	    <flattenmapper/>
+  	  </chainedmapper>
+  	</pathconvert>
+    <jar jarfile="${dist.dir}/${jar.file.name}">
+      <fileset dir="${build.dir}" />
+      <manifest>
+        <attribute name="Premain-Class" value="${main.class}"/>
+        <attribute name="Class-Path" value="${manifest.classpath}"/>
+      	<attribute name="agentArgs" value="Svetlio"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <!-- Compile the source, copy dependency libs, and package in a jar file -->
+  <target name="build" depends="jar" />
+
+  <!-- Deploy the agent -->
+  <target name="deployagent" depends="build" >
+	<copy todir="${deploy.agent.path}">
+	  <fileset dir="${dist.dir}">
+	    <include name="**/*.jar" />
+	  </fileset>
+    </copy>
+  </target>
+	
+</project>
