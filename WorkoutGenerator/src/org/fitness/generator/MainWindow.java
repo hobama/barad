@@ -277,7 +277,7 @@ public class MainWindow extends Composite {
 		}
 	}
 	
-	private void button1WidgetSelected(SelectionEvent evt) {
+	private void button1WidgetSelected(SelectionEvent evt) {		
 		String workout = "";
 		styledText1.setText(workout);
         //Input data
@@ -331,7 +331,7 @@ public class MainWindow extends Composite {
                 }
                 repCoeficient = 10;
                 setCoeficient = 3;
-            } else if (experience.equals("Advanced")) {
+           } else if (experience.equals("Advanced")) {
             	if (age >= 0 && age <= 20) {
                 	cardioCoeficient = cardioCoeficient * 0.5;
             	}
@@ -442,7 +442,7 @@ public class MainWindow extends Composite {
 	        //Sunday
 	        workout = workout + "   \nSunday:\n";
 	        workout = workout + "\t Free day\n";
-	    } else {
+	    } else if (gender.equals("Female")) {	
 	         if (experience.equals("Beginner")) {
 	         	if (age >= 0 && age <= 20) {
 	            	cardioCoeficient = cardioCoeficient * 0.7;
