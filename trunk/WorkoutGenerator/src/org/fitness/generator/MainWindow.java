@@ -284,9 +284,26 @@ public class MainWindow extends Composite {
         String gender = combo1.getText().trim();
         String metabolism = combo2.getText().trim();
         String experience = combo3.getText().trim();
-        int age = Integer.parseInt(text1.getText().trim());
-        float height = Float.parseFloat(text2.getText().trim());
-        float weight = Float.parseFloat(text3.getText().trim()); 
+
+        int age = 0;
+        try {
+            age = Integer.parseInt(text1.getText().trim());
+        } catch (NumberFormatException ignore) {
+            // Ignore.
+        }
+        float height = 0;
+        try {
+            height = Float.parseFloat(text2.getText().trim());
+        } catch (NumberFormatException ignore) {
+            // Ignore.
+        }
+        float weight = 0;
+        try {
+            weight = Float.parseFloat(text3.getText().trim());
+        } catch (NumberFormatException ignore) {
+            // Ignore.
+        }
+
         //Auiliary variables for coeficients
         int repCoeficient = 0;
         int setCoeficient = 0;
