@@ -13,6 +13,7 @@ public class TestCase implements Cloneable, Serializable {
     private static final long serialVersionUID = -7425656005894856047L;
 
     private List<TestStep> steps = new ArrayList<TestStep>();
+    private transient TestCase parent;
 
     public boolean add(TestStep step) {
         return steps.add(step);
@@ -24,6 +25,14 @@ public class TestCase implements Cloneable, Serializable {
 
     public List<TestStep> getSteps() {
         return Collections.unmodifiableList(steps);
+    }
+
+    public TestCase getParent() {
+        return parent;
+    }
+
+    public void setParent(TestCase parent) {
+        this.parent = parent;
     }
 
     public String toString() {
@@ -49,6 +58,7 @@ public class TestCase implements Cloneable, Serializable {
     public Object clone() throws CloneNotSupportedException {
         TestCase clone = (TestCase) super.clone();
         clone.steps = new ArrayList<TestStep>(this.steps);
+        clone.parent = null;
         return clone;
     }
 

@@ -2,10 +2,7 @@ package edu.utexas.barad.agent.testcase;
 
 import edu.utexas.barad.agent.swt.Displays;
 import edu.utexas.barad.agent.swt.WidgetHierarchy;
-import edu.utexas.barad.agent.swt.proxy.widgets.ButtonProxy;
-import edu.utexas.barad.agent.swt.proxy.widgets.MenuItemProxy;
-import edu.utexas.barad.agent.swt.proxy.widgets.MenuProxy;
-import edu.utexas.barad.agent.swt.proxy.widgets.TextProxy;
+import edu.utexas.barad.agent.swt.proxy.widgets.*;
 import edu.utexas.barad.common.swt.WidgetInfo;
 
 public class DefaultWidgetFilterStrategy implements WidgetFilterStrategy {
@@ -16,7 +13,12 @@ public class DefaultWidgetFilterStrategy implements WidgetFilterStrategy {
             return Displays.syncExec(menuItemProxy.getDisplay(), new Displays.BooleanResult() {
                 public boolean result() {
                     MenuProxy menuProxy = menuItemProxy.getParent();
+                    String text = menuItemProxy.getText();
+//                  if ("&Help".equals(text) || "&About Address Book...".equals(text)) {
+//                    if ("&Search".equals(text) || text.startsWith("&Find...")) {
                     return menuProxy.isVisible() && menuItemProxy.isEnabled();
+//                    }
+//                    return false;
                 }
             });
         } else if (proxy instanceof ButtonProxy) {
@@ -31,6 +33,13 @@ public class DefaultWidgetFilterStrategy implements WidgetFilterStrategy {
             return Displays.syncExec(textProxy.getDisplay(), new Displays.BooleanResult() {
                 public boolean result() {
                     return textProxy.isVisible() && textProxy.isEnabled();
+                }
+            });
+        } else if (proxy instanceof ComboProxy) {
+            final ComboProxy comboProxy = (ComboProxy) proxy;
+            return Displays.syncExec(comboProxy.getDisplay(), new Displays.BooleanResult() {
+                public boolean result() {
+                    return comboProxy.isVisible() && comboProxy.isEnabled();
                 }
             });
         }

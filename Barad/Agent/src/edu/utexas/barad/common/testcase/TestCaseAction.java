@@ -7,7 +7,8 @@ package edu.utexas.barad.common.testcase;
 public enum TestCaseAction {
     LEFT_MOUSE_CLICK("LeftMouseClick"),
     RIGHT_MOUSE_CLICK("RightMouseClick"),
-    ENTER_TEXT("EnterText");
+    ENTER_TEXT("EnterText"),
+    SELECT_ITEM("SelectItem");
 
     private String displayName;
 
@@ -42,6 +43,11 @@ public enum TestCaseAction {
 
             case ENTER_TEXT: {
                 buffer.append("Input Text");
+                break;
+            }
+
+            case SELECT_ITEM: {
+                buffer.append("Select Item");
                 break;
             }
 

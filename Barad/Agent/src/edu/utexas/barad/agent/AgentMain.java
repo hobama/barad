@@ -116,12 +116,12 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
     }
 
     public TestCase[] getGeneratedTestCases() throws RemoteException {
-        List<TestCase> testCases = generateTestCases.getTestCases();
+        List<TestCase> testCases = generateTestCases.getUniqueTestCases();
         return testCases != null ? testCases.toArray(new TestCase[0]) : new TestCase[0];
     }
 
     public TestCase[] getExecutingTestCases() throws RemoteException {
-        List<TestCase> testCases = generateTestCases.getNewTestCases();
+        List<TestCase> testCases = generateTestCases.getCandidateTestCases();
         return testCases != null ? testCases.toArray(new TestCase[0]) : new TestCase[0];
     }
 
@@ -154,7 +154,7 @@ public class AgentMain extends UnicastRemoteObject implements IAgent {
             new AgentMain(processCommandLine, processID);
         } catch (RemoteException e) {
             logger.error("Couldn't instantiate AgentMain object.", e);
-            throw new AgentRuntimeException("Couldnt' instantiate AgentMain object.");
+            throw new AgentRuntimeException("Couldn't instantiate AgentMain object.");
         }
         logger.info("Barad agent is running.");
     }

@@ -7,6 +7,8 @@ import edu.utexas.barad.agent.swt.widgets.MessageBoxHelper.Button;
  * Barad Project, Aug 6, 2007
  */
 public class MessageBoxTestStep extends TestStep {
+    private static final long serialVersionUID = 7319865153413215980L;
+
     private Button button;
 
     public MessageBoxTestStep(TestCaseAction action, Button button) {
@@ -20,6 +22,16 @@ public class MessageBoxTestStep extends TestStep {
 
     public void setButton(Button button) {
         this.button = button;
+    }
+
+    public String toHTML() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(TestCaseAction.toHTML(getAction()));
+        buffer.append(" on ");
+        if (button != null) {
+            buffer.append(button.toString());
+        }
+        return buffer.toString();
     }
 
     @Override

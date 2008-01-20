@@ -34,4 +34,6 @@ public interface ComboProxy extends CompositeProxy {
     public int indexOf(String string);
 
     public int indexOf(String string, int start);
+
+    public void setText(String text);
 }

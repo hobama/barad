@@ -498,11 +498,11 @@ public class WidgetHierarchy implements Visitable {
                     }
                     IProxyInvocationHandler handler = (IProxyInvocationHandler) Proxy.getInvocationHandler(widget);
                     Object actualInstance = handler.getActualInstance();
-                    Map<String, String> values = WidgetValueBuilder.buildPropertyValues(actualInstance, display, CompareHierarchies.propertyNamesToCompare);
+                    Map<String, String> values = WidgetValueBuilder.buildPropertyValues(actualInstance, display, CompareHierarchies.propertiesToCompare);
                     propertyValueCache.put(widgetInfo.getWidgetID(), values);
                 } else {
                     MessageBoxHelper messageBoxHelper = getMessageBoxHelper();
-                    Map<String, String> values = WidgetValueBuilder.buildPropertyValues(messageBoxHelper, CompareHierarchies.propertyNamesToCompare);
+                    Map<String, String> values = WidgetValueBuilder.buildPropertyValues(messageBoxHelper, CompareHierarchies.propertiesToCompare);
                     propertyValueCache.put(widgetInfo.getWidgetID(), values);
                 }
             }
