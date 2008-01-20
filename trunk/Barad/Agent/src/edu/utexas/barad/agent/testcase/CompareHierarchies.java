@@ -1,8 +1,9 @@
 package edu.utexas.barad.agent.testcase;
 
+import edu.utexas.barad.agent.swt.WidgetHierarchy;
+import edu.utexas.barad.agent.swt.WidgetValueBuilder.ReadMethodInfo;
 import edu.utexas.barad.common.Visitor;
 import edu.utexas.barad.common.swt.WidgetInfo;
-import edu.utexas.barad.agent.swt.WidgetHierarchy;
 
 import java.util.*;
 
@@ -11,10 +12,12 @@ import java.util.*;
  * Barad Project, Aug 4, 2007
  */
 public class CompareHierarchies {
-    public static final List<String> propertyNamesToCompare = Arrays.asList(
-            "isEnabled",
-            "getText",
-            "isVisible");
+    public static final List<ReadMethodInfo> propertiesToCompare = Arrays.asList(
+            new ReadMethodInfo("isEnabled", boolean.class),
+            new ReadMethodInfo("getText", String.class),
+            new ReadMethodInfo("isVisible", boolean.class),
+            new ReadMethodInfo("getSelection", boolean.class)
+    );
 
     public static HierarchyDiff compare(final WidgetHierarchy before, final WidgetHierarchy after) {
         if (before == null) {
@@ -33,19 +36,22 @@ public class CompareHierarchies {
                     diff.addAddedWidget(afterWidgetInfo);
                 } else {
                     Map<String, String> afterValues = after.getWidgetPropertyValues(afterWidgetInfo.getWidgetID());
-                    for (String propertyNameToCompare : propertyNamesToCompare) {
-                        if (beforeValues.containsKey(propertyNameToCompare)) {
-                            String beforeValue = beforeValues.get(propertyNameToCompare);
-                            String afterValue = afterValues.get(propertyNameToCompare);
-                            if (!beforeValue.equals(afterValue)) {
-                                PropertyDiff propertyDiff = new PropertyDiff();
-                                propertyDiff.setPropertyName(propertyNameToCompare);
-                                propertyDiff.setBeforeValue(beforeValue);
-                                propertyDiff.setAfterValue(afterValue);
-                                diff.addChangedWidget(afterWidgetInfo);
-                                diff.addPropertyChange(afterWidgetInfo, propertyDiff);
-                            }
+                    for (ReadMethodInfo propertyToCompare : propertiesToCompare) {
+                        String beforeValue = beforeValues.get(propertyToCompare.getMethodName());
+                        String afterValue = afterValues.get(propertyToCompare.getMethodName());
+                        if (beforeValue == null && afterValue == null) {
+                            continue;
                         }
+                        if (beforeValue != null && afterValue != null && beforeValue.equals(afterValue)) {
+                            continue;
+                        }
+
+                        PropertyDiff propertyDiff = new PropertyDiff();
+                        propertyDiff.setPropertyName(propertyToCompare.getMethodName());
+                        propertyDiff.setBeforeValue(beforeValue);
+                        propertyDiff.setAfterValue(afterValue);
+                        diff.addChangedWidget(afterWidgetInfo);
+                        diff.addPropertyChange(afterWidgetInfo, propertyDiff);                        
                     }
                 }
             }

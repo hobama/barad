@@ -7,13 +7,13 @@ import edu.utexas.barad.studio.Images;
 import edu.utexas.barad.studio.StudioMain;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -42,6 +42,10 @@ public class TestCaseItemWrapper {
     private Button stopButton;
     private Label currentStatusLabel;
     private Timer refreshTimer = new Timer("Refresh Timer", true);
+    private CTabItem currentTestCaseItem;
+    private CTabItem allTestCasesItem;
+    private CTabItem currentIterationTestCasesItem;
+    private CTabItem exceptionItem;
 
     public TestCaseItemWrapper(CTabFolder tabFolder) {
         this.tabFolder = tabFolder;
@@ -75,7 +79,7 @@ public class TestCaseItemWrapper {
 
         startButton = new Button(buttonComposite, SWT.PUSH);
         startButton.setText("Start");
-        startButton.setImage(Images.PLAY.createImage());
+        startButton.setImage(Images.START.createImage());
 
         stopButton = new Button(buttonComposite, SWT.PUSH);
         stopButton.setText("Stop");
@@ -89,7 +93,7 @@ public class TestCaseItemWrapper {
         FontData fontData = font.getFontData()[0];
         fontData.setStyle(SWT.BOLD);
         currentStatusLabel.setFont(new Font(currentStatusLabel.getDisplay(), fontData));
-        currentStatusLabel.setText("Stopped      ");                      
+        currentStatusLabel.setText("Stopped      ");
         currentStatusLabel.setLayoutData(new GridData());
 
         Label filterStrategyClassLabel = new Label(generateTestCasesGroup, SWT.LEFT);
@@ -117,17 +121,17 @@ public class TestCaseItemWrapper {
         detailsFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         detailsFolder.setSimple(false);
 
-        CTabItem currentTestCaseItem = new CTabItem(detailsFolder, SWT.NONE);
+        currentTestCaseItem = new CTabItem(detailsFolder, SWT.NONE);
         currentTestCaseItem.setText("Current Test Case");
         detailsFolder.setSelection(currentTestCaseItem);
 
-        CTabItem allTestCasesItem = new CTabItem(detailsFolder, SWT.NONE);
+        allTestCasesItem = new CTabItem(detailsFolder, SWT.NONE);
         allTestCasesItem.setText("All Test Cases");
 
-        CTabItem currentIterationTestCasesItem = new CTabItem(detailsFolder, SWT.NONE);
+        currentIterationTestCasesItem = new CTabItem(detailsFolder, SWT.NONE);
         currentIterationTestCasesItem.setText("Current Iteration Test Cases");
 
-        CTabItem exceptionItem = new CTabItem(detailsFolder, SWT.NONE);
+        exceptionItem = new CTabItem(detailsFolder, SWT.NONE);
         exceptionItem.setText("Exceptions");
 
         currentTestCaseBrowser = new Browser(detailsFolder, SWT.NONE);
@@ -144,22 +148,26 @@ public class TestCaseItemWrapper {
 
         startButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
-                try {
-                    StudioMain application = StudioMain.getApplicationWindow();
-                    if (!application.isConnected()) {
-                        return;
-                    }
+                System.out.println("widgetSelected(), event=" + event);
+                
+                synchronized (TestCaseItemWrapper.this) {
+                    try {
+                        StudioMain application = StudioMain.getApplicationWindow();
+                        if (!application.isConnected()) {
+                            return;
+                        }
 
-                    IAgent agent = application.getAgent();
-                    if (executionState != null && executionState == ExecutionState.STARTED) {
-                        agent.pauseGenerateTestCases();
+                        IAgent agent = application.getAgent();
+                        if (executionState != null && executionState == ExecutionState.STARTED) {
+                            agent.pauseGenerateTestCases();
+                        } else {
+                            agent.startGenerateTestCases(filterStrategyClassCombo.getText(), initialStateStrategyCombo.getText());
+                        }
+
                         refresh();
-                    } else {
-                        agent.startGenerateTestCases(filterStrategyClassCombo.getText(), initialStateStrategyCombo.getText());
-                        refresh();
+                    } catch (RemoteException e) {
+                        logger.error("An unexpected exception occurred starting test case generation.", e);
                     }
-                } catch (RemoteException e) {
-                    logger.error("An unexpected exception occurred starting test case generation.", e);
                 }
             }
 
@@ -170,19 +178,22 @@ public class TestCaseItemWrapper {
 
         stopButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent event) {
-                try {
-                    StudioMain application = StudioMain.getApplicationWindow();
-                    if (!application.isConnected()) {
-                        return;
-                    }
+                synchronized (TestCaseItemWrapper.this) {
+                    try {
+                        StudioMain application = StudioMain.getApplicationWindow();
+                        if (!application.isConnected()) {
+                            return;
+                        }
 
-                    IAgent agent = application.getAgent();
-                    if (executionState != null && (executionState == ExecutionState.STARTED || executionState == ExecutionState.PAUSED)) {
-                        agent.stopGenerateTestCases();
+                        IAgent agent = application.getAgent();
+                        if (executionState != null && (executionState == ExecutionState.STARTED || executionState == ExecutionState.PAUSED)) {
+                            agent.stopGenerateTestCases();
+                        }
+
                         refresh();
+                    } catch (RemoteException e) {
+                        logger.error("An unexpected exception occurred stopping test case generation.", e);
                     }
-                } catch (RemoteException e) {
-                    logger.error("An unexpected exception occurred stopping test case generation.", e);
                 }
             }
 
@@ -197,7 +208,7 @@ public class TestCaseItemWrapper {
             public void run() {
                 Display.getDefault().asyncExec(new Runnable() {
                     public void run() {
-                        refresh();     
+                        refresh();
                     }
                 });
             }
@@ -210,8 +221,17 @@ public class TestCaseItemWrapper {
         return tabItem;
     }
 
-    public void refresh() {
+    private void reset() {
+
+
+    }
+
+    public synchronized void refresh() {
         try {
+            if (true) {
+                return;
+            }
+            
             StudioMain application = StudioMain.getApplicationWindow();
             if (!application.isConnected()) {
                 return;
@@ -232,7 +252,7 @@ public class TestCaseItemWrapper {
                 }
 
                 case PAUSED: {
-                    startButton.setImage(Images.PLAY.createImage());
+                    startButton.setImage(Images.START.createImage());
                     startButton.setText("Continue");
                     startButton.setEnabled(true);
                     stopButton.setEnabled(true);
@@ -242,8 +262,8 @@ public class TestCaseItemWrapper {
                 }
 
                 case STOPPED: {
-                    startButton.setImage(Images.PLAY.createImage());
-                    startButton.setText("Play");
+                    startButton.setImage(Images.START.createImage());
+                    startButton.setText("Start");
                     startButton.setEnabled(true);
                     stopButton.setEnabled(false);
                     currentStatusLabel.setText("Stopped      ");
@@ -279,9 +299,12 @@ public class TestCaseItemWrapper {
                 buffer.append("<html>");
                 buffer.append(getStyle());
                 for (int i = 0; i < allTestCases.length; ++i) {
+                    buffer.append("<b>Test Case&nbsp;").append(i + 1).append("</b>");
+                    buffer.append("<br>");
                     buffer.append(allTestCases[i].toHTML());
                     if (i + 1 < allTestCases.length) {
-                        buffer.append("<br/>");
+                        buffer.append("<br>");
+                        buffer.append("<br>");
                     }
                 }
                 buffer.append("</html>");
@@ -294,6 +317,7 @@ public class TestCaseItemWrapper {
                 buffer.append("</html>");
                 allTestCasesBrowser.setText(buffer.toString());
             }
+            allTestCasesItem.setText("All Test Cases" + (allTestCases != null ? " (" + allTestCases.length + ")" : " (0)"));
 
             TestCase[] executingTestCases = agent.getExecutingTestCases();
             if (executingTestCases != null) {
@@ -301,9 +325,12 @@ public class TestCaseItemWrapper {
                 buffer.append("<html>");
                 buffer.append(getStyle());
                 for (int i = 0; i < executingTestCases.length; ++i) {
+                    buffer.append("<b>Candidate Test Case&nbsp;").append(i + 1).append("</b>");
+                    buffer.append("<br>");
                     buffer.append(executingTestCases[i].toHTML());
                     if (i + 1 < executingTestCases.length) {
-                        buffer.append("<br/>");
+                        buffer.append("<br>");
+                        buffer.append("<br>");
                     }
                 }
                 buffer.append("</html>");
@@ -316,18 +343,24 @@ public class TestCaseItemWrapper {
                 buffer.append("</html>");
                 currentIterationTestCasesBrowser.setText(buffer.toString());
             }
+            currentIterationTestCasesItem.setText("Current Iteration Test Cases" + (executingTestCases != null ? " (" + executingTestCases.length + ")" : " (0)"));
 
             String stackTrace = agent.getThrowableStackTrace();
+            StringBuffer buffer = new StringBuffer();
             if (stackTrace != null) {
-                exceptionBrowser.setText(stackTrace);
+                buffer.append("<html>");
+                buffer.append(getStyle());
+                buffer.append(stackTrace);
+                buffer.append("</html>");
+                exceptionBrowser.setText(buffer.toString());
             } else {
-                StringBuffer buffer = new StringBuffer();
                 buffer.append("<html>");
                 buffer.append(getStyle());
                 buffer.append("<b>None</b>");
                 buffer.append("</html>");
                 exceptionBrowser.setText(buffer.toString());
             }
+            exceptionItem.setText("Exceptions" + (stackTrace != null ? " (1)" : " (0)"));
         } catch (RemoteException e) {
             logger.error("An unexpected exception occurred.", e);
         }
@@ -335,10 +368,10 @@ public class TestCaseItemWrapper {
 
     private static String getStyle() {
         return
-        "<HEAD>\n" +
-        " <STYLE type=\"text/css\">\n" +
-        "   BODY {font:76% Arial,sans-serif;}\n" +
-        " </STYLE>\n" +
-        "</HEAD>";
+                "<HEAD>\n" +
+                        " <STYLE type=\"text/css\">\n" +
+                        "   BODY {font:76% Arial,sans-serif;}\n" +
+                        " </STYLE>\n" +
+                        "</HEAD>";
     }
 }

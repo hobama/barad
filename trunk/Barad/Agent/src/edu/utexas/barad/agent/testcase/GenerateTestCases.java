@@ -1,9 +1,11 @@
 package edu.utexas.barad.agent.testcase;
 
 import edu.utexas.barad.agent.exceptions.GenerateTestCasesException;
+import edu.utexas.barad.agent.swt.Displays;
 import edu.utexas.barad.agent.swt.WidgetHierarchy;
 import edu.utexas.barad.agent.swt.proxy.SWTProxy;
 import edu.utexas.barad.agent.swt.proxy.widgets.*;
+import edu.utexas.barad.agent.swt.tester.ComboTester;
 import edu.utexas.barad.agent.swt.tester.WidgetTester;
 import edu.utexas.barad.agent.swt.tester.WidgetTesterFactory;
 import edu.utexas.barad.agent.swt.widgets.MessageBoxHelper;
@@ -23,13 +25,14 @@ public class GenerateTestCases {
     private WidgetFilterStrategy widgetFilterStrategy;
     private InitialStateStrategy initialStateStrategy;
     private Set<WidgetHierarchy> widgetStates = new LinkedHashSet<WidgetHierarchy>();
-    private List<TestCase> testCases = Collections.synchronizedList(new ArrayList<TestCase>());
+    private Set<TestCase> uniqueTestCases = Collections.synchronizedSet(new LinkedHashSet<TestCase>());
     private TestCase currentTestCase;
     private Throwable throwable;
     private ListenerProxy keyListener;
     private WorkerThread workerThread;
     private ExecutionState executionState = ExecutionState.STOPPED;
-    private List<TestCase> newTestCases;
+    private Set<TestCase> candidateTestCases;
+    private Set<TestCase> processedTestCases = Collections.synchronizedSet(new LinkedHashSet<TestCase>());
     private final Object lock = new Object();
 
     public void start(WidgetFilterStrategy widgetFilterStrategy, InitialStateStrategy initialStateStrategy) {
@@ -72,13 +75,15 @@ public class GenerateTestCases {
                     int stateMask = event.__fieldGetstateMask();
                     char keyCode = (char) event.__fieldGetkeyCode();
                     if (keyCode == 'p' && (stateMask & SWTProxy.CTRL) == SWTProxy.CTRL && (stateMask & SWTProxy.ALT) == SWTProxy.ALT) {
-                        logger.info("CTRL-ALT-P entered, pausing testcase generation.");
+                        logger.info("CTRL-ALT-P entered, pausing test case generation.");
                         pause();
-                    } else if (keyCode == 'q' && (stateMask & SWTProxy.CTRL) == SWTProxy.CTRL && (stateMask & SWTProxy.ALT) == SWTProxy.ALT) {
-                        logger.info("CTRL-ALT-Q entered, stopping testcase generation.");
+                    } else
+                    if (keyCode == 'q' && (stateMask & SWTProxy.CTRL) == SWTProxy.CTRL && (stateMask & SWTProxy.ALT) == SWTProxy.ALT) {
+                        logger.info("CTRL-ALT-Q entered, stopping test case generation.");
                         stop();
-                    } else if (keyCode == 'c' && (stateMask & SWTProxy.CTRL) == SWTProxy.CTRL && (stateMask & SWTProxy.ALT) == SWTProxy.ALT) {
-                        logger.info("CTRL-ALT-C entered, continuing testcase generation.");
+                    } else
+                    if (keyCode == 'c' && (stateMask & SWTProxy.CTRL) == SWTProxy.CTRL && (stateMask & SWTProxy.ALT) == SWTProxy.ALT) {
+                        logger.info("CTRL-ALT-C entered, continuing test case generation.");
                         continue_();
                     }
                 }
@@ -192,8 +197,8 @@ public class GenerateTestCases {
         }
     }
 
-    public List<TestCase> getTestCases() {
-        return testCases;
+    public List<TestCase> getUniqueTestCases() {
+        return new ArrayList<TestCase>(uniqueTestCases);
     }
 
     public TestCase getCurrentTestCase() {
@@ -204,14 +209,15 @@ public class GenerateTestCases {
         return throwable;
     }
 
-    public List<TestCase> getNewTestCases() {
-        return newTestCases;
+    public List<TestCase> getCandidateTestCases() {
+        return candidateTestCases != null ? new ArrayList<TestCase>(candidateTestCases) : null;
     }
 
     private void generate() {
         synchronized (lock) {
             widgetStates.clear();
-            testCases.clear();
+            uniqueTestCases.clear();
+            processedTestCases.clear();
             currentTestCase = null;
             throwable = null;
         }
@@ -226,21 +232,31 @@ public class GenerateTestCases {
 
             returnToInitialState();
 
-            int size;
-            do {
-                size = testCases.size();
+            // Add initial SUT state.
+            WidgetHierarchy widgetHierarchy = new WidgetHierarchy();
+            widgetHierarchy.getWidgetHierarchy(true);
+            widgetHierarchy.populateValues();
+            widgetStates.add(widgetHierarchy);
 
-                newTestCases = new ArrayList<TestCase>();
-                boolean firstStep = testCases.size() == 0;
+            boolean newUniqueTestCasesFound;
+            do {
+                newUniqueTestCasesFound = false;
+
+                candidateTestCases = new LinkedHashSet<TestCase>();
+                boolean firstStep = uniqueTestCases.size() == 0;
                 if (firstStep) {
-                    TestStep[] testSteps = generateNextStep();
-                    for (TestStep testStep : testSteps) {
+                    List<TestStep> nextSteps = generateNextSteps();
+                    for (TestStep testStep : nextSteps) {
                         TestCase newTestCase = new TestCase();
                         newTestCase.add(testStep);
-                        newTestCases.add(newTestCase);
+                        candidateTestCases.add(newTestCase);
                     }
                 } else {
-                    for (TestCase testCase : testCases) {
+                    for (TestCase testCase : uniqueTestCases) {
+                        if (processedTestCases.contains(testCase)) {
+                            continue;
+                        }
+
                         returnToInitialState();
 
                         if (isStopped()) {
@@ -250,38 +266,44 @@ public class GenerateTestCases {
                         currentTestCase = testCase;
                         executeTestCase(testCase);
 
-                        TestStep[] testSteps = generateNextStep();
-                        for (TestStep testStep : testSteps) {
+                        List<TestStep> nextSteps = generateNextSteps();
+                        for (TestStep nextStep : nextSteps) {
                             try {
                                 TestCase newTestCase = (TestCase) testCase.clone();
-                                newTestCase.add(testStep);
-                                newTestCases.add(newTestCase);
+                                newTestCase.add(nextStep);
+                                newTestCase.setParent(testCase);
+                                candidateTestCases.add(newTestCase);
                             } catch (CloneNotSupportedException ignore) {
                                 // Ignore.
                             }
                         }
+
+                        processedTestCases.add(testCase);
                     }
                 }
 
-                for (TestCase testCase : newTestCases) {
+                for (TestCase newTestCase : candidateTestCases) {
                     if (isStopped()) {
                         break;
                     }
 
-                    if (!pruneTestCase(testCase)) {
-                        logger.debug("Adding testcase, testCase=" + testCase);
-                        testCases.add(testCase);
+                    if (!pruneTestCase(newTestCase)) {
+                        if (uniqueTestCases.add(newTestCase)) {
+                            uniqueTestCases.remove(newTestCase.getParent());
+                            logger.debug("Adding test case, newTestCase=" + newTestCase);
+                            newUniqueTestCasesFound = true;
+                        }
                     } else {
-                        logger.debug("Test case will be pruned, testCase=" + testCase);
+                        logger.debug("Test case will be pruned, newTestCase=" + newTestCase);
                     }
                 }
 
-                logger.debug("Current testcase count=" + testCases.size() + ", previous testcase count=" + size);
-            } while (testCases.size() > size && !isStopped());
+                logger.debug("Current test case count=" + uniqueTestCases.size() + ", new unique test cases found=" + newUniqueTestCasesFound);
+            } while (newUniqueTestCasesFound && !isStopped());
 
             returnToInitialState();
         } catch (Throwable throwable) {
-            logger.error("An exception occurred during testcase generation.", throwable);
+            logger.error("An exception occurred during test case generation.", throwable);
             this.throwable = throwable;
         }
 
@@ -291,7 +313,7 @@ public class GenerateTestCases {
                 defaultDisplay.removeFilter(SWTProxy.KeyDown, keyListener);
             }
         });
-        
+
         synchronized (lock) {
             executionState = ExecutionState.STOPPED;
             lock.notifyAll();
@@ -324,7 +346,7 @@ public class GenerateTestCases {
         }
     }
 
-    private TestStep[] generateNextStep() {
+    private List<TestStep> generateNextSteps() {
         List<TestStep> testSteps = new ArrayList<TestStep>();
 
         final WidgetHierarchy widgetHierarchy = new WidgetHierarchy();
@@ -344,6 +366,17 @@ public class GenerateTestCases {
                 } else if (proxy instanceof TextProxy) {
                     TestStep testStep = new TestStep(TestCaseAction.ENTER_TEXT, widgetInfo);
                     testSteps.add(testStep);
+                } else if (proxy instanceof ComboProxy) {
+                    final ComboProxy comboProxy = (ComboProxy) proxy;
+                    int itemCount = Displays.syncExec(comboProxy.getDisplay(), new Displays.IntResult() {
+                        public int result() {
+                            return comboProxy.getItemCount();
+                        }
+                    });
+                    for (int i = 0; i < itemCount; ++i) {
+                        TestStep testStep = new ComboTestStep(TestCaseAction.SELECT_ITEM, widgetInfo, i);
+                        testSteps.add(testStep);
+                    }
                 }
             }
         } else {
@@ -370,7 +403,7 @@ public class GenerateTestCases {
             }
         }
 
-        return testSteps.toArray(new TestStep[0]);
+        return testSteps;
     }
 
     private void executeTestCase(TestCase testCase) {
@@ -398,6 +431,7 @@ public class GenerateTestCases {
             }
             WidgetProxy widgetProxy = (WidgetProxy) proxy;
             WidgetTester widgetTester = WidgetTesterFactory.getDefault().getTester(widgetProxy);
+            widgetTester.mouseMove(widgetProxy);
             switch (testStep.getAction()) {
                 case LEFT_MOUSE_CLICK: {
                     widgetTester.actionClick(widgetProxy, SWTProxy.BUTTON1);
@@ -409,6 +443,7 @@ public class GenerateTestCases {
                 }
                 case ENTER_TEXT: {
                     final TextProxy textProxy = (TextProxy) widgetProxy;
+                    widgetTester.actionClick(textProxy);
                     textProxy.getDisplay().syncExec(new Runnable() {
                         public void run() {
                             textProxy.setText(""); // Clear the textfield to prevent generation of new strings.
@@ -416,6 +451,17 @@ public class GenerateTestCases {
                     });
                     widgetTester.actionKeyString("This is a test");
                     break;
+                }
+                case SELECT_ITEM: {
+                    if (testStep instanceof ComboTestStep && widgetProxy instanceof ComboProxy && widgetTester instanceof ComboTester) {
+                        ComboTestStep comboTestStep = (ComboTestStep) testStep;
+                        int itemIndex = comboTestStep.getItemIndex();
+
+                        ComboProxy comboProxy = (ComboProxy) widgetProxy;
+
+                        ComboTester comboTester = (ComboTester) widgetTester;
+                        comboTester.actionSelectIndex(comboProxy, itemIndex);
+                    }
                 }
             }
         } else {

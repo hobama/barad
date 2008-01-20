@@ -33,7 +33,7 @@ public class Images {
     public static final ImageDescriptor WIDGETS_TREE = ImageDescriptor.createFromURL(StudioMain.getImageURL("widgets/tree.png"));
     public static final ImageDescriptor WIDGETS_OTHER = ImageDescriptor.createFromURL(StudioMain.getImageURL("widgets/other.png"));
 
-    public static final ImageDescriptor PLAY = ImageDescriptor.createFromURL(StudioMain.getImageURL("play.png"));
+    public static final ImageDescriptor START = ImageDescriptor.createFromURL(StudioMain.getImageURL("play.png"));
     public static final ImageDescriptor PAUSE = ImageDescriptor.createFromURL(StudioMain.getImageURL("pause.png"));
     public static final ImageDescriptor STOP = ImageDescriptor.createFromURL(StudioMain.getImageURL("stop.png"));
 

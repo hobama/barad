@@ -47,62 +47,36 @@ public class WidgetID implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hashCode = 0;
-        if (getClassName() != null) {
-            hashCode += getClassName().hashCode();
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
         }
-        hashCode += getChildIndex();
-        if (getText() != null) {
-            hashCode += getText().hashCode();
+        if (!(object instanceof WidgetID)) {
+            return false;
         }
-        if (getParentID() != null) {
-            hashCode += getParentID().hashCode();
+
+        WidgetID widgetID = (WidgetID) object;
+
+        if (childIndex != widgetID.childIndex) {
+            return false;
         }
-        return hashCode;
+        if (!className.equals(widgetID.className)) {
+            return false;
+        }
+        if (parentID != null ? !parentID.equals(widgetID.parentID) : widgetID.parentID != null) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object instanceof WidgetID) {
-            WidgetID another = (WidgetID) object;
-
-            if (!another.getClassName().equals(getClassName())) {
-                return false;
-            }
-
-            if (another.getChildIndex() != getChildIndex()) {
-                return false;
-            }
-
-            if (another.getText() != null && getText() == null) {
-                return false;
-            }
-            if (another.getText() == null && getText() != null) {
-                return false;
-            }
-            if (another.getText() != null && getText() != null) {
-                if (!another.getText().equals(getText())) {
-                    return false;
-                }
-            }
-
-            if (another.getParentID() == null && getParentID() != null) {
-                return false;
-            }
-            if (another.getParentID() != null && getParentID() == null) {
-                return false;
-            }
-            if (another.getParentID() != null && getParentID() != null) {
-                if (!another.getParentID().equals(getParentID())) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+    public int hashCode() {
+        int result;
+        result = className.hashCode();
+        result = 31 * result + childIndex;
+        result = 31 * result + (parentID != null ? parentID.hashCode() : 0);
+        return result;
     }
 
     public String toShortDisplayString() {

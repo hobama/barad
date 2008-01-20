@@ -41,6 +41,7 @@ public final class SWTProxy implements SWTProxyMarker {
     public static final int F12 = (Integer) ReflectionUtils.getField(actualClass, "F12");
     public static final char ESC = (Character) ReflectionUtils.getField(actualClass, "ESC");
     public static final char DEL = (Character) ReflectionUtils.getField(actualClass, "DEL");
+    public static final char CR = (Character) ReflectionUtils.getField(actualClass, "CR");
     public static final int MouseMove = (Integer) ReflectionUtils.getField(actualClass, "MouseMove");
     public static final int MouseDown = (Integer) ReflectionUtils.getField(actualClass, "MouseDown");
     public static final int MouseUp = (Integer) ReflectionUtils.getField(actualClass, "MouseUp");
@@ -66,6 +67,8 @@ public final class SWTProxy implements SWTProxyMarker {
     public static final int APPLICATION_MODAL = (Integer) ReflectionUtils.getField(actualClass, "APPLICATION_MODAL");
     public static final int PRIMARY_MODAL = (Integer) ReflectionUtils.getField(actualClass, "PRIMARY_MODAL");
     public static final int RESIZE = (Integer) ReflectionUtils.getField(actualClass, "RESIZE");
+    public static final int READ_ONLY = (Integer) ReflectionUtils.getField(actualClass, "READ_ONLY");
+    public static final int DROP_DOWN = (Integer) ReflectionUtils.getField(actualClass, "DROP_DOWN");    
 
     public static String getPlatform() {
         return (String) ReflectionUtils.invokeMethod(actualClass, "getPlatform", null, null);

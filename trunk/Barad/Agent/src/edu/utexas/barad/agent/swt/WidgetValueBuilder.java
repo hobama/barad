@@ -28,18 +28,18 @@ public class WidgetValueBuilder {
     private static final Logger logger = Logger.getLogger(WidgetValueBuilder.class);
 
     public static Map<String, String> buildPropertyValues(final Object object) {
-        return buildPropertyValues(object, (List<String>) null);
+        return buildPropertyValues(object, (List<ReadMethodInfo>) null);
     }
 
-    public static Map<String, String> buildPropertyValues(final Object object, List<String> includedReadMethodNames) {
-        return buildPropertyValues(object, null, includedReadMethodNames);
+    public static Map<String, String> buildPropertyValues(final Object object, List<ReadMethodInfo> includedReadMethods) {
+        return buildPropertyValues(object, null, includedReadMethods);
     }
 
     public static Map<String, String> buildPropertyValues(final Object widget, DisplayProxy display) {
         return buildPropertyValues(widget, display, null);
     }
 
-    public static Map<String, String> buildPropertyValues(final Object widget, DisplayProxy display, List<String> includedReadMethodNames) {
+    public static Map<String, String> buildPropertyValues(final Object widget, DisplayProxy display, List<ReadMethodInfo> includedReadMethods) {
         Map<String, String> propertyValues = new HashMap<String, String>();
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(widget.getClass(), Introspector.IGNORE_ALL_BEANINFO);
@@ -48,7 +48,7 @@ public class WidgetValueBuilder {
                 final Method readMethod = propertyDescriptor.getReadMethod();
                 if (readMethod != null) {
                     String methodName = readMethod.getName();
-                    if (includedReadMethodNames != null && !includedReadMethodNames.contains(methodName)) {
+                    if (includedReadMethods != null && findReadMethodInfo(readMethod, includedReadMethods) == null) {
                         continue;
                     }
 
@@ -156,5 +156,77 @@ public class WidgetValueBuilder {
 
     private WidgetValueBuilder() {
         // Private constructor.
+    }
+
+    private static ReadMethodInfo findReadMethodInfo(Method method, List<ReadMethodInfo> list) {
+        for (ReadMethodInfo readMethodInfo : list) {
+            if (readMethodInfo.getMethodName().equals(method.getName()) && readMethodInfo.getReturnType().equals(method.getReturnType())) {
+                return readMethodInfo;
+            }
+        }
+        return null;
+    }
+
+    public static class ReadMethodInfo {
+        private String methodName;
+        private Class returnType;
+
+        public ReadMethodInfo(String methodName, Class returnType) {
+            if (methodName == null) {
+                throw new NullPointerException("methodName");
+            }
+            if (returnType == null) {
+                throw new NullPointerException("read method must have a non-null return type");
+            }
+            this.methodName = methodName;
+            this.returnType = returnType;
+        }
+
+        public String getMethodName() {
+            return methodName;
+        }
+
+        public Class getReturnType() {
+            return returnType;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 0;
+            hashCode += methodName.hashCode();
+            if (returnType != null) {
+                hashCode += returnType.hashCode();
+            }
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (object instanceof ReadMethodInfo) {
+                ReadMethodInfo another = (ReadMethodInfo) object;
+                if (!another.methodName.equals(this.methodName)) {
+                    return false;
+                }
+                if (another.returnType == null && this.returnType != null) {
+                    return false;
+                }
+                if (another.returnType != null && this.returnType == null) {
+                    return false;
+                }
+                if (another.returnType != null && this.returnType != null && !another.returnType.equals(this.returnType)) {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "ReadMethodInfo{" +
+                    "methodName='" + methodName + '\'' +
+                    ", returnType=" + returnType +
+                    '}';
+        }
     }
 }

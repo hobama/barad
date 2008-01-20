@@ -47,7 +47,9 @@ public class TestStep implements Cloneable, Serializable {
         StringBuffer buffer = new StringBuffer();
         buffer.append(TestCaseAction.toHTML(action));
         buffer.append(" on ");
-        buffer.append(widgetInfo.toHTML());
+        if (widgetInfo != null) {
+            buffer.append(widgetInfo.toHTML());
+        }
         return buffer.toString();
     }
 
