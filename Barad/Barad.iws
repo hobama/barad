@@ -30,30 +30,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SymbolicExecution/xml/widgetSelected0.xml" afterPath="$PROJECT_DIR$/../SymbolicExecution/xml/widgetSelected0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/AgentMain.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/AgentMain.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestCase.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestCase.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/tester/ComboTester.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/inputs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/Images.java" afterPath="$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/Images.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/WidgetHierarchy.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/WidgetHierarchy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestStep.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestStep.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/CompareHierarchies.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/CompareHierarchies.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/DefaultWidgetFilterStrategy.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/DefaultWidgetFilterStrategy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Barad.iws" afterPath="$PROJECT_DIR$/Barad.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/WidgetValueBuilder.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/WidgetValueBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/Agent.iml" afterPath="$PROJECT_DIR$/Agent/Agent.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/controls/testcases/TestCaseItemWrapper.java" afterPath="$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/controls/testcases/TestCaseItemWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Studio/Studio.iml" afterPath="$PROJECT_DIR$/Studio/Studio.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Barad.ipr" afterPath="$PROJECT_DIR$/Barad.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/proxy/widgets/ComboProxy.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/proxy/widgets/ComboProxy.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/GenerateTestCases.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/GenerateTestCases.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestCaseAction.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestCaseAction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/MessageBoxTestStep.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/MessageBoxTestStep.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/proxy/SWTProxy.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/proxy/SWTProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/swt/WidgetID.java" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/swt/WidgetID.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/ComboTestStep.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SymbolicExecution/SymbolicExecution.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Barad.iws" afterPath="$PROJECT_DIR$/Barad.iws" />
     </list>
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
@@ -61,6 +40,11 @@
     <leftPanel />
     <rightPanel />
     <splitter proportion="0.5" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="C:\Users\Chip Killmar\.IntelliJIdea70\system\coverage\Barad$WorkoutGenerator$org.fitness.generator.MainWindow.es" NAME="WorkoutGenerator" MODIFIED="1200930450907" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider">
+      <FILTER>org.fitness.generator.MainWindow</FILTER>
+    </SUITE>
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -203,30 +187,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GenerateTestCases.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/GenerateTestCases.java">
+      <file leaf-file-name="DefaultInitialStateStrategy.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/DefaultInitialStateStrategy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="454" column="0" selection-start="17925" selection-end="17925" vertical-scroll-proportion="0.41060904">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Displays.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/Displays.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="128" column="28" selection-start="4051" selection-end="4051" vertical-scroll-proportion="0.14145383">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WidgetFilterStrategy.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/WidgetFilterStrategy.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="0" selection-start="216" selection-end="216" vertical-scroll-proportion="0.26719058">
+            <state line="150" column="1" selection-start="7268" selection-end="7268" vertical-scroll-proportion="0.93927896">
               <folding />
             </state>
           </provider>
@@ -235,63 +199,25 @@
       <file leaf-file-name="DefaultWidgetFilterStrategy.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/DefaultWidgetFilterStrategy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="11" selection-start="500" selection-end="500" vertical-scroll-proportion="0.23379175">
+            <state line="14" column="45" selection-start="789" selection-end="789" vertical-scroll-proportion="-0.12903225">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WidgetTester.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/tester/WidgetTester.java">
+      <file leaf-file-name="GenerateTestCases.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/GenerateTestCases.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="697" column="16" selection-start="22734" selection-end="22734" vertical-scroll-proportion="0.3438114">
+            <state line="375" column="90" selection-start="14295" selection-end="14295" vertical-scroll-proportion="0.6308594">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TesterRobot.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/tester/TesterRobot.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="673" column="36" selection-start="19615" selection-end="19628" vertical-scroll-proportion="0.67583495">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AgentMain.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/AgentMain.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="95" column="109" selection-start="4171" selection-end="4171" vertical-scroll-proportion="-0.02357564">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestCaseItemWrapper.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TestCaseItemWrapper.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/controls/testcases/TestCaseItemWrapper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="164" column="38" selection-start="7688" selection-end="7688" vertical-scroll-proportion="0.4777328">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SelectionEvent.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/Studio/lib/swt-src.zip!/org/eclipse/swt/events/SelectionEvent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="13" selection-start="815" selection-end="815" vertical-scroll-proportion="0.13359529">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Button.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/Studio/lib/swt-src.zip!/org/eclipse/swt/widgets/Button.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="304" column="25" selection-start="11355" selection-end="11355" vertical-scroll-proportion="0.2691552">
+            <state line="41" column="26" selection-start="1464" selection-end="1464" vertical-scroll-proportion="0.6972656">
               <folding />
             </state>
           </provider>
@@ -352,88 +278,6 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
       </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Barad" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Barad" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Barad" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator\src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator\src\org" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator\src\org\fitness" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator\src\org\fitness\generator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Barad" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator\lib" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Barad" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Agent" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-      </PATH>
     </subPane>
   </component>
   <component name="ProjectReloadState">
@@ -447,7 +291,7 @@
       <showLibraryContents />
       <hideEmptyPackages ProjectPane="false" />
       <abbreviatePackageNames />
-      <showStructure ProjectPane="false" Scope="false" PackagesPane="false" Favorites="false" />
+      <showStructure PackagesPane="false" Scope="false" Favorites="false" ProjectPane="false" />
       <autoscrollToSource />
       <autoscrollFromSource ProjectPane="true" />
       <sortByType ProjectPane="false" />
@@ -502,7 +346,7 @@
     <option name="referencePos" value="0" />
     <option name="showLabels" value="true" />
   </component>
-  <component name="RunManager" selected="Application.StudioMain">
+  <component name="RunManager" selected="Application.WorkoutGenerator">
     <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -531,6 +375,13 @@
       <method>
         <option name="Make" value="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" />
@@ -570,13 +421,6 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -607,7 +451,7 @@
         <option name="LOCAL" value="true" />
       </RunnerSettings>
       <RunnerSettings RunnerId="Profile ">
-        <option name="myExternalizedOptions" />
+        <option name="myExternalizedOptions" value="&#13;&#10;additional-options=&#13;&#10;snapshots-dir=&#13;&#10;" />
       </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Debug" />
@@ -616,9 +460,10 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="false" name="WorkoutGenerator" type="Application" factoryName="Application" enabled="false" merge="false">
+    <configuration default="false" name="WorkoutGenerator" type="Application" factoryName="Application" enabled="true" merge="true">
+      <pattern value="org.fitness.generator.MainWindow" />
       <option name="MAIN_CLASS_NAME" value="org.fitness.generator.MainWindow" />
-      <option name="VM_PARAMETERS" value="-agentpath:&quot;D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\Barad\Agent\bin\BaradAgent.dll&quot;" />
+      <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../WorkoutGenerator" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -780,22 +625,22 @@
     <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4525194" order="17" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4525194" order="17" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.11158569" order="1" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16390817" order="1" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39728683" order="1" />
       <window_info id="Profile" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4360465" order="4" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.65988374" order="4" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="9" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921028" order="10" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5271318" order="11" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32945737" order="7" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15910304" order="1" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25573945" order="0" x="73" y="45" width="322" height="1051" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25734118" order="0" x="73" y="45" width="322" height="1051" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24967742" order="2" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
@@ -847,6 +692,7 @@
     <MESSAGE value="Enhancing test case generation." />
     <MESSAGE value="WorkoutGenerator updates: adding SWT native libraries; IntelliJ project files." />
     <MESSAGE value="Catch NumberFormatExceptions for Text widgets." />
+    <MESSAGE value="Adding Ant buildfile with Emma code coverage." />
     <MESSAGE value="Combo widget testing support." />
   </component>
   <component name="VssConfiguration">
@@ -906,6 +752,17 @@
       <verbose value="true" />
       <viewClosedWhenNoErrors value="false" />
     </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/../WorkoutGenerator/build.xml">
+      <antCommandLine value="" />
+      <runInBackground value="true" />
+      <targetFilters>
+        <filter targetName="instrumentUnitTests" isVisible="false" />
+        <filter targetName="reportUnitTestCoverage" isVisible="true" />
+      </targetFilters>
+      <treeView value="true" />
+      <verbose value="true" />
+      <viewClosedWhenNoErrors value="false" />
+    </buildFile>
   </component>
   <component name="com.intellij.ide.util.scopeChooser.ScopeChooserConfigurable" proportions="" version="1">
     <option name="myLastEditedConfigurable" />
@@ -918,119 +775,110 @@
     <option name="myLastEditedConfigurable" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../WorkoutGenerator/src/org/fitness/generator/MainWindow.java">
+    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/proxy/widgets/ButtonProxy.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="280" column="78" selection-start="9102" selection-end="9102" vertical-scroll-proportion="0.20156556">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files (x86)/java/jdk1.6.0_03/src.zip!/java/util/Map.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="176" column="6" selection-start="8656" selection-end="8656" vertical-scroll-proportion="0.45627376">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/WidgetHierarchy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="45" selection-start="3359" selection-end="3362" vertical-scroll-proportion="0.6594912">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/swt/WidgetID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="59" selection-start="1039" selection-end="1039" vertical-scroll-proportion="1.2072244">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/IAgent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="27" selection-start="837" selection-end="859" vertical-scroll-proportion="0.54942966">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/Studio/lib/swt-src.zip!/org/eclipse/swt/widgets/Control.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2700" column="16" selection-start="84968" selection-end="84980" vertical-scroll-proportion="1.0494297">
+        <state line="17" column="24" selection-start="393" selection-end="393" vertical-scroll-proportion="0.29399797">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/Studio/lib/swt-src.zip!/org/eclipse/swt/widgets/Button.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="304" column="25" selection-start="11355" selection-end="11355" vertical-scroll-proportion="0.2691552">
+        <state line="347" column="5" selection-start="12841" selection-end="12841" vertical-scroll-proportion="0.017293997">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/Studio/lib/swt-src.zip!/org/eclipse/swt/events/SelectionEvent.java">
+    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/ComboTestStep.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="13" selection-start="815" selection-end="815" vertical-scroll-proportion="0.13359529">
+        <state line="44" column="25" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.38351983">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/AgentMain.java">
+    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/swt/WidgetInfo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="95" column="109" selection-start="4171" selection-end="4171" vertical-scroll-proportion="-0.02357564">
+        <state line="122" column="18" selection-start="2803" selection-end="2803" vertical-scroll-proportion="0.88504577">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/tester/TesterRobot.java">
+    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/common/testcase/TestStep.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="673" column="36" selection-start="19615" selection-end="19628" vertical-scroll-proportion="0.67583495">
+        <state line="45" column="0" selection-start="1051" selection-end="1051" vertical-scroll-proportion="0.27975586">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/controls/testcases/TestCaseItemWrapper.java">
+    <entry file="file://$PROJECT_DIR$/../WorkoutGenerator/src/org/fitness/generator/MainWindow.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="164" column="38" selection-start="7688" selection-end="7688" vertical-scroll-proportion="0.4777328">
+        <state line="55" column="53" selection-start="1900" selection-end="1900" vertical-scroll-proportion="0.60728747">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../WorkoutGenerator/build.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="95" selection-start="1726" selection-end="1726" vertical-scroll-proportion="0.7520492">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../GUITestInput/src/edu/utexas/barad/test/input/ObjectFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="64" selection-start="1937" selection-end="1937" vertical-scroll-proportion="1.7874494">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/tester/WidgetTester.java">
+    <entry file="jar://C:/Program Files (x86)/java/jdk1.6.0_03/src.zip!/javax/xml/bind/Unmarshaller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="697" column="16" selection-start="22734" selection-end="22734" vertical-scroll-proportion="0.3438114">
+        <state line="460" column="18" selection-start="19501" selection-end="19501" vertical-scroll-proportion="0.65182185">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/WidgetFilterStrategy.java">
+    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/CompareHierarchies.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="0" selection-start="216" selection-end="216" vertical-scroll-proportion="0.26719058">
+        <state line="12" column="3" selection-start="271" selection-end="341" vertical-scroll-proportion="0.23379175">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Studio/build.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="12" selection-start="850" selection-end="1014" vertical-scroll-proportion="0.8360656">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/DefaultInitialStateStrategy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="1" selection-start="7268" selection-end="7268" vertical-scroll-proportion="0.93927896">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/DefaultWidgetFilterStrategy.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="11" selection-start="500" selection-end="500" vertical-scroll-proportion="0.23379175">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/swt/Displays.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="128" column="28" selection-start="4051" selection-end="4051" vertical-scroll-proportion="0.14145383">
+        <state line="14" column="45" selection-start="789" selection-end="789" vertical-scroll-proportion="-0.12903225">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Agent/src/edu/utexas/barad/agent/testcase/GenerateTestCases.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="454" column="0" selection-start="17925" selection-end="17925" vertical-scroll-proportion="0.41060904">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="375" column="90" selection-start="14295" selection-end="14295" vertical-scroll-proportion="0.6308594">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Studio/src/edu/utexas/barad/studio/controls/testcases/TestCaseItemWrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="26" selection-start="1464" selection-end="1464" vertical-scroll-proportion="0.6972656">
+          <folding />
         </state>
       </provider>
     </entry>
