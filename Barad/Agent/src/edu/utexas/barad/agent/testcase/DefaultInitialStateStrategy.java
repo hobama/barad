@@ -3,6 +3,7 @@ package edu.utexas.barad.agent.testcase;
 import edu.utexas.barad.agent.exceptions.GenerateTestCasesException;
 import edu.utexas.barad.agent.swt.Displays;
 import edu.utexas.barad.agent.swt.WidgetHierarchy;
+import edu.utexas.barad.agent.swt.proxy.widgets.ButtonProxy;
 import edu.utexas.barad.agent.swt.proxy.widgets.MenuItemProxy;
 import edu.utexas.barad.agent.swt.proxy.widgets.MenuProxy;
 import edu.utexas.barad.agent.swt.proxy.widgets.ShellProxy;
@@ -121,6 +122,30 @@ public class DefaultInitialStateStrategy implements InitialStateStrategy {
                 WidgetTester widgetTester = WidgetTesterFactory.getDefault().getTester(parentMenuItem);
                 widgetTester.actionClick(parentMenuItem);
             }
+        }
+
+        // Workout Generator -- click Clear button.
+        visitor = new WidgetFilterVisitor(new WidgetFilterStrategy() {
+            public boolean include(WidgetInfo widgetInfo, WidgetHierarchy widgetHierarchy) {
+                Object proxy = widgetHierarchy.getWidgetProxy(widgetInfo.getWidgetID());
+                if (proxy instanceof ButtonProxy) {
+                    final ButtonProxy buttonProxy = (ButtonProxy) proxy;
+                    return Displays.syncExec(buttonProxy.getDisplay(), new Displays.BooleanResult() {
+                        public boolean result() {
+                            return buttonProxy.isVisible() && "Clear".equals(buttonProxy.getText());
+                        }
+                    });
+                }
+                return false;
+            }
+        }, widgetHierarchy);
+        widgetHierarchy.accept(visitor);
+        filteredSet = visitor.getFilteredSet();
+        iterator = filteredSet.iterator();
+        if (iterator.hasNext()) {
+            WidgetInfo widgetInfo = iterator.next();
+            ButtonProxy buttonProxy = (ButtonProxy) widgetHierarchy.getWidgetProxy(widgetInfo.getWidgetID());
+            buttonProxy.click();
         }
     }
 }

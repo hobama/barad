@@ -147,9 +147,7 @@ public class TestCaseItemWrapper {
         exceptionItem.setControl(exceptionBrowser);
 
         startButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(SelectionEvent event) {
-                System.out.println("widgetSelected(), event=" + event);
-                
+            public void widgetSelected(SelectionEvent event) {                
                 synchronized (TestCaseItemWrapper.this) {
                     try {
                         StudioMain application = StudioMain.getApplicationWindow();
@@ -221,17 +219,8 @@ public class TestCaseItemWrapper {
         return tabItem;
     }
 
-    private void reset() {
-
-
-    }
-
     public synchronized void refresh() {
-        try {
-            if (true) {
-                return;
-            }
-            
+        try {                      
             StudioMain application = StudioMain.getApplicationWindow();
             if (!application.isConnected()) {
                 return;
