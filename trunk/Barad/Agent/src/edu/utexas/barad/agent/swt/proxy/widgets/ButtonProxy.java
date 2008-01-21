@@ -14,4 +14,6 @@ public interface ButtonProxy extends ControlProxy {
     public boolean getSelection();
 
     public String getText();
+
+    public void click();
 }

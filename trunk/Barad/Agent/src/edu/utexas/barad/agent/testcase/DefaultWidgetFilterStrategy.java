@@ -13,12 +13,7 @@ public class DefaultWidgetFilterStrategy implements WidgetFilterStrategy {
             return Displays.syncExec(menuItemProxy.getDisplay(), new Displays.BooleanResult() {
                 public boolean result() {
                     MenuProxy menuProxy = menuItemProxy.getParent();
-                    String text = menuItemProxy.getText();
-//                  if ("&Help".equals(text) || "&About Address Book...".equals(text)) {
-//                    if ("&Search".equals(text) || text.startsWith("&Find...")) {
                     return menuProxy.isVisible() && menuItemProxy.isEnabled();
-//                    }
-//                    return false;
                 }
             });
         } else if (proxy instanceof ButtonProxy) {
