@@ -364,7 +364,7 @@ public class GenerateTestCases {
                     TestStep testStep = new TestStep(TestCaseAction.LEFT_MOUSE_CLICK, widgetInfo);
                     testSteps.add(testStep);
                 } else if (proxy instanceof TextProxy) {
-                    TestStep testStep = new TestStep(TestCaseAction.ENTER_TEXT, widgetInfo);
+                    TestStep testStep = new EnterTextTestStep(TestCaseAction.ENTER_TEXT, widgetInfo, "Test");
                     testSteps.add(testStep);
                 } else if (proxy instanceof ComboProxy) {
                     final ComboProxy comboProxy = (ComboProxy) proxy;
@@ -442,14 +442,18 @@ public class GenerateTestCases {
                     break;
                 }
                 case ENTER_TEXT: {
-                    final TextProxy textProxy = (TextProxy) widgetProxy;
-                    widgetTester.actionClick(textProxy);
-                    textProxy.getDisplay().syncExec(new Runnable() {
-                        public void run() {
-                            textProxy.setText(""); // Clear the textfield to prevent generation of new strings.
-                        }
-                    });
-                    widgetTester.actionKeyString("This is a test");
+                    if (testStep instanceof EnterTextTestStep && widgetProxy instanceof TextProxy) {
+                        final TextProxy textProxy = (TextProxy) widgetProxy;
+                        widgetTester.actionClick(textProxy);
+                        textProxy.getDisplay().syncExec(new Runnable() {
+                            public void run() {
+                                textProxy.setText(""); // Clear the textfield to prevent generation of new strings.
+                            }
+                        });
+
+                        EnterTextTestStep enterTextTestStep = (EnterTextTestStep) testStep;
+                        widgetTester.actionKeyString(enterTextTestStep.getTextToEnter());
+                    }
                     break;
                 }
                 case SELECT_ITEM: {
@@ -462,6 +466,7 @@ public class GenerateTestCases {
                         ComboTester comboTester = (ComboTester) widgetTester;
                         comboTester.actionSelectIndex(comboProxy, itemIndex);
                     }
+                    break;
                 }
             }
         } else {
