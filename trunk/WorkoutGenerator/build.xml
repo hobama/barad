@@ -1,0 +1,70 @@
+<project name="WorkoutGenerator" default="run">
+    <property name="srcDir" value="${basedir}\src"/>
+    <property name="classesDir" value="${basedir}\classes"/>
+    <property name="codecoverage.dir" value="${basedir}/emma"/>
+    <property name="emma.enabled" value="true"/>
+    <property name="libDir" value="${basedir}\lib"/>
+
+    <property name="emma.dir" value="${libDir}"/>
+
+    <path id="emma.lib">
+        <pathelement location="${emma.dir}/emma.jar"/>
+        <pathelement location="${emma.dir}/emma_ant.jar"/>
+    </path>
+
+    <taskdef resource="emma_ant.properties" classpathref="emma.lib"/>
+
+    <fileset id="classpathFileSet" dir="${libDir}">
+        <include name="swt.jar"/>
+    </fileset>
+    <path id="classpathPath">
+        <fileset refid="classpathFileSet"/>
+    </path>
+
+    <target name="clean" description="Deletes classes directory.">
+        <delete dir="${classesDir}"/>
+        <delete dir="${codecoverage.dir}"/>
+    </target>
+
+    <target name="compile" description="Compiles classes.">
+        <echo message="The compiler we are running is version ${java.version} by ${java.vendor} (${java.home})."/>
+        <mkdir dir="${classesDir}"/>
+        <javac srcdir="${srcDir}" destdir="${classesDir}" classpathref="classpathPath" debug="true" fork="true" target="1.5"/>
+    </target>
+
+    <!-- Instrument and overwrite test files -->
+    <target name="instrumentUnitTests" depends="compile" description="Instruments class files for code coverage.">
+        <mkdir dir="${codecoverage.dir}"/>
+        <emma enabled="${emma.enabled}">
+            <instr merge="true" metadatafile="${codecoverage.dir}/metadata.emma" mode="overwrite">
+                <instrpath path="${classesDir}"/>
+            </instr>
+        </emma>
+    </target>
+
+    <target name="run" depends="instrumentUnitTests" description="Runs Workout Generator app.">
+        <java classname="org.fitness.generator.MainWindow" fork="true">
+            <classpath>
+                <pathelement location="${classesDir}"/>
+                <path refid="classpathPath"/>
+                <path refid="emma.lib"/>
+            </classpath>
+            <jvmarg value="-Demma.coverage.out.file=${codecoverage.dir}/coverage.emma"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+        </java>
+    </target>
+
+    <!-- Report code coverage -->
+    <target name="reportUnitTestCoverage" description="Creates EMMA code coverage report.">
+        <mkdir dir="${codecoverage.dir}"/>
+        <emma enabled="${emma.enabled}">
+            <report sort="+name" metrics="method:70,block:80,line:80,class:100">
+                <sourcepath path="${srcDir}"/>
+                <fileset dir="${codecoverage.dir}">
+                    <include name="*.emma"/>
+                </fileset>
+                <html outfile="${codecoverage.dir}/coverage.html"/>
+            </report>
+        </emma>
+    </target>
+</project>       
