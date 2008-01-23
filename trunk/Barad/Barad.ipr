@@ -23,6 +23,13 @@
       <maximumHeapSize value="128" />
       <properties />
     </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/../Tickets/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -268,6 +275,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Agent/Agent.iml" filepath="$PROJECT_DIR$/Agent/Agent.iml" />
       <module fileurl="file://$PROJECT_DIR$/Studio/Studio.iml" filepath="$PROJECT_DIR$/Studio/Studio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Tickets/Tickets.iml" filepath="$PROJECT_DIR$/../Tickets/Tickets.iml" />
       <module fileurl="file://$PROJECT_DIR$/../WorkoutGenerator/WorkoutGenerator.iml" filepath="$PROJECT_DIR$/../WorkoutGenerator/WorkoutGenerator.iml" />
     </modules>
   </component>
@@ -292,6 +300,7 @@
     <mapping directory="" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../GUITestInput" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../SymbolicExecution" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Tickets" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../WorkoutGenerator" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
