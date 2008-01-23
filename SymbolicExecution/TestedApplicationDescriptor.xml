@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <!-- The main class of the tested application-->
+   <!-- <entry key="main.class">examples.MainWindowInternal</entry>-->
+   <entry key="main.class">examples.MainWindow</entry>
+ <!--<entry key="main.class">org.fitness.generator.MainWindow</entry>-->
+    <!-- List of the tested application packages and the path to these packages-->
+    <entry key="examples">C:\workspace_symbolicexecution\SymbolicExecution\build\examples</entry>
+   <!-- <entry key="org.fitness.generaror.MainWindow">C:\workspace_symbolicexecution\WorkoutGenerator\bin\org\fitness\generator</entry>-->
+</properties>
