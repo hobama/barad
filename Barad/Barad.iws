@@ -30,14 +30,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Tickets/xml/widgetSelected0.xml" afterPath="$PROJECT_DIR$/../Tickets/xml/widgetSelected0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Tickets/Tickets.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Tickets/lib/swt.jar" afterPath="$PROJECT_DIR$/../Tickets/lib/swt.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Barad.ipr" afterPath="$PROJECT_DIR$/Barad.ipr" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Tickets/lib/emma.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Tickets/lib/swt-src.zip" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Tickets/build.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Tickets/lib/emma_ant.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Barad.iws" afterPath="$PROJECT_DIR$/Barad.iws" />
     </list>
   </component>
@@ -169,8 +161,8 @@
       <property name="field_breakpoints_groupByClasses" value="true" />
       <property name="method_breakpoints_groupByClasses" value="true" />
       <property name="exception_breakpoints_viewId" value="TABLE" />
-      <property name="exception_breakpoints_groupByClasses" value="true" />
       <property name="field_breakpoints_viewId" value="TABLE" />
+      <property name="exception_breakpoints_groupByClasses" value="true" />
       <property name="method_breakpoints_groupByMethods" value="false" />
     </ui_properties>
   </component>
@@ -196,16 +188,16 @@
       <file leaf-file-name="build.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../WorkoutGenerator/build.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="62" selection-start="1357" selection-end="1357" vertical-scroll-proportion="1.3473194">
+            <state line="34" column="62" selection-start="1357" selection-end="1357" vertical-scroll-proportion="0.46995378">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="widgetSelected0.xml" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="widgetSelected0.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../Tickets/xml/widgetSelected0.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="46" selection-start="1319" selection-end="1319" vertical-scroll-proportion="1.1095572">
+            <state line="780" column="117" selection-start="35243" selection-end="35243" vertical-scroll-proportion="0.49519232">
               <folding />
             </state>
           </provider>
@@ -214,16 +206,18 @@
       <file leaf-file-name="MainWindow.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Tickets/src/org/barad/tickets/MainWindow.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="22" selection-start="50" selection-end="50" vertical-scroll-proportion="0.075555556">
-              <folding />
+            <state line="34" column="13" selection-start="1385" selection-end="1385" vertical-scroll-proportion="-4.2119403">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="build.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="build.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Tickets/build.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="42" selection-start="1887" selection-end="1887" vertical-scroll-proportion="0.28671327">
+            <state line="45" column="42" selection-start="1887" selection-end="1887" vertical-scroll-proportion="0.75808936">
               <folding />
             </state>
           </provider>
@@ -292,6 +286,20 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="WorkoutGenerator" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Barad" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="WorkoutGenerator" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:D:\Documents and Settings\ckillmar\My Documents\University of Texas\Thesis\WorkoutGenerator" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
@@ -397,7 +405,7 @@
       <showLibraryContents />
       <hideEmptyPackages ProjectPane="false" />
       <abbreviatePackageNames />
-      <showStructure Favorites="false" Scope="false" PackagesPane="false" ProjectPane="false" />
+      <showStructure PackagesPane="false" Scope="false" Favorites="false" ProjectPane="false" />
       <autoscrollToSource />
       <autoscrollFromSource ProjectPane="true" />
       <sortByType ProjectPane="false" />
@@ -420,10 +428,10 @@
     <property name="cvs_file_history_treeWidth0" value="377" />
     <property name="cvs_file_history_treeWidth1" value="377" />
     <property name="cvs_file_history_treeWidth2" value="378" />
-    <property name="cvs_file_history_treeWidth3" value="377" />
     <property name="cvs_file_history_flatWidth2" value="378" />
-    <property name="cvs_file_history_treeOrder0" value="0" />
+    <property name="cvs_file_history_treeWidth3" value="377" />
     <property name="cvs_file_history_flatWidth3" value="377" />
+    <property name="cvs_file_history_treeOrder0" value="0" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="cvs_file_history_flatWidth0" value="377" />
     <property name="cvs_file_history_flatWidth1" value="377" />
@@ -749,7 +757,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1186" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4525194" order="17" />
@@ -761,13 +769,13 @@
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="9" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921028" order="10" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5271318" order="11" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3139535" order="11" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32945737" order="7" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15910304" order="1" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25734118" order="0" x="73" y="45" width="322" height="1051" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19487454" order="0" x="73" y="45" width="322" height="1051" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24967742" order="2" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
@@ -996,28 +1004,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../WorkoutGenerator/build.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="62" selection-start="1357" selection-end="1357" vertical-scroll-proportion="1.3473194">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../Tickets/xml/widgetSelected0.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="46" selection-start="1319" selection-end="1319" vertical-scroll-proportion="1.1095572">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../Tickets/src/org/barad/tickets/MainWindow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="22" selection-start="50" selection-end="50" vertical-scroll-proportion="0.075555556">
+        <state line="34" column="62" selection-start="1357" selection-end="1357" vertical-scroll-proportion="0.46995378">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../Tickets/build.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="42" selection-start="1887" selection-end="1887" vertical-scroll-proportion="0.28671327">
+        <state line="45" column="42" selection-start="1887" selection-end="1887" vertical-scroll-proportion="0.75808936">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Tickets/src/org/barad/tickets/MainWindow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="13" selection-start="1385" selection-end="1385" vertical-scroll-proportion="-4.2119403">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Tickets/xml/widgetSelected0.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="780" column="117" selection-start="35243" selection-end="35243" vertical-scroll-proportion="0.49519232">
           <folding />
         </state>
       </provider>
