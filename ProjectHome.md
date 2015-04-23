@@ -1,0 +1,1 @@
+"Barad" is the code name for an automated SWT GUI testing project led by the University of Texas Electrical and Computer Engineering (ECE) department.
